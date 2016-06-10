@@ -21,7 +21,7 @@ function CEditEventRecurrencePopup()
 	this.confirmDesc = TextUtils.i18n('%MODULENAME%/CONFIRM_EDIT_RECURRENCE');
 	this.onlyThisInstanceButtonText = ko.observable(TextUtils.i18n('%MODULENAME%/ACTION_CHANGE_ONLY_THIS_INSTANCE'));
 	this.allEventsButtonText = ko.observable(TextUtils.i18n('%MODULENAME%/ACTION_CHANGE_ALL_EVENTS'));
-	this.cancelButtonText = ko.observable(TextUtils.i18n('CORE/ACTION_CANCEL'));
+	this.cancelButtonText = ko.observable(TextUtils.i18n('CORECLIENT/ACTION_CANCEL'));
 }
 
 _.extendOwn(CEditEventRecurrencePopup.prototype, CAbstractPopup.prototype);

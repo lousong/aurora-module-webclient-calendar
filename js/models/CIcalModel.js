@@ -271,7 +271,7 @@ CIcalModel.prototype.onSetAppointmentActionResponse = function (oResponse, oRequ
 {
 	if (!oResponse.Result)
 	{
-		Api.showErrorByCode(oResponse, TextUtils.i18n('CORE/ERROR_UNKNOWN'));
+		Api.showErrorByCode(oResponse, TextUtils.i18n('CORECLIENT/ERROR_UNKNOWN'));
 	}
 	else
 	{
