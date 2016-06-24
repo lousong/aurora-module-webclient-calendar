@@ -364,6 +364,7 @@ CCalendarView.prototype.onBind = function ()
 {
 	var self = this;
 	this.$calendarGrid = $(this.calendarGridDom());
+	
 	this.$datePicker = $(this.datePickerDom());
 	if (!this.isPublic)
 	{
@@ -424,7 +425,7 @@ CCalendarView.prototype.onShow = function ()
 		this.highlightWeekInDayPicker();
 		this.initialized(true);
 	}
-
+	
 	if (CalendarCache.calendarSettingsChanged() || CalendarCache.calendarChanged())
 	{
 		if (CalendarCache.calendarSettingsChanged())
@@ -433,12 +434,15 @@ CCalendarView.prototype.onShow = function ()
 		}
 		CalendarCache.calendarSettingsChanged(false);
 		CalendarCache.calendarChanged(false);
-		this.getCalendars();
+//		this.getCalendars(); // TODO: sash
 	}
 	else if (this.isPublic)
 	{
 		this.$calendarGrid.fullCalendar("render");
 	}
+	
+	this.$calendarGrid.fullCalendar(); // TODO: sash
+	this.getCalendars(); // TODO: sash
 	this.refetchEvents();
 };
 
