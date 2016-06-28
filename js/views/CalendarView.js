@@ -187,7 +187,7 @@ function CCalendarView()
 		viewRender: _.bind(this.viewRenderCallback, this),
 		events: _.bind(this.eventsSource, this)
 	};
-
+	
 	this.revertFunction = null;
 	
 	this.bAllowShare = Settings.AllowShare;
@@ -441,7 +441,7 @@ CCalendarView.prototype.onShow = function ()
 		this.$calendarGrid.fullCalendar("render");
 	}
 	
-	this.$calendarGrid.fullCalendar(); // TODO: sash
+	this.$calendarGrid.fullCalendar();
 	this.getCalendars(); // TODO: sash
 	this.refetchEvents();
 };
