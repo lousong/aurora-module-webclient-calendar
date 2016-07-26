@@ -225,11 +225,14 @@ function CCalendarView()
 	this.changeFullCalendarDate = true;
 	this.domScrollWrapper = null;
 	this.hotKeysBind();
+	
+	App.broadcastEvent('%ModuleName%::ConstructView::after', {'Name': this.ViewConstructorName, 'View': this});
 }
 
 _.extendOwn(CCalendarView.prototype, CAbstractScreenView.prototype);
 
 CCalendarView.prototype.ViewTemplate = '%ModuleName%_CalendarView';
+CCalendarView.prototype.ViewConstructorName = 'CCalendarView';
 
 /**
  * Hot keys events
