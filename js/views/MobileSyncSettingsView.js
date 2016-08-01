@@ -1,6 +1,9 @@
 'use strict';
 
-var ko = require('knockout');
+var
+	_ = require('underscore'),
+	ko = require('knockout')
+;
 
 /**
  * @constructor
@@ -20,7 +23,10 @@ CMobileSyncSettingsView.prototype.ViewTemplate = '%ModuleName%_MobileSyncSetting
  */
 CMobileSyncSettingsView.prototype.populate = function (oDav)
 {
-	this.davCalendars(oDav.Calendars);
+	if (_.isArray(oDav.Calendars))
+	{
+		this.davCalendars(oDav.Calendars);
+	}
 };
 
 module.exports = new CMobileSyncSettingsView();
