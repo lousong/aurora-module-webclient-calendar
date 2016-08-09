@@ -8,7 +8,7 @@ var
 	
 	UserSettings = require('modules/CoreClient/js/Settings.js'),
 	ModulesManager = require('modules/CoreClient/js/ModulesManager.js'),
-	CAbstractSettingsFormView = ModulesManager.run('SettingsClient', 'getAbstractSettingsFormViewClass'),
+	CAbstractSettingsFormView = ModulesManager.run('SettingsWebclient', 'getAbstractSettingsFormViewClass'),
 	
 	CalendarUtils = require('modules/%ModuleName%/js/utils/Calendar.js'),
 	

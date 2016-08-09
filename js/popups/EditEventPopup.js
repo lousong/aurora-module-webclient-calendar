@@ -901,7 +901,7 @@ CEditEventPopup.prototype.disableAlarms = function ()
  */
 CEditEventPopup.prototype.autocompleteCallback = function (oRequest, fResponse)
 {
-	var fAutocompleteCallback = ModulesManager.run('ContactsClient', 'getSuggestionsAutocompleteCallback');
+	var fAutocompleteCallback = ModulesManager.run('ContactsWebclient', 'getSuggestionsAutocompleteCallback');
 	
 	if ($.isFunction(fAutocompleteCallback))
 	{
@@ -910,7 +910,7 @@ CEditEventPopup.prototype.autocompleteCallback = function (oRequest, fResponse)
 	}
 };
 
-CEditEventPopup.prototype.autocompleteDeleteItem = ModulesManager.run('ContactsClient', 'getSuggestionsAutocompleteDeleteHandler');
+CEditEventPopup.prototype.autocompleteDeleteItem = ModulesManager.run('ContactsWebclient', 'getSuggestionsAutocompleteDeleteHandler');
 
 /**
  * @param {Object} oRepeatRule
