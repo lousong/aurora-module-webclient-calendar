@@ -59,7 +59,7 @@ function CCalendarView()
 	}, this);
 	
 	this.todayDate = new Date();
-	this.aDayNames = TextUtils.i18n('CORECLIENT/LIST_DAY_NAMES').split(' ');
+	this.aDayNames = TextUtils.i18n('COREWEBCLIENT/LIST_DAY_NAMES').split(' ');
 
 	this.popUpStatus = false;
 	this.linkRow = 0;
@@ -354,7 +354,7 @@ CCalendarView.prototype.initDatePicker = function ()
 		showOtherMonths: true,
 		selectOtherMonths: true,
 		monthNames: this.aMonthNames,
-		dayNamesMin: TextUtils.i18n('CORECLIENT/LIST_DAY_NAMES_MIN').split(' '),
+		dayNamesMin: TextUtils.i18n('COREWEBCLIENT/LIST_DAY_NAMES_MIN').split(' '),
 		nextText: '',
 		prevText: '',
 		onChangeMonthYear: _.bind(this.changeMonthYearFromDatePicker, this),
@@ -1962,7 +1962,7 @@ CCalendarView.prototype.onFileUploadComplete = function (sFileUid, bResponseRece
 		}
 		else
 		{
-			Screens.showError(TextUtils.i18n('CORECLIENT/ERROR_UPLOAD_FILE'));
+			Screens.showError(TextUtils.i18n('COREWEBCLIENT/ERROR_UPLOAD_FILE'));
 		}
 	}
 };

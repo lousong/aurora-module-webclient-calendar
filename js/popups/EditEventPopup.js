@@ -239,7 +239,7 @@ CEditEventPopup.prototype.createDatePickerObject = function (oElement, fSelect)
 		showOtherMonths: true,
 		selectOtherMonths: true,
 		monthNames: DateUtils.getMonthNamesArray(),
-		dayNamesMin: TextUtils.i18n('CORECLIENT/LIST_DAY_NAMES_MIN').split(' '),
+		dayNamesMin: TextUtils.i18n('COREWEBCLIENT/LIST_DAY_NAMES_MIN').split(' '),
 		nextText: '',
 		prevText: '',
 		firstDay: Settings.WeekStartsOn,
@@ -736,7 +736,7 @@ CEditEventPopup.prototype.getDisplayedAlarms = function (aMinutes)
 
 			if (iMinutes > 0 && iMinutes < 60)
 			{
-				sText = (TextUtils.i18n('CORECLIENT/LABEL_MINUTES_PLURAL', {'COUNT': iMinutes}, null, iMinutes));
+				sText = (TextUtils.i18n('COREWEBCLIENT/LABEL_MINUTES_PLURAL', {'COUNT': iMinutes}, null, iMinutes));
 			}
 			else if (iMinutes >= 60 && iMinutes < 1440)
 			{
@@ -1181,7 +1181,7 @@ CEditEventPopup.prototype.onSetAppointmentActionResponse = function (oResponse, 
 {
 	if (!oResponse.Result)
 	{
-		Api.showErrorByCode(oResponse, TextUtils.i18n('CORECLIENT/ERROR_UNKNOWN'));
+		Api.showErrorByCode(oResponse, TextUtils.i18n('COREWEBCLIENT/ERROR_UNKNOWN'));
 	}
 };
 

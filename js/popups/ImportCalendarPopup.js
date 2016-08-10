@@ -121,7 +121,7 @@ CImportCalendarPopup.prototype.onFileUploadComplete = function (sFileUid, bRespo
 		}
 		else
 		{
-			Screens.showError(TextUtils.i18n('CORECLIENT/ERROR_UPLOAD_FILE'));
+			Screens.showError(TextUtils.i18n('COREWEBCLIENT/ERROR_UPLOAD_FILE'));
 		}
 	}
 };

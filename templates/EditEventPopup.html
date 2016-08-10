@@ -18,7 +18,7 @@
 								'declined': status === 2,
 								'tentative': status === 3
 							 }">
-							<span class="control remove" data-bind="visible: $parent.isEditable(), click: $parent.removeGuest.bind($parent), customTooltip: 'CORECLIENT/ACTION_REMOVE'"></span>
+							<span class="control remove" data-bind="visible: $parent.isEditable(), click: $parent.removeGuest.bind($parent), customTooltip: 'COREWEBCLIENT/ACTION_REMOVE'"></span>
 							<!--<span class="name" data-bind="css: {'recivedAnim': $parent.recivedAnim}">-->
 							<span class="name" data-bind="css: {'recivedAnim': $parent.recivedAnim() && email === $parent.whomAnimate()}">
 								<span class="icon status" data-bind="customTooltip: function () { return $parent.getAttenderTextStatus(status); }"></span>
@@ -287,8 +287,8 @@
 								<span class="arrow"></span>
 							</span>
 						</div>
-						<span class="button" data-bind="i18n: {'key': 'CORECLIENT/ACTION_SAVE'}, click: onSaveClick, visible: isEditable() || isEditableReminders()"></span>
-						<span class="link remove" data-bind="i18n: {'key': 'CORECLIENT/ACTION_REMOVE'}, click: onDeleteClick, visible: isEditForm() && isEditable()"></span>
+						<span class="button" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SAVE'}, click: onSaveClick, visible: isEditable() || isEditableReminders()"></span>
+						<span class="link remove" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_REMOVE'}, click: onDeleteClick, visible: isEditForm() && isEditable()"></span>
 					</div>
 
 				</div>
