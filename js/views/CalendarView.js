@@ -1894,7 +1894,7 @@ CCalendarView.prototype.initUploader = function ()
 	if (this.uploaderArea())
 	{
 		this.oJua = new CJua({
-			'action': '?/Upload/',
+			'action': '?/Api/',
 			'name': 'jua-uploader',
 			'queueSize': 2,
 			'dragAndDropElement': this.uploaderArea(),

@@ -65,7 +65,7 @@ CImportCalendarPopup.prototype.onBind = function ($oViewModel)
 {
 	var self = this;
 	this.oJua = new CJua({
-		'action': '?/Upload/',
+		'action': '?/Api/',
 		'name': 'jua-uploader',
 		'queueSize': 1,
 		'clickElement': this.importButtonDom(),
