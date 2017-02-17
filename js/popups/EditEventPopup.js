@@ -273,8 +273,7 @@ CEditEventPopup.prototype.initializeDatePickers = function ()
 CEditEventPopup.prototype.onShow = function (oParameters)
 {
 	var
-		owner = App.defaultAccountEmail ? App.defaultAccountEmail() : '',
-		ownerName = App.defaultAccountFriendlyName ? App.defaultAccountFriendlyName() : '',
+		owner = App.getUserPublicId(),
 		oEndMomentDate = oParameters.End ? oParameters.End.clone() : null,
 		oStartMomentDate = oParameters.Start.clone(),
 		sAttendee = '',
@@ -367,7 +366,7 @@ CEditEventPopup.prototype.onShow = function (oParameters)
 
 	this.owner(oParameters.Owner || owner);
 	
-	this.ownerName(oParameters.OwnerName || (this.isMyEvent() && this.owner() === owner ? ownerName : ''));
+	this.ownerName(oParameters.OwnerName || (this.isMyEvent() && this.owner() === owner ? owner : ''));
 	this.guestAutocomplete('');
 
 	this.excluded(oParameters.Excluded || false);

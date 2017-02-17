@@ -249,7 +249,7 @@ CCalendarModel.prototype.isEditable = function ()
  */
 CCalendarModel.prototype.isOwner = function ()
 {
-	return !!App.defaultAccountEmail && (App.defaultAccountEmail() === this.owner());
+	return App.getUserPublicId() === this.owner();
 };
 
 CCalendarModel.prototype.parseEvent = function (oEvent)
