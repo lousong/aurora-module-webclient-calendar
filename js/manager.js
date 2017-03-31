@@ -41,7 +41,9 @@ module.exports = function (oAppData) {
 		{
 			return {
 				start: function (ModulesManager) {
-					ModulesManager.run('MailWebclient', 'registerMessagePaneController', [require('modules/%ModuleName%/js/views/IcalAttachmentView.js'), 'BeforeMessageBody']);
+					App.subscribeEvent('MailWebclient::RegisterMessagePaneController', function (fRegisterMessagePaneController) {
+						fRegisterMessagePaneController(require('modules/%ModuleName%/js/views/IcalAttachmentView.js'), 'BeforeMessageBody');
+					});
 				}
 			};
 		}
@@ -52,7 +54,9 @@ module.exports = function (oAppData) {
 
 			return {
 				start: function (ModulesManager) {
-					ModulesManager.run('MailWebclient', 'registerMessagePaneController', [require('modules/%ModuleName%/js/views/IcalAttachmentView.js'), 'BeforeMessageBody']);
+					App.subscribeEvent('MailWebclient::RegisterMessagePaneController', function (fRegisterMessagePaneController) {
+						fRegisterMessagePaneController(require('modules/%ModuleName%/js/views/IcalAttachmentView.js'), 'BeforeMessageBody');
+					});
 					ModulesManager.run('SettingsWebclient', 'registerSettingsTab', [function () { return require('modules/%ModuleName%/js/views/CalendarSettingsPaneView.js'); }, Settings.HashModuleName, TextUtils.i18n('%MODULENAME%/LABEL_SETTINGS_TAB')]);
 				},
 				getScreens: function () {
