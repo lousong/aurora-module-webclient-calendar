@@ -289,13 +289,8 @@ CCalendarView.prototype.eventsSource = function (oStart, oEnd, mTimezone, fCallb
 	fCallback(this.calendars.getEvents(oStart, oEnd));
 };
 
-CCalendarView.prototype.initFullCalendar = function ()
-{
-	this.$calendarGrid.fullCalendar(this.fullcalendarOptions);
-};
-
 CCalendarView.prototype.applyCalendarSettings = function ()
-{return;
+{
 	this.sTimeFormat = (UserSettings.timeFormat() === Enums.TimeFormat.F24) ? 'HH:mm' : 'hh:mm A';
 
 	this.calendarGridDom().removeClass("fc-show-weekends");
@@ -898,7 +893,7 @@ CCalendarView.prototype.getCalendars = function ()
 	this.setCalendarGridVisibility();	
 
 	Ajax.send('GetCalendars', {
-			'IsPublic': this.isPublic ? 1 : 0,
+			'IsPublic': this.isPublic,
 			'PublicCalendarId': Settings.PublicCalendarId
 		}, this.onGetCalendarsResponse, this
 	);
@@ -988,9 +983,7 @@ CCalendarView.prototype.getEvents = function (aCalendarIds)
 			'CalendarIds': aCalendarIds,
 			'Start': this.startDateTime,
 			'End': this.endDateTime,
-			'IsPublic': this.isPublic ? 1 : 0,
-			'TimezoneOffset': moment().utcOffset(),
-			'Timezone': window.jstz ? window.jstz.determine().name() : ''
+			'IsPublic': this.isPublic
 		}, this.onGetEventsResponse, this);
 	}
 	else
@@ -1011,7 +1004,7 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
 		var 
 			oCalendar = null,
 			oParameters = oRequest.Parameters,
-			aCalendarIds = oParameters.CalendarIds ? oParameters.CalendarIds : [],
+			aCalendarIds = _.isArray(oParameters.CalendarIds) ? oParameters.CalendarIds : [],
 			aEvents = []
 		;
 
@@ -1241,9 +1234,9 @@ CCalendarView.prototype.shareCalendar = function (sId, bIsPublic, aShares, bShar
 	{
 		Ajax.send('UpdateCalendarShare', {
 				'Id': sId,
-				'IsPublic': bIsPublic ? 1 : 0,
+				'IsPublic': bIsPublic,
 				'Shares': aShares,
-				'ShareToAll': bShareToAll ? 1 : 0, 
+				'ShareToAll': bShareToAll, 
 				'ShareToAllAccess': iShareToAllAccess
 			}, this.onUpdateCalendarShareResponse, this
 		);
@@ -1290,7 +1283,7 @@ CCalendarView.prototype.publicCalendar = function (sId, bIsPublic)
 	{
 		Ajax.send('UpdateCalendarPublic', {
 				'Id': sId,
-				'IsPublic': bIsPublic ? 1 : 0
+				'IsPublic': bIsPublic
 			}, this.onUpdateCalendarPublicResponse, this
 		);
 	}
