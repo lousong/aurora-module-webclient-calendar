@@ -358,7 +358,7 @@ CEditEventPopup.prototype.onShow = function (oParameters)
 	{
 		sAttendee = App.getAttendee(this.attendees());
 	}
-	console.log('owner', owner, 'oParameters.Owner', oParameters.Owner, 'sAttendee', sAttendee, 'sCalendarOwner', sCalendarOwner);
+
 	//owner mary@email oParameters.Owner undefined sAttendee  sCalendarOwner 3
 	this.isMyEvent(owner === oParameters.Owner && sAttendee !== owner || owner === sCalendarOwner && sAttendee !== owner);
 	this.editableSwitch(this.selectedCalendarIsShared(), this.selectedCalendarIsEditable(), this.isMyEvent());
