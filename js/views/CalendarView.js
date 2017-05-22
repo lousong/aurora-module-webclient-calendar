@@ -1841,7 +1841,7 @@ CCalendarView.prototype.onEventActionResponse = function (oResponse, oRequest, b
 	}
 	else
 	{
-		App.Api.showErrorByCode(oResponse, TextUtils.i18n('%MODULENAME%/ERROR_EVENT_NOT_UPDATED'));
+		Api.showErrorByCode(oResponse, TextUtils.i18n('%MODULENAME%/ERROR_EVENT_NOT_UPDATED'));
 		
 		if (this.revertFunction)
 		{

@@ -3,6 +3,7 @@
 var
 	_ = require('underscore'),
 	ko = require('knockout'),
+	$ = require('jquery'),
 	
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
 	
@@ -37,31 +38,34 @@ CIcalAttachmentView.prototype.doAfterPopulatingMessage = function (oMessageProps
 			return oRawIcal['@Object'] === 'Object/CApiMailIcs';
 		})
 	;
-	
+
 	if (oFoundRawIcal)
 	{
 		var
-			sAttendee = App.getAttendee(oMessageProps.aToEmails),
+			sAttendee = null,
 			oIcal = CalendarCache.getIcal(oFoundRawIcal.File)
 		;
-		
+		if ($.isFunction(App.getAttendee))
+		{
+			sAttendee = App.getAttendee(oMessageProps.aToEmails);
+		}
+
 		if (!oIcal)
 		{
 			oIcal = new CIcalModel(oFoundRawIcal, sAttendee);
+
+			// animation of buttons turns on with delay
+			// so it does not trigger when placing initial values
+			oIcal.animation(false);
+			_.defer(_.bind(function () {
+				if (oIcal !== null)
+				{
+					oIcal.animation(true);
+				}
+			}, this));
+
+			oIcal.updateAttendeeStatus(oMessageProps.sFromEmail);
 		}
-		
-		// animation of buttons turns on with delay
-		// so it does not trigger when placing initial values
-		oIcal.animation(false);
-		_.defer(_.bind(function () {
-			if (oIcal !== null)
-			{
-				oIcal.animation(true);
-			}
-		}, this));
-		
-		oIcal.updateAttendeeStatus(oMessageProps.sFromEmail);
-		
 		this.ical(oIcal);
 	}
 	else
