@@ -67,8 +67,8 @@ CCalendarSettingsPaneView.prototype.revertGlobalValues = function()
 CCalendarSettingsPaneView.prototype.getParametersForSave = function ()
 {
 	return {
-		'HighlightWorkingDays': this.showWeekends() ? 1 : 0,
-		'ShowWorkDay': this.showWorkday() ? 1 : 0,
+		'HighlightWorkingDays': this.showWeekends(),
+		'ShowWorkDay': this.showWorkday(),
 		'WorkDayStarts': Types.pInt(this.selectedWorkdayStarts()),
 		'WorkDayEnds': Types.pInt(this.selectedWorkdayEnds()),
 		'WeekStartsOn': Types.pInt(this.weekStartsOn()),

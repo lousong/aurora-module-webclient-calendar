@@ -19,15 +19,15 @@ module.exports = {
 	init: function (oAppDataSection) {
 		if (oAppDataSection)
 		{
-			this.AllowAppointments = !!oAppDataSection.CalendarAppointments;
-			this.AllowShare = !!oAppDataSection.CalendarSharing;
-			this.DefaultTab = Types.pString(oAppDataSection.CalendarDefaultTab); // 1 - day, 2 - week, 3 - month
-			this.HighlightWorkingDays = !!oAppDataSection.CalendarShowWeekEnds;
-			this.HighlightWorkingHours = !!oAppDataSection.CalendarShowWorkDay;
+			this.AllowAppointments = !!oAppDataSection.AllowAppointments;
+			this.AllowShare = !!oAppDataSection.AllowShare;
+			this.DefaultTab = Types.pString(oAppDataSection.DefaultTab); // 1 - day, 2 - week, 3 - month
+			this.HighlightWorkingDays = !!oAppDataSection.HighlightWorkingDays;
+			this.HighlightWorkingHours = !!oAppDataSection.HighlightWorkingHours;
 			this.PublicCalendarId = Types.pString(oAppDataSection.PublicCalendarId);
-			this.WeekStartsOn = Types.pString(oAppDataSection.CalendarWeekStartsOn); // 0 - sunday
-			this.WorkdayEnds = Types.pString(oAppDataSection.CalendarWorkDayEnds);
-			this.WorkdayStarts = Types.pString(oAppDataSection.CalendarWorkDayStarts);
+			this.WeekStartsOn = Types.pString(oAppDataSection.WeekStartsOn); // 0 - sunday
+			this.WorkdayEnds = Types.pString(oAppDataSection.WorkdayEnds);
+			this.WorkdayStarts = Types.pString(oAppDataSection.WorkdayStarts);
 		}
 	},
 	
