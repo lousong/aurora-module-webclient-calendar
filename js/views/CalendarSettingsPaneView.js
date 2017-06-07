@@ -68,24 +68,23 @@ CCalendarSettingsPaneView.prototype.getParametersForSave = function ()
 {
 	return {
 		'HighlightWorkingDays': this.showWeekends(),
-		'ShowWorkDay': this.showWorkday(),
-		'WorkDayStarts': Types.pInt(this.selectedWorkdayStarts()),
-		'WorkDayEnds': Types.pInt(this.selectedWorkdayEnds()),
+		'HighlightWorkingHours': this.showWorkday(),
+		'WorkdayStarts': Types.pInt(this.selectedWorkdayStarts()),
+		'WorkdayEnds': Types.pInt(this.selectedWorkdayEnds()),
 		'WeekStartsOn': Types.pInt(this.weekStartsOn()),
 		'DefaultTab': Types.pInt(this.defaultTab())
 	};
 };
 
 /**
- * @param {Object} oResponse
- * @param {Object} oRequest
+ * @param {Object} oParameters
  */
 CCalendarSettingsPaneView.prototype.applySavedValues = function (oParameters)
 {
 	CalendarCache.calendarSettingsChanged(true);
 
-	Settings.update(oParameters.ShowWeekEnds, oParameters.ShowWorkDay, oParameters.WorkDayStarts,
-					oParameters.WorkDayEnds, oParameters.WeekStartsOn, oParameters.DefaultTab);
+	Settings.update(oParameters.HighlightWorkingDays, oParameters.HighlightWorkingHours, oParameters.WorkdayStarts,
+					oParameters.WorkdayEnds, oParameters.WeekStartsOn, oParameters.DefaultTab);
 };
 
 module.exports = new CCalendarSettingsPaneView();
