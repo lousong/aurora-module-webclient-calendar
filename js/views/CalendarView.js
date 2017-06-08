@@ -159,15 +159,16 @@ function CCalendarView()
 		isRTL: UserSettings.IsRTL,
 		scrollTime: moment.duration(8, 'hours'),
 		forceEventDuration: true,
-		columnFormat: {
-			month: 'dddd',  // Monday
-			week: 'dddd D', // Monday 7
-			day: 'dddd D'	// Monday 7
-		},
-		titleFormat: {
-			month: 'MMMM YYYY',							// September 2009
-			week: "MMMM D[ YYYY]{ '-'[ MMMM] D YYYY}",	// Sep 7 - 13 2009
-			day: 'MMMM D, YYYY'							// Tuesday, Sep 8, 2009
+		views: {
+			month: {
+				columnFormat: 'dddd' // Monday
+			},
+			week: {
+				columnFormat: 'dddd D' // Monday 7
+			},
+			day: {
+				columnFormat: 'dddd D' // Monday 7
+			}
 		},
 		displayEventEnd:  {
 			month: true,
@@ -259,11 +260,6 @@ CCalendarView.prototype.hotKeysBind = function ()
 	});
 };
 
-CCalendarView.prototype.getFCObject = function ()
-{
-	return this.$calendarGrid.fullCalendar('getCalendar');
-};
-
 CCalendarView.prototype.getDateFromCurrentView = function (sDateType)
 {
 	var
@@ -300,7 +296,7 @@ CCalendarView.prototype.applyCalendarSettings = function ()
 	}
 
 	this.fullcalendarOptions.timeFormat = this.sTimeFormat;
-	this.fullcalendarOptions.axisFormat = this.sTimeFormat;
+	this.fullcalendarOptions.slotLabelFormat = this.sTimeFormat;
 	this.fullcalendarOptions.defaultView = this.defaultViewName();
 	this.fullcalendarOptions.lang = moment.locale();
 	
@@ -697,7 +693,7 @@ CCalendarView.prototype.changeMonthYearFromDatePicker = function (iYear, iMonth,
  */
 CCalendarView.prototype.selectDateFromDatePicker = function (sDate, oInst)
 {
-	var oDate = this.getFCObject().moment(sDate, 'MM/DD/YYYY');
+	var oDate = moment(sDate, 'MM/DD/YYYY');
 	this.$calendarGrid.fullCalendar('gotoDate', oDate);
 	
 	_.defer(_.bind(this.highlightWeekInDayPicker, this));
@@ -1425,7 +1421,7 @@ CCalendarView.prototype.createEventInCurrentCalendar = function ()
  */
 CCalendarView.prototype.createEventToday = function (oCalendar)
 {
-	var oToday = this.getFCObject().moment();
+	var oToday = moment();
 	
 	if (oToday.minutes() > 30)
 	{
@@ -1512,7 +1508,6 @@ CCalendarView.prototype.openEventPopup = function (oCalendar, oStart, oEnd, bAll
 		Popups.showPopup(EditEventPopup, [{
 			CallbackSave: _.bind(this.createEvent, this),
 			CallbackDelete: _.bind(this.deleteEvent, this),
-			FCMoment: this.getFCObject().moment,
 			Calendars: this.calendars,
 			SelectedCalendar: oCalendar ? oCalendar.id : 0,
 			Start: oStart,

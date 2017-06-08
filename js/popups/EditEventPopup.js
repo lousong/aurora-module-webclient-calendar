@@ -56,8 +56,6 @@ function CEditEventPopup()
 	this.recurrenceId = ko.observable(null);
 	this.allEvents = ko.observable(Enums.CalendarEditRecurrenceEvent.AllEvents);
 
-	this.FCMoment = null;
-
 	this.isMyEvent = ko.observable(false);
 
 	this.startDom = ko.observable(null);
@@ -282,8 +280,6 @@ CEditEventPopup.prototype.onShow = function (oParameters)
 	;
 	
 	this.iDiffInMinutes = null;
-
-	this.FCMoment = oParameters.FCMoment;
 
 	this.calendarId(oParameters.SelectedCalendar);
 	this.calendars = oParameters.Calendars;
@@ -1006,13 +1002,11 @@ CEditEventPopup.prototype.selectStartDate = function ()
 		this.lockSelectStartEndDate(true);
 		
 		var
-			fFCMoment = this.FCMoment || moment,
-			
 			oStartDate = this.getDateTime(this.startDom(), this.startTime()),
-			oStartMomentDate = fFCMoment(oStartDate),
+			oStartMomentDate = moment(oStartDate),
 			
 			oEndDate = this.getDateTime(this.endDom(), this.endTime()),
-			oEndMomentDate = fFCMoment(oEndDate)
+			oEndMomentDate = moment(oEndDate)
 		;
 		
 		if (Types.isNumber(this.iDiffInMinutes))
@@ -1074,13 +1068,11 @@ CEditEventPopup.prototype.selectEndDate = function ()
 		this.lockSelectStartEndDate(true);
 		
 		var
-			fFCMoment = this.FCMoment || moment,
-			
 			oStartDate = this.getDateTime(this.startDom(), this.startTime()),
-			oStartMomentDate = fFCMoment(oStartDate),
+			oStartMomentDate = moment(oStartDate),
 			
 			oEndDate = this.getDateTime(this.endDom(), this.endTime()),
-			oEndMomentDate = fFCMoment(oEndDate)
+			oEndMomentDate = moment(oEndDate)
 		;
 		
 		this.iDiffInMinutes = oEndMomentDate.diff(oStartMomentDate, 'minutes');
@@ -1138,16 +1130,14 @@ CEditEventPopup.prototype.setActualTime = function ()
 		this.lockSelectStartEndDate(true);
 		
 		var
-			fFCMoment = this.FCMoment || moment,
-					
-			oNowMomentDate = fFCMoment(),
+			oNowMomentDate = moment(),
 			sNowTime = oNowMomentDate.format(this.timeFormatMoment),
 			
 			oStartDate = this.getDateTime(this.startDom(), sNowTime),
-			oStartMomentDate = fFCMoment(oStartDate),
+			oStartMomentDate = moment(oStartDate),
 			
 			oEndDate = this.getDateTime(this.endDom(), sNowTime),
-			oEndMomentDate = fFCMoment(oEndDate)
+			oEndMomentDate = moment(oEndDate)
 		;
 		
 		if (oStartMomentDate.minutes() > 30)

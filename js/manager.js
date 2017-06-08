@@ -2,7 +2,8 @@
 
 module.exports = function (oAppData) {
 	require('modules/%ModuleName%/js/enums.js');
-	require('fullcalendar');
+	require('modules/%ModuleName%/js/vendors/fullcalendar/fullcalendar.css');
+	require('modules/%ModuleName%/js/vendors/fullcalendar/fullcalendar.js');
 
 	var
 		_ = require('underscore'),
