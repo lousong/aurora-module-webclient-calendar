@@ -420,15 +420,15 @@ CCalendarView.prototype.onShow = function ()
 		this.initialized(true);
 	}
 	
-	if (CalendarCache.calendarSettingsChanged() || CalendarCache.calendarChanged())
+	var sTimeFormat = (UserSettings.timeFormat() === Enums.TimeFormat.F24) ? 'HH:mm' : 'hh:mm A';
+	if (CalendarCache.calendarSettingsChanged() || this.sTimeFormat !== sTimeFormat || CalendarCache.calendarChanged())
 	{
-		if (CalendarCache.calendarSettingsChanged())
+		if (CalendarCache.calendarSettingsChanged() || this.sTimeFormat !== sTimeFormat)
 		{
 			this.applyCalendarSettings();
 		}
 		CalendarCache.calendarSettingsChanged(false);
 		CalendarCache.calendarChanged(false);
-//		this.getCalendars(); // TODO: sash
 	}
 	else if (this.isPublic)
 	{
