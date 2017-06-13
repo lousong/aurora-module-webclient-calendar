@@ -414,7 +414,13 @@ CCalendarView.prototype.onShow = function ()
 	if (!this.initialized())
 	{
 		this.initDatePicker();
-
+		
+		var oParent = this.$calendarGrid.parent();
+		if (oParent)
+		{
+			this.fullcalendarOptions.height = oParent.height();
+		}
+				
 		this.applyCalendarSettings();
 		this.highlightWeekInDayPicker();
 		this.initialized(true);
