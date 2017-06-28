@@ -27,7 +27,6 @@ var
 	GetCalendarLinkPopup = require('modules/%ModuleName%/js/popups/GetCalendarLinkPopup.js'),
 	ImportCalendarPopup = require('modules/%ModuleName%/js/popups/ImportCalendarPopup.js'),
 	SelectCalendarPopup = require('modules/%ModuleName%/js/popups/SelectCalendarPopup.js'),
-	ShareCalendarPopup = require('modules/%ModuleName%/js/popups/ShareCalendarPopup.js'),
 	
 	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
 	CalendarCache = require('modules/%ModuleName%/js/Cache.js'),
@@ -1209,69 +1208,6 @@ CCalendarView.prototype.openGetLinkCalendarForm = function (oCalendar)
 	if (!this.isPublic)
 	{
 		Popups.showPopup(GetCalendarLinkPopup, [_.bind(this.publicCalendar, this), oCalendar]);
-	}
-};
-
-/**
- * @param {Object} oCalendar
- */
-CCalendarView.prototype.openShareCalendarForm = function (oCalendar)
-{
-	if (!this.isPublic)
-	{
-		Popups.showPopup(ShareCalendarPopup, [_.bind(this.shareCalendar, this), oCalendar]);
-	}
-};
-
-/**
- * @param {string} sId
- * @param {boolean} bIsPublic
- * @param {Array} aShares
- * @param {boolean} bShareToAll
- * @param {number} iShareToAllAccess
- */
-CCalendarView.prototype.shareCalendar = function (sId, bIsPublic, aShares, bShareToAll, iShareToAllAccess)
-{
-	if (!this.isPublic)
-	{
-		Ajax.send('UpdateCalendarShare', {
-				'Id': sId,
-				'IsPublic': bIsPublic,
-				'Shares': aShares,
-				'ShareToAll': bShareToAll, 
-				'ShareToAllAccess': iShareToAllAccess
-			}, this.onUpdateCalendarShareResponse, this
-		);
-	}
-};
-
-/**
- * @param {Object} oResponse
- * @param {Object} oRequest
- */
-CCalendarView.prototype.onUpdateCalendarShareResponse = function (oResponse, oRequest)
-{
-	if (oResponse.Result)
-	{
-		var
-			oParameters = oRequest.Parameters,
-			oCalendar = this.calendars.getCalendarById(oParameters.Id)
-		;
-		
-		if (oCalendar)
-		{
-			oCalendar.shares(oParameters.Shares);
-			if (oParameters.ShareToAll === 1)
-			{
-				oCalendar.isShared(true);
-				oCalendar.isSharedToAll(true);
-				oCalendar.sharedToAllAccess = oParameters.ShareToAllAccess;
-			}
-			else
-			{
-				oCalendar.isSharedToAll(false);
-			}
-		}
 	}
 };
 

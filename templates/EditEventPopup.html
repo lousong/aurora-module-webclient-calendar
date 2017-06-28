@@ -18,7 +18,7 @@
 								'declined': status === 2,
 								'tentative': status === 3
 							 }">
-							<span class="control remove" data-bind="visible: $parent.isEditable(), click: $parent.removeGuest.bind($parent), customTooltip: 'COREWEBCLIENT/ACTION_REMOVE'"></span>
+							<!--span class="control remove" data-bind="visible: $parent.isEditable(), click: $parent.removeGuest.bind($parent), customTooltip: 'COREWEBCLIENT/ACTION_REMOVE'"></span-->
 							<!--<span class="name" data-bind="css: {'recivedAnim': $parent.recivedAnim}">-->
 							<span class="name" data-bind="css: {'recivedAnim': $parent.recivedAnim() && email === $parent.whomAnimate()}">
 								<span class="icon status" data-bind="customTooltip: function () { return $parent.getAttenderTextStatus(status); }"></span>
@@ -26,11 +26,6 @@
 								<span class="text" data-bind="text: email, visible: name === ''"></span>
 							</span>
 						</div>
-					</div>
-					<div class="row add_attender" data-bind="visible: isEditable(), css: {'focused': guestEmailFocus()}">
-						<span class="control add" data-bind="customTooltip: '%MODULENAME%/ACTION_ADD_GUESTS', click: onAddGuestClick"></span>
-						<label for="add_attender_input" class="label placeholder" data-bind="i18n: {'key': '%MODULENAME%/LABEL_EMAIL_OR_NAME'}, visible: guestAutocomplete() === ''"></label>
-						<input id="add_attender_input" class="value input" spellcheck="false"  type="text" autocomplete="on" data-bind="value: guestAutocomplete, hasfocus: guestEmailFocus, valueUpdate: ['blur', 'afterkeydown'], autocompleteSimple: {callback: autocompleteCallback.bind($data), dataAccessor: guestAutocompleteItem, deleteAccessor: autocompleteDeleteItem}" />
 					</div>
 					<div class="row" data-bind="visible: isAppointmentButtonsVisible">
 						<div class="buttons">
@@ -278,13 +273,6 @@
 									customTooltip: '%MODULENAME%/ACTION_ADD_FIRST_ALARM', visible: isEditableReminders()">
 								<span class="icon"></span>
 								<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_ADD_FIRST_ALARM'}"></span>
-							</span>
-							<span class="item guests" data-bind="visible: bAllowAppointments && isEditableReminders(), click: isEditable() ? showGuests : '', 
-									css: {'selected': guestsEdit() || attendees().length > 0, 'readonly': !isEditable()},
-									customTooltip: '%MODULENAME%/ACTION_EDIT_GUESTS'">
-								<span class="icon"></span>
-								<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_EDIT_GUESTS'}"></span>
-								<span class="arrow"></span>
 							</span>
 						</div>
 						<span class="button" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SAVE'}, click: onSaveClick, visible: isEditable() || isEditableReminders()"></span>
