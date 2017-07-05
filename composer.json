@@ -7,7 +7,7 @@
 		"type": "zip"
 	},
 	"require": {
-		"afterlogic/aurora-framework": "~0.1"
+		"afterlogic/aurora-framework": "~0.5 || dev-master"
 	},
 	"extra": {
 		"installer-name": "CalendarWebclient",
