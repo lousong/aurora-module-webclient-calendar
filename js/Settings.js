@@ -31,10 +31,10 @@ module.exports = {
 		}
 	},
 	
-	update: function (iShowWeekEnds, iShowWorkDay, iWorkDayStarts, iWorkDayEnds, iWeekStartsOn, iDefaultTab) {
+	update: function (bHighlightWorkingDays, bHighlightWorkingHours, iWorkDayStarts, iWorkDayEnds, iWeekStartsOn, iDefaultTab) {
 		this.DefaultTab = iDefaultTab.toString();
-		this.HighlightWorkingDays = iShowWeekEnds === 1;
-		this.HighlightWorkingHours = iShowWorkDay === 1;
+		this.HighlightWorkingDays = bHighlightWorkingDays;
+		this.HighlightWorkingHours = bHighlightWorkingHours;
 		this.WeekStartsOn = iWeekStartsOn;
 		this.WorkdayEnds = iWorkDayEnds.toString();
 		this.WorkdayStarts = iWorkDayStarts.toString();
