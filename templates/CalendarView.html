@@ -1,10 +1,10 @@
 <div class="panels" data-bind="splitterFlex: {name: 'calendar', sizes: [20, 80], resizeFunc: dayNamesResizeBinding}">
 	<div class="panel left_panel calendars_panel">
 		<div class="panel_content">
-			<div class="toolbar">
-			<div class="buttons big_single_button">
-				<span class="button" data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE_EVENT'}, click: createEventInCurrentCalendar"></span>
-			</div>
+			<div class="toolbar" data-bind="visible: !isPublic">
+				<div class="buttons big_single_button">
+					<span class="button" data-bind="i18n: {'key': '%MODULENAME%/ACTION_CREATE_EVENT'}, click: createEventInCurrentCalendar"></span>
+				</div>
 			</div>
 			<div class="middle_bar">
 				<div class="panel_center" data-bind="visible: !isPublic">
