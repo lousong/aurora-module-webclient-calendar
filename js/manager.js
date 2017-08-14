@@ -1,16 +1,13 @@
 'use strict';
 
 module.exports = function (oAppData) {
-	require('modules/%ModuleName%/js/enums.js');
-	require('modules/%ModuleName%/js/vendors/fullcalendar/fullcalendar.css');
-	require('modules/%ModuleName%/js/vendors/fullcalendar/fullcalendar.js');
-
 	var
 		_ = require('underscore'),
 		
 		TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 		
 		App = require('%PathToCoreWebclientModule%/js/App.js'),
+		ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js'),
 		
 		Settings = require('modules/%ModuleName%/js/Settings.js'),
 		oSettings = _.extend({}, oAppData[Settings.ServerModuleName] || {}, oAppData['%ModuleName%'] || {})
@@ -18,6 +15,15 @@ module.exports = function (oAppData) {
 	
 	Settings.init(oSettings);
 	
+	if (!ModulesManager.isServerModuleEnabled(Settings.ServerModuleName))
+	{
+		return null;
+	}
+	
+	require('modules/%ModuleName%/js/enums.js');
+	require('modules/%ModuleName%/js/vendors/fullcalendar/fullcalendar.css');
+	require('modules/%ModuleName%/js/vendors/fullcalendar/fullcalendar.js');
+
 	if (App.isPublic())
 	{
 		return {
