@@ -15,7 +15,7 @@ module.exports = function (oAppData) {
 	
 	Settings.init(oSettings);
 	
-	if (!ModulesManager.isServerModuleEnabled(Settings.ServerModuleName))
+	if (!ModulesManager.isModuleAvailable(Settings.ServerModuleName))
 	{
 		return null;
 	}
