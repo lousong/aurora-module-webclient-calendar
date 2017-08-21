@@ -7,48 +7,46 @@
 				</span>
 			</div>
 			<div class="middle_bar">
-				<div class="panel_center" data-bind="visible: !isPublic">
-					<div data-bind="customScrollbar: {x: false, 'onStart': calendarDropdownHide }">
-						<div class="scroll-inner">
-							<div class="items_list calendars">
-								<span class="section_title">
-									<span class="control" data-bind="click: openCreateCalendarForm, customTooltip: '%MODULENAME%/ACTION_CREATE_CALENDAR'"></span>
-									<span class="title personal" data-bind="visible: (calendars.ownCount() > 0)">
-										<span class="icon"></span>
-										<span class="text" data-bind="i18n: {'key': '%MODULENAME%/HEADING_MY_CALENDARS'}"></span>
-									</span>
+				<div class="panel_center" data-bind="visible: !isPublic, customScrollbar: {x: false, 'onStart': calendarDropdownHide }">
+					<div class="scroll-inner">
+						<div class="items_list calendars">
+							<span class="section_title">
+								<span class="control" data-bind="click: openCreateCalendarForm, customTooltip: '%MODULENAME%/ACTION_CREATE_CALENDAR'"></span>
+								<span class="title personal" data-bind="visible: (calendars.ownCount() > 0)">
+									<span class="icon"></span>
+									<span class="text" data-bind="i18n: {'key': '%MODULENAME%/HEADING_MY_CALENDARS'}"></span>
 								</span>
-								<!-- ko foreach: calendars.own() -->
-									<!-- ko template: {name: '%ModuleName%_CalendarItemView'} --><!-- /ko -->
-								<!-- /ko -->
-							</div>
-							<div class="items_list calendars" data-bind="visible: (calendars.sharedCount() > 0 && bAllowShare)">
-								<span class="section_title">
-									<span class="title shared">
-										<span class="icon"></span>
-										<span class="text" data-bind="i18n: {'key': '%MODULENAME%/HEADING_SHARED_WITH_ME'}"></span>
-									</span>
+							</span>
+							<!-- ko foreach: calendars.own() -->
+								<!-- ko template: {name: '%ModuleName%_CalendarItemView'} --><!-- /ko -->
+							<!-- /ko -->
+						</div>
+						<div class="items_list calendars" data-bind="visible: (calendars.sharedCount() > 0 && bAllowShare)">
+							<span class="section_title">
+								<span class="title shared">
+									<span class="icon"></span>
+									<span class="text" data-bind="i18n: {'key': '%MODULENAME%/HEADING_SHARED_WITH_ME'}"></span>
 								</span>
-								<!-- ko foreach: calendars.shared() -->
-									<!-- ko template: {name: '%ModuleName%_CalendarItemView'} --><!-- /ko -->
-								<!-- /ko -->						
-							</div>
-							<div class="items_list calendars" data-bind="visible: (calendars.sharedToAllCount() > 0 && bAllowShare)">
-								<span class="section_title">
-									<span class="title shared-all">
-										<span class="icon"></span>
-										<span class="text" data-bind="i18n: {'key': '%MODULENAME%/HEADING_SHARED_WITH_ALL'}"></span>
-									</span>
+							</span>
+							<!-- ko foreach: calendars.shared() -->
+								<!-- ko template: {name: '%ModuleName%_CalendarItemView'} --><!-- /ko -->
+							<!-- /ko -->						
+						</div>
+						<div class="items_list calendars" data-bind="visible: (calendars.sharedToAllCount() > 0 && bAllowShare)">
+							<span class="section_title">
+								<span class="title shared-all">
+									<span class="icon"></span>
+									<span class="text" data-bind="i18n: {'key': '%MODULENAME%/HEADING_SHARED_WITH_ALL'}"></span>
 								</span>
-								<!-- ko foreach: calendars.sharedToAll() -->
-									<!-- ko template: {name: '%ModuleName%_CalendarItemView'} --><!-- /ko -->
-								<!-- /ko -->						
-							</div>
+							</span>
+							<!-- ko foreach: calendars.sharedToAll() -->
+								<!-- ko template: {name: '%ModuleName%_CalendarItemView'} --><!-- /ko -->
+							<!-- /ko -->						
 						</div>
 					</div>
-					<div class="dropdowns" data-bind="style: {'top': currentCalendarDropdownOffset() + 'px'}">
-						<!-- ko template: {name: '%ModuleName%_CalendarItemMenuView', foreach: calendars.collection()} --><!-- /ko -->
-					</div>
+				</div>
+				<div class="dropdowns" data-bind="style: {'top': currentCalendarDropdownOffset() + 'px'}">
+					<!-- ko template: {name: '%ModuleName%_CalendarItemMenuView', foreach: calendars.collection()} --><!-- /ko -->
 				</div>
 				<div class="panel_bottom" data-bind="initDom: datePickerDom">
 				</div>
