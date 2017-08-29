@@ -101,7 +101,7 @@ CCalendarModel.prototype.parse = function (oData)
 {
 	this.id = Types.pString(oData.Id);
 	this.sSyncToken = oData.SyncToken;
-	this.name(Types.pString(TextUtils.i18n(oData.Name)));
+	this.name(Types.pString(oData.Name));
 	this.description(Types.pString(oData.Description));
 	this.owner(Types.pString(oData.Owner));
 	this.active(Storage.hasData(this.id) ? Storage.getData(this.id) : true);
