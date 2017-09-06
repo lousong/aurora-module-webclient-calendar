@@ -1,13 +1,8 @@
 {
 	"name": "afterlogic/aurora-module-webclient-calendar",
-	"version": "0.1.0",
 	"type": "aurora-module",
-	"dist": {
-		"url": "https://github.com/afterlogic/aurora-module-webclient-calendar/archive/master.zip",
-		"type": "zip"
-	},
 	"require": {
-		"afterlogic/aurora-framework": "~0.5 || dev-master"
+		"afterlogic/aurora-framework": "~0.6 || dev-master"
 	},
 	"extra": {
 		"installer-name": "CalendarWebclient",
