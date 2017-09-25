@@ -43,7 +43,7 @@ CSelectCalendarPopup.prototype.PopupTemplate = '%ModuleName%_SelectCalendarPopup
 /**
  * @param {Object} oParameters
  */
-CSelectCalendarPopup.prototype.onShow = function (oParameters)
+CSelectCalendarPopup.prototype.onOpen = function (oParameters)
 {
 	this.fCallback = oParameters.CallbackSave;
 	this.fProceedUploading = oParameters.ProceedUploading;

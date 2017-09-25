@@ -31,7 +31,7 @@ CEditEventRecurrencePopup.prototype.PopupTemplate = '%ModuleName%_EditEventRecur
 /**
  * @param {Function} fCallback
  */
-CEditEventRecurrencePopup.prototype.onShow = function (fCallback)
+CEditEventRecurrencePopup.prototype.onOpen = function (fCallback)
 {
 	if ($.isFunction(fCallback))
 	{

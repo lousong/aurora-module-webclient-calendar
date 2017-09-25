@@ -44,7 +44,7 @@ CEditCalendarPopup.prototype.PopupTemplate = '%ModuleName%_EditCalendarPopup';
  * @param {Array} aColors
  * @param {Object} oCalendar
  */
-CEditCalendarPopup.prototype.onShow = function (fCallback, aColors, oCalendar)
+CEditCalendarPopup.prototype.onOpen = function (fCallback, aColors, oCalendar)
 {
 	this.fCallback = fCallback;
 	
@@ -68,7 +68,7 @@ CEditCalendarPopup.prototype.onShow = function (fCallback, aColors, oCalendar)
 	}
 };
 
-CEditCalendarPopup.prototype.onHide = function ()
+CEditCalendarPopup.prototype.onClose = function ()
 {
 	this.calendarName('');
 	this.calendarDescription('');

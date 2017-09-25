@@ -45,7 +45,7 @@ CImportCalendarPopup.prototype.PopupTemplate = '%ModuleName%_ImportCalendarPopup
  * @param {Function} fCallback
  * @param {Object} oCalendar
  */
-CImportCalendarPopup.prototype.onShow = function (fCallback, oCalendar)
+CImportCalendarPopup.prototype.onOpen = function (fCallback, oCalendar)
 {
 	if ($.isFunction(fCallback))
 	{

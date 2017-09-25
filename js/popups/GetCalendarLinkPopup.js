@@ -34,7 +34,7 @@ CGetCalendarLinkPopup.prototype.PopupTemplate = '%ModuleName%_GetCalendarLinkPop
  * @param {Function} fCallback
  * @param {Object} oCalendar
  */
-CGetCalendarLinkPopup.prototype.onShow = function (fCallback, oCalendar)
+CGetCalendarLinkPopup.prototype.onOpen = function (fCallback, oCalendar)
 {
 	if ($.isFunction(fCallback))
 	{

@@ -268,7 +268,7 @@ CEditEventPopup.prototype.initializeDatePickers = function ()
 /**
  * @param {Object} oParameters
  */
-CEditEventPopup.prototype.onShow = function (oParameters)
+CEditEventPopup.prototype.onOpen = function (oParameters)
 {
 	var
 		owner = App.getUserPublicId(),
@@ -547,7 +547,7 @@ CEditEventPopup.prototype.onEscHandler = function ()
 	}
 };
 
-CEditEventPopup.prototype.onHide = function ()
+CEditEventPopup.prototype.onClose = function ()
 {
 	this.hideAll();
 	this.cleanAll();
