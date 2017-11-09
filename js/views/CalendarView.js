@@ -1256,7 +1256,7 @@ CCalendarView.prototype.deleteCalendar = function (sId, bIsUnsubscribe)
 	var
 		oCalendar = this.calendars.getCalendarById(sId),
 		sConfirm = oCalendar ?
-				bIsUnsubscribe ? TextUtils.i18n('%MODULENAME%/CONFIRM_UNSUBSCRIBE_CALENDAR', {'CALENDARNAME': oCalendar.name()}) : TextUtils.i18n('%MODULENAME%/CONFIRM_REMOVE_CALENDAR', {'CALENDARNAME' : oCalendar.name()})
+				bIsUnsubscribe ? TextUtils.i18n('%MODULENAME%/CONFIRM_UNSUBSCRIBE_CALENDAR', {'CALENDARNAME': TextUtils.encodeHtml(oCalendar.name())}) : TextUtils.i18n('%MODULENAME%/CONFIRM_REMOVE_CALENDAR', {'CALENDARNAME' : TextUtils.encodeHtml(oCalendar.name())})
 			: '',
 		fRemove = _.bind(function (bRemove) {
 			if (bRemove)

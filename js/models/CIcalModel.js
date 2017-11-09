@@ -34,7 +34,7 @@ function CIcalModel(oRawIcal, sAttendee)
 	this.attendee = ko.observable(Types.pString(oRawIcal.Attendee) || sAttendee);
 	this.type = ko.observable(Types.pString(oRawIcal.Type));
 	this.location = ko.observable(Types.pString(oRawIcal.Location));
-	this.description = ko.observable(Types.pString(oRawIcal.Description).replace(/\r/g, '').replace(/\n/g,"<br />"));
+	this.description = ko.observable(TextUtils.encodeHtml(Types.pString(oRawIcal.Description)).replace(/\r/g, '').replace(/\n/g,"<br />"));
 	this.when = ko.observable(Types.pString(oRawIcal.When));
 	this.calendarId = ko.observable(Types.pString(oRawIcal.CalendarId));
 	this.selectedCalendarId = ko.observable(Types.pString(oRawIcal.CalendarId));
