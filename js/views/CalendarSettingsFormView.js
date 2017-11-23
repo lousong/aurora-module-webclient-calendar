@@ -19,7 +19,7 @@ var
 /**
  * @constructor
  */
-function CCalendarSettingsPaneView()
+function CCalendarSettingsFormView()
 {
 	CAbstractSettingsFormView.call(this, Settings.ServerModuleName);
 
@@ -38,11 +38,11 @@ function CCalendarSettingsPaneView()
 	/*-- Editable fields */
 }
 
-_.extendOwn(CCalendarSettingsPaneView.prototype, CAbstractSettingsFormView.prototype);
+_.extendOwn(CCalendarSettingsFormView.prototype, CAbstractSettingsFormView.prototype);
 
-CCalendarSettingsPaneView.prototype.ViewTemplate = '%ModuleName%_CalendarSettingsPaneView';
+CCalendarSettingsFormView.prototype.ViewTemplate = '%ModuleName%_CalendarSettingsFormView';
 
-CCalendarSettingsPaneView.prototype.getCurrentValues = function()
+CCalendarSettingsFormView.prototype.getCurrentValues = function()
 {
 	return [
 		this.showWeekends(),
@@ -54,7 +54,7 @@ CCalendarSettingsPaneView.prototype.getCurrentValues = function()
 	];
 };
 
-CCalendarSettingsPaneView.prototype.revertGlobalValues = function()
+CCalendarSettingsFormView.prototype.revertGlobalValues = function()
 {
 	this.showWeekends(Settings.HighlightWorkingDays);
 	this.selectedWorkdayStarts(Settings.WorkdayStarts);
@@ -64,7 +64,7 @@ CCalendarSettingsPaneView.prototype.revertGlobalValues = function()
 	this.defaultTab(Settings.DefaultTab);
 };
 
-CCalendarSettingsPaneView.prototype.getParametersForSave = function ()
+CCalendarSettingsFormView.prototype.getParametersForSave = function ()
 {
 	return {
 		'HighlightWorkingDays': this.showWeekends(),
@@ -79,7 +79,7 @@ CCalendarSettingsPaneView.prototype.getParametersForSave = function ()
 /**
  * @param {Object} oParameters
  */
-CCalendarSettingsPaneView.prototype.applySavedValues = function (oParameters)
+CCalendarSettingsFormView.prototype.applySavedValues = function (oParameters)
 {
 	CalendarCache.calendarSettingsChanged(true);
 
@@ -87,4 +87,4 @@ CCalendarSettingsPaneView.prototype.applySavedValues = function (oParameters)
 					oParameters.WorkdayEnds, oParameters.WeekStartsOn, oParameters.DefaultTab);
 };
 
-module.exports = new CCalendarSettingsPaneView();
+module.exports = new CCalendarSettingsFormView();
