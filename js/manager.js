@@ -2,18 +2,15 @@
 
 module.exports = function (oAppData) {
 	var
-		_ = require('underscore'),
-		
 		TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 		
 		App = require('%PathToCoreWebclientModule%/js/App.js'),
 		ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js'),
 		
-		Settings = require('modules/%ModuleName%/js/Settings.js'),
-		oSettings = _.extend({}, oAppData[Settings.ServerModuleName] || {}, oAppData['%ModuleName%'] || {})
+		Settings = require('modules/%ModuleName%/js/Settings.js')
 	;
 	
-	Settings.init(oSettings);
+	Settings.init(oAppData);
 	
 	if (!ModulesManager.isModuleAvailable(Settings.ServerModuleName))
 	{
