@@ -192,15 +192,23 @@
 					</div>
 
 					<div class="fieldset main">
-						<div class="row name" data-bind="css: {'focused': subjectFocus(), 'filled': subject().length > 0}">
-							<label for="event_subject" class="label placeholder" data-bind="i18n: {'key': '%MODULENAME%/LABEL_SUBJECT'}"></label>
-							<div class="value scrollable_field" data-bind="customScrollbar: {x: false}">
-								<div class="scroll-inner">
-									<span class="input" data-bind="text: subject, visible: !isEditable()"></span>
-									<textarea id="event_subject" class="input autosize" data-bind="
-										autosize: {minHeight: 40, autosizeTrigger: autosizeTrigger, scrollableHeight: 110}, 
-										onEnter: onSaveClick,
-										value: subject, valueUpdate: 'afterkeydown', hasfocus: subjectFocus, visible: isEditable()"></textarea>
+						<div style="display: flex;">
+							<div class="row name" style="margin-top: 10px; padding: 5px;" data-bind="visible: eventType() === 'todo'">
+								<label class="custom_checkbox" data-bind="css: {'checked': status}">
+									<span class="icon"></span>
+									<input type="checkbox" data-bind="checked: status"/>
+								</label>
+							</div>
+							<div class="row name" data-bind="css: {'focused': subjectFocus(), 'filled': subject().length > 0}">
+								<label for="event_subject" class="label placeholder" data-bind="i18n: {'key': '%MODULENAME%/LABEL_SUBJECT'}"></label>
+								<div class="value scrollable_field" data-bind="customScrollbar: {x: false}">
+									<div class="scroll-inner">
+										<span class="input" data-bind="text: subject, visible: !isEditable()"></span>
+										<textarea id="event_subject" class="input autosize" data-bind="
+											autosize: {minHeight: 40, autosizeTrigger: autosizeTrigger, scrollableHeight: 110}, 
+											onEnter: onSaveClick,
+											value: subject, valueUpdate: 'afterkeydown', hasfocus: subjectFocus, visible: isEditable()"></textarea>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -226,6 +234,13 @@
 										value: location, valueUpdate: 'afterkeydown', hasfocus: locationFocus, visible: isEditable()"></textarea>
 								</div>
 							</div>
+						</div>
+						<div class="row name" style="margin-top: 10px; padding: 5px;">
+							<label class="custom_checkbox" data-bind="css: {'checked': isTask}">
+								<span class="icon"></span>
+								<input type="checkbox" data-bind="checked: isTask" id="isTask"/>
+							</label>
+							<label for="isTask" data-bind="i18n: {'key': '%MODULENAME%/LABEL_IS_TASK'}"></label>							
 						</div>
 					</div>
 					<div class="alarms_helper" data-bind="foreach: displayedAlarms()">

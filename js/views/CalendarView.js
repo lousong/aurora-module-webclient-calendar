@@ -1030,7 +1030,76 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
 			oCalendar = this.calendars.getCalendarById(sCalendarId);
 			if (oCalendar && oCalendar.eventsCount() > 0 && oCalendar.active())
 			{
-				oCalendar.expungeEvents(aEvents, this.startDateTime, this.endDateTime);
+				oCalendar.expungeEvents(aEvents, this.startDateTime, this.endDateTime, 'event');
+			}
+		}, this);
+
+		this.refreshView();
+	}
+	
+	this.setAutoReloadTimer();
+	this.checkStarted(false);
+	
+	this.getTasks(aCalendarIds);
+};
+
+/**
+ * @param {Array} aCalendarIds
+ */
+CCalendarView.prototype.getTasks = function (aCalendarIds)
+{
+	if (aCalendarIds.length > 0)
+	{
+		Ajax.send('GetTasks', {
+			'CalendarIds': aCalendarIds,
+			'Start': this.startDateTime,
+			'End': this.endDateTime,
+			'IsPublic': this.isPublic
+		}, this.onGetTasksResponse, this);		}
+	else
+	{
+		this.setAutoReloadTimer();
+		this.checkStarted(false);
+	}
+};
+
+/**
+ * @param {Object} oResponse
+ * @param {Object} oRequest
+ */
+CCalendarView.prototype.onGetTasksResponse = function (oResponse, oRequest)
+{
+	if (oResponse.Result)
+	{
+		var 
+			oCalendar = null,
+			oParameters = oRequest.Parameters,
+			aCalendarIds = _.isArray(oParameters.CalendarIds) ? oParameters.CalendarIds : [],
+			aTasks = []
+		;
+
+		_.each(oResponse.Result, function (oTaskData) {
+			oCalendar = this.calendars.getCalendarById(oTaskData.calendarId);			
+			if (oCalendar)
+			{
+				aTasks.push(oTaskData.id);
+				var oEvent = oCalendar.getEvent(oTaskData.id);
+				if (!oEvent)
+				{
+					oCalendar.addEvent(oTaskData);
+				}
+				else if (oEvent.lastModified !== oTaskData.lastModified)
+				{
+					oCalendar.updateEvent(oTaskData);
+				}
+			}
+		}, this);
+		
+		_.each(aCalendarIds, function (sCalendarId){
+			oCalendar = this.calendars.getCalendarById(sCalendarId);
+			if (oCalendar && oCalendar.eventsCount() > 0 && oCalendar.active())
+			{
+				oCalendar.expungeEvents(aTasks, this.startDateTime, this.endDateTime, 'todo');
 			}
 		}, this);
 
@@ -1405,7 +1474,9 @@ CCalendarView.prototype.getParamsFromEventData = function (oEventData)
 		end: oEventData.end.local().toDate(),
 		startTS: oEventData.start.unix(),
 		endTS: oEventData.end ? oEventData.end.unix() : oEventData.end.unix(),
-		rrule: oEventData.rrule ? JSON.stringify(oEventData.rrule) : null
+		rrule: oEventData.rrule ? JSON.stringify(oEventData.rrule) : null,
+		type: oEventData.type,
+		status: oEventData.status
 	};
 };
 
@@ -1510,7 +1581,9 @@ CCalendarView.prototype.eventClickCallback = function (oEventData)
 					AllEvents: iResult,
 					CallbackSave: _.bind(this.updateEvent, this),
 					CallbackDelete: _.bind(this.deleteEvent, this),
-					CallbackAttendeeActionDecline: _.bind(this.attendeeActionDecline, this)
+					CallbackAttendeeActionDecline: _.bind(this.attendeeActionDecline, this),
+					Type: oEventData.type,
+					Status: oEventData.status
 				}
 			;
 			if (iResult !== Enums.CalendarEditRecurrenceEvent.None)

@@ -188,6 +188,14 @@ function CEditEventPopup()
 
 	this.bAllowAppointments = Settings.AllowAppointments;
 
+	this.eventType = ko.observable('event');
+	this.status = ko.observable(false);
+	this.isTask = ko.observable(false);
+	
+	this.isTask.subscribe(function(value) {
+		this.eventType(value ? 'todo' : 'event');
+	}, this);
+
 	this.allChanges = ko.computed(function () {
 		this.subject();
 		this.description();
@@ -214,7 +222,9 @@ function CEditEventPopup()
 		this.always();
 		this.attendees();
 		this.selectedCalendarId();
-
+		this.status();
+		this.isTask();
+		
 		this.modified = true;
 	}, this);
 
@@ -340,6 +350,9 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	this.recurrenceId(oParameters.RecurrenceId || null);
 	
 	this.subject(oParameters.Subject || '');
+	this.eventType(oParameters.Type || '');
+	this.isTask(this.eventType() === 'todo');
+	this.status(oParameters.Status || false);
 	this.location(oParameters.Location || '');
 	this.description(oParameters.Description || '');
 	this.allEvents(oParameters.AllEvents || Enums.CalendarEditRecurrenceEvent.AllEvents);
@@ -397,6 +410,11 @@ CEditEventPopup.prototype.changeCalendarColor = function (sId)
 	}
 };
 
+CEditEventPopup.prototype.onIsTaskClick = function ()
+{
+	this.eventType(this.eventType() === 'todo' ? 'event' : 'todo');
+};
+
 CEditEventPopup.prototype.onSaveClick = function ()
 {
 	if (this.subject() === '')
@@ -433,7 +451,9 @@ CEditEventPopup.prototype.onSaveClick = function ()
 					alarms: this.getAlarmsArray(this.displayedAlarms()),
 					attendees: this.attendees(),
 					owner: this.owner(),
-					modified: this.modified
+					modified: this.modified,
+					type: this.eventType(),
+					status: this.status(),
 				},
 				iAlways = Types.pInt(this.always())
 			;

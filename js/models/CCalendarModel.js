@@ -223,11 +223,11 @@ CCalendarModel.prototype.removeEvents = function ()
  * @param {number} start
  * @param {number} end
  */
-CCalendarModel.prototype.expungeEvents = function (aEventIds, start, end)
+CCalendarModel.prototype.expungeEvents = function (aEventIds, start, end, type)
 {
 	var aEventRemoveIds = [];
 	_.each(this.getEvents(moment.unix(start), moment.unix(end)), function(oEvent) {
-		if (!_.include(aEventIds, oEvent.id))
+		if (!_.include(aEventIds, oEvent.id) && oEvent.type === type)
 		{
 			aEventRemoveIds.push(oEvent.id);
 		}
