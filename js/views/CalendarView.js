@@ -182,46 +182,6 @@ function CCalendarView()
 		eventResizeStop: _.bind(this.onEventResizeStop, this),
 		eventDrop: _.bind(this.moveEvent, this),
 		eventResize: _.bind(this.resizeEvent, this),
-		eventRender: function(oEv, oEl) {
-			if (oEv.type === 'todo')
-			{
-				var 
-					content = oEl.find('.fc-title'),
-					completed = $("<label class=\"custom_checkbox\"><span class=\"icon\"></span><input type=\"checkbox\"></label>")
-				;
-					
-				if (oEv.status)
-				{
-					completed.addClass('checked');
-					content.css("text-decoration-line", "line-through");
-				}
-				else
-				{
-					completed.removeClass('checked');
-					content.css("text-decoration-line", "unset");
-				}
-				
-				content.prepend(completed);
-				completed.click(function(event){
-					if (oEv.status)
-					{
-						oEv.status = false;
-						completed.removeClass('checked');
-						content.css("text-decoration-line", "unset");
-					}
-					else
-					{
-						oEv.status = true;
-						completed.addClass('checked');
-						content.css("text-decoration-line", "line-through");
-					}
-					oEv.modified = true;
-					self.updateEvent(oEv);
-					event.preventDefault();
-					event.stopPropagation();
-				});
-			}
-		},
 		eventAfterRender: _.bind(function(oEv, oEl) {}, this),
 		eventAfterAllRender: _.bind(this.updateAllEvents, this),
 		viewRender: _.bind(this.viewRenderCallback, this),
