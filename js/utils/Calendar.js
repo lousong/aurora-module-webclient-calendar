@@ -5,6 +5,8 @@ var
 	$ = require('jquery'),
 	moment = require('moment'),
 	
+	Settings = require('modules/%ModuleName%/js/Settings.js'),
+	
 	CalendarUtils = {}
 ;
 
@@ -90,27 +92,35 @@ CalendarUtils.getDateFormatForDatePicker = function (sDateFormat)
 
 /**
  * @param {string} sSubject
+ * @param {string} sDescription
  * 
  * @return {string}
  */
-CalendarUtils.getTitleForEvent = function (sSubject)
+CalendarUtils.getTitleForEvent = function (sSubject, sDescription)
 {
-	var
-		sTitle = sSubject ? $.trim(sSubject.replace(/[\n\r]/, ' ')) : '',
-		iFirstSpacePos = sTitle.indexOf(' ', 180)
-	;
+	if (Settings.AddDescriptionToTitle)
+	{
+		return $.trim((sSubject + ' ' + sDescription).replace(/[\n\r]/g, ' '));
+	}
+	else
+	{
+		var
+			sTitle = sSubject ? $.trim(sSubject.replace(/[\n\r]/, ' ')) : '',
+			iFirstSpacePos = sTitle.indexOf(' ', 180)
+		;
 
-	if (iFirstSpacePos >= 0)
-	{
-		sTitle = sTitle.substring(0, iFirstSpacePos) + '...';
+		if (iFirstSpacePos >= 0)
+		{
+			sTitle = sTitle.substring(0, iFirstSpacePos) + '...';
+		}
+
+		if (sTitle.length > 200)
+		{
+			sTitle = sTitle.substring(0, 200) + '...';
+		}
+
+		return sTitle;
 	}
-	
-	if (sTitle.length > 200)
-	{
-		sTitle = sTitle.substring(0, 200) + '...';
-	}
-	
-	return sTitle;
 };
 
 module.exports = CalendarUtils;

@@ -255,7 +255,7 @@ CCalendarModel.prototype.isOwner = function ()
 
 CCalendarModel.prototype.parseEvent = function (oEvent)
 {
-	oEvent.title = CalendarUtils.getTitleForEvent(oEvent.subject);
+	oEvent.title = CalendarUtils.getTitleForEvent(oEvent.subject, oEvent.description);
 	oEvent.editable = oEvent.appointment ? false : true;
 	oEvent.backgroundColor = oEvent.borderColor = this.color();
 	if (!_.isArray(oEvent.className))

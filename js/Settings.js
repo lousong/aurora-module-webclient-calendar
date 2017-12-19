@@ -2,6 +2,7 @@
 
 var
 	_ = require('underscore'),
+	$ = require('jquery'),
 	
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js')
 ;
@@ -10,6 +11,7 @@ module.exports = {
 	ServerModuleName: 'Calendar',
 	HashModuleName: 'calendar',
 	
+	AddDescriptionToTitle: false,
 	AllowAppointments: true,
 	AllowShare: true,
 	DefaultTab: '3', // 1 - day, 2 - week, 3 - month
@@ -31,6 +33,11 @@ module.exports = {
 		
 		if (!_.isEmpty(oAppDataSection))
 		{
+			this.AddDescriptionToTitle = Types.pBool(oAppDataSection.AddDescriptionToTitle, this.AddDescriptionToTitle);
+			if (this.AddDescriptionToTitle)
+			{
+				$('html').addClass('AddDescriptionToTitle');
+			}
 			this.AllowAppointments = Types.pBool(oAppDataSection.AllowAppointments, this.AllowAppointments);
 			this.AllowShare = Types.pBool(oAppDataSection.AllowShare, this.AllowShare);
 			this.DefaultTab = Types.pString(oAppDataSection.DefaultTab, this.DefaultTab); // 1 - day, 2 - week, 3 - month
