@@ -106,9 +106,9 @@ function CIcalModel(oRawIcal, sAttendee)
 		return this.calendarIsChosen();
 	}, this);
 	
-	this.firstCalendarName = function () {
+	this.firstCalendarName = ko.computed(function () {
 		return this.calendars()[0] ? this.calendars()[0].name : '';
-	},
+	}, this);
 	
 	this.visibleFirstCalendarName = ko.computed(function () {
 		return this.calendars().length === 1 && !this.calendarIsChosen();
