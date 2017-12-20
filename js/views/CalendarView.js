@@ -183,6 +183,13 @@ function CCalendarView()
 		eventDrop: _.bind(this.moveEvent, this),
 		eventResize: _.bind(this.resizeEvent, this),
 		eventRender: function(oEv, oEl) {
+			if (Settings.AddDescriptionToTitle)
+			{
+				var oTitle = oEl.find( '.fc-title' );
+				oTitle.html('<span class="subject-title">' + $.trim(oEv.subject.replace(/[\n\r]/g, ' ')) + '</span> '
+						+ '<span class="desc-title">' + $.trim(oEv.description.replace(/[\n\r]/g, ' ')) + '</span>');
+			}
+			
 			if (oEv.type === 'todo')
 			{
 				var 
