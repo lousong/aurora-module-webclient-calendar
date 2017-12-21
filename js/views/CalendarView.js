@@ -1574,7 +1574,7 @@ CCalendarView.prototype.openEventPopup = function (oCalendar, oStart, oEnd, bAll
 			End: oEnd,
 			AllDay: bAllDay,
 			TimeFormat: this.sTimeFormat,
-			DateFormat: UserSettings.DateFormat,
+			DateFormat: UserSettings.dateFormat(),
 			CallbackAttendeeActionDecline: _.bind(this.attendeeActionDecline, this)
 		}]);
 	}
@@ -1624,7 +1624,7 @@ CCalendarView.prototype.eventClickCallback = function (oEventData)
 					Appointment: oEventData.appointment,
 					OwnerName: oEventData.ownerName,
 					TimeFormat: this.sTimeFormat,
-					DateFormat: UserSettings.DateFormat,
+					DateFormat: UserSettings.dateFormat(),
 					AllEvents: iResult,
 					CallbackSave: _.bind(this.updateEvent, this),
 					CallbackDelete: _.bind(this.deleteEvent, this),
