@@ -5,20 +5,20 @@ var
 	$ = require('jquery'),
 	ko = require('knockout'),
 	moment = require('moment'),
-	
+
 	DateUtils = require('%PathToCoreWebclientModule%/js/utils/Date.js'),
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
-	
+
 	Api = require('%PathToCoreWebclientModule%/js/Api.js'),
 	App = require('%PathToCoreWebclientModule%/js/App.js'),
 	Browser = require('%PathToCoreWebclientModule%/js/Browser.js'),
 	CJua = require('%PathToCoreWebclientModule%/js/CJua.js'),
 	Screens = require('%PathToCoreWebclientModule%/js/Screens.js'),
 	UserSettings = require('%PathToCoreWebclientModule%/js/Settings.js'),
-	
+
 	CAbstractScreenView = require('%PathToCoreWebclientModule%/js/views/CAbstractScreenView.js'),
-	
+
 	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
 	ConfirmPopup = require('%PathToCoreWebclientModule%/js/popups/ConfirmPopup.js'),
 	EditCalendarPopup = require('modules/%ModuleName%/js/popups/EditCalendarPopup.js'),
@@ -27,14 +27,14 @@ var
 	GetCalendarLinkPopup = require('modules/%ModuleName%/js/popups/GetCalendarLinkPopup.js'),
 	ImportCalendarPopup = require('modules/%ModuleName%/js/popups/ImportCalendarPopup.js'),
 	SelectCalendarPopup = require('modules/%ModuleName%/js/popups/SelectCalendarPopup.js'),
-	
+
 	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
 	CalendarCache = require('modules/%ModuleName%/js/Cache.js'),
 	Settings = require('modules/%ModuleName%/js/Settings.js'),
-	
+
 	CCalendarListModel = require('modules/%ModuleName%/js/models/CCalendarListModel.js'),
 	CCalendarModel = require('modules/%ModuleName%/js/models/CCalendarModel.js'),
-	
+
 	bMobileDevice = false
 ;
 
@@ -44,33 +44,33 @@ var
 function CCalendarView()
 {
 	CAbstractScreenView.call(this, '%ModuleName%');
-	
+
 	this.browserTitle = ko.observable(TextUtils.i18n('%MODULENAME%/HEADING_BROWSER_TAB'));
-	
+
 	var self = this;
 	this.initialized = ko.observable(false);
 	this.isPublic = App.isPublic();
-	
+
 	this.uploaderArea = ko.observable(null);
 	this.bDragActive = ko.observable(false);
 	this.bDragActiveComp = ko.computed(function () {
 		return this.bDragActive();
 	}, this);
-	
+
 	this.todayDate = new Date();
 	this.aDayNames = TextUtils.i18n('COREWEBCLIENT/LIST_DAY_NAMES').split(' ');
 
 	this.popUpStatus = false;
 	this.linkRow = 0;
 	this.linkColumn = 0;
-	
+
 	this.sTimeFormat = (UserSettings.timeFormat() === Enums.TimeFormat.F24) ? 'HH:mm' : 'hh:mm A';
 
 	this.topPositionToday = ko.observable('.fc-widget-content.fc-today');
 	this.loadOnce = false;
 	this.scrollModel = ko.observable(null);
 	this.scrollHeight = 0;
-	
+
 	this.dateTitle = ko.observable('');
 	this.aMonthNames = DateUtils.getMonthNamesArray();
 	this.selectedView = ko.observable('');
@@ -80,10 +80,10 @@ function CCalendarView()
 	this.selectedView.subscribe(function () {
 		this.resize();
 	}, this);
-	
+
 	this.$calendarGrid = null;
 	this.calendarGridDom = ko.observable(null);
-	
+
 	this.$datePicker = null;
 	this.datePickerDom = ko.observable(null);
 
@@ -97,33 +97,33 @@ function CCalendarView()
 	});
 
 	this.colors = [
-		'#f09650', 
-		'#f68987', 
-		'#6fd0ce', 
-		'#8fbce2', 
-		'#b9a4f5', 
-		'#f68dcf', 
-		'#d88adc', 
-		'#4afdb4', 
-		'#9da1ff', 
-		'#5cc9c9', 
-		'#77ca71', 
+		'#f09650',
+		'#f68987',
+		'#6fd0ce',
+		'#8fbce2',
+		'#b9a4f5',
+		'#f68dcf',
+		'#d88adc',
+		'#4afdb4',
+		'#9da1ff',
+		'#5cc9c9',
+		'#77ca71',
 		'#aec9c9'
 	];
-	
+
 	this.busyDays = ko.observableArray([]);
-	
+
 	this.$inlineEditedEvent = null;
 	this.inlineEditedEventText = null;
 	this.checkStarted = ko.observable(false);
-	
+
 	this.loaded = false;
-	
+
 	this.startDateTime = 0;
 	this.endDateTime = 0;
-	
+
 	this.needsToReload = false;
-	
+
 	this.calendarListClick = function (oItem) {
 		oItem.active(!oItem.active());
 	};
@@ -143,7 +143,7 @@ function CCalendarView()
 		self.currentCalendarDropdown(bValue);
 	};
 	this.calendarDropdownHide = _.throttle(_.bind(function () { this.calendarDropdownToggle(false); }, this), 500);
-	
+
 	this.dayNamesResizeBinding = _.throttle(_.bind(this.resize, this), 50);
 
 	this.customscrollTop = ko.observable(0);
@@ -187,16 +187,17 @@ function CCalendarView()
 			{
 				var oTitle = oEl.find( '.fc-title' );
 				oTitle.html('<span class="subject-title">' + $.trim(oEv.subject.replace(/[\n\r]/g, ' ')) + '</span> '
-						+ '<span class="desc-title">' + $.trim(oEv.description.replace(/[\n\r]/g, ' ')) + '</span>');
+						+ '<span class="desc-title">' + $.trim(oEv.description.replace(/[\n\r]/g, ' ')) + '</span> '
+						+ '<span class="loc-title">' + $.trim(oEv.location.replace(/[\n\r]/g, ' ')) + '</span>');
 			}
-			
+
 			if (oEv.type === 'todo')
 			{
-				var 
+				var
 					content = oEl.find('.fc-title'),
 					completed = $("<label class=\"custom_checkbox\"><span class=\"icon\"></span><input type=\"checkbox\"></label>")
 				;
-					
+
 				if (oEv.status)
 				{
 					completed.addClass('checked');
@@ -207,7 +208,7 @@ function CCalendarView()
 					completed.removeClass('checked');
 					content.css("text-decoration-line", "unset");
 				}
-				
+
 				content.prepend(completed);
 				completed.click(function(event){
 					if (oEv.status)
@@ -234,11 +235,11 @@ function CCalendarView()
 		viewRender: _.bind(this.viewRenderCallback, this),
 		events: _.bind(this.eventsSource, this)
 	};
-	
+
 	this.revertFunction = null;
-	
+
 	this.bAllowShare = Settings.AllowShare;
-	
+
 	this.defaultViewName = ko.computed(function () {
 		switch (Settings.DefaultTab)
 		{
@@ -251,16 +252,16 @@ function CCalendarView()
 				return 'month';
 		}
 	}, this);
-	
+
 	this.iAutoReloadTimer = -1;
 
 	this.dragEventTrigger = false;
 	this.delayOnEventResult = false;
 	this.delayOnEventResultData = [];
-	
+
 	this.refreshView = _.throttle(_.bind(this.refreshViewSingle, this), 100);
 	this.defaultCalendarId = ko.computed(function () {
-		var 
+		var
 			defaultCalendar = this.calendars.defaultCal()
 		;
 		if (defaultCalendar)
@@ -272,7 +273,7 @@ function CCalendarView()
 	this.changeFullCalendarDate = true;
 	this.domScrollWrapper = null;
 	this.hotKeysBind();
-	
+
 	App.broadcastEvent('%ModuleName%::ConstructView::after', {'Name': this.ViewConstructorName, 'View': this});
 }
 
@@ -316,7 +317,7 @@ CCalendarView.prototype.getDateFromCurrentView = function (sDateType)
 	{
 		oDate.add(1, 'd');
 	}
-	
+
 	return (oDate && oDate['unix']) ? oView[sDateType]['unix']() : 0;
 };
 
@@ -345,7 +346,7 @@ CCalendarView.prototype.applyCalendarSettings = function ()
 	this.fullcalendarOptions.slotLabelFormat = this.sTimeFormat;
 	this.fullcalendarOptions.defaultView = this.defaultViewName();
 	this.fullcalendarOptions.lang = moment.locale();
-	
+
 	this.applyFirstDay();
 
 	this.$calendarGrid.fullCalendar('destroy');
@@ -365,11 +366,11 @@ CCalendarView.prototype.applyFirstDay = function ()
 	{
 		this.fullcalendarOptions.firstDay = Settings.WeekStartsOn;
 	}
-	
+
 	_.each(this.aDayNames, function (sDayName) {
 		aDayNames.push(sDayName);
 	});
-	
+
 	switch (Settings.WeekStartsOn)
 	{
 		case 1:
@@ -381,7 +382,7 @@ CCalendarView.prototype.applyFirstDay = function ()
 			aDayNames.unshift(sFirstDay);
 			break;
 	}
-	
+
 	this.$datePicker.datepicker('option', 'firstDay', Settings.WeekStartsOn);
 };
 
@@ -404,7 +405,7 @@ CCalendarView.prototype.onBind = function ()
 {
 	var self = this;
 	this.$calendarGrid = $(this.calendarGridDom());
-	
+
 	this.$datePicker = $(this.datePickerDom());
 	if (!this.isPublic)
 	{
@@ -460,18 +461,18 @@ CCalendarView.prototype.onShow = function ()
 	if (!this.initialized())
 	{
 		this.initDatePicker();
-		
+
 		var oParent = this.$calendarGrid.parent();
 		if (oParent)
 		{
 			this.fullcalendarOptions.height = oParent.height();
 		}
-				
+
 		this.applyCalendarSettings();
 		this.highlightWeekInDayPicker();
 		this.initialized(true);
 	}
-	
+
 	var sTimeFormat = (UserSettings.timeFormat() === Enums.TimeFormat.F24) ? 'HH:mm' : 'hh:mm A';
 	if (CalendarCache.calendarSettingsChanged() || this.sTimeFormat !== sTimeFormat || CalendarCache.calendarChanged())
 	{
@@ -486,15 +487,15 @@ CCalendarView.prototype.onShow = function ()
 	{
 		this.$calendarGrid.fullCalendar("render");
 	}
-	
+
 	this.$calendarGrid.fullCalendar();
 	this.getCalendars(); // TODO: sash
 	this.refetchEvents();
 };
 
-CCalendarView.prototype.setTimeline = function () 
+CCalendarView.prototype.setTimeline = function ()
 {
-	var 
+	var
 		now = new Date(),
 		nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()),
 		todayDate = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), this.todayDate.getDate()),
@@ -511,20 +512,20 @@ CCalendarView.prototype.setTimeline = function ()
 		this.todayDate = this.$calendarGrid.fullCalendar("getDate").toDate();
 		this.$calendarGrid.fullCalendar("render");
 	}
-	
+
 	// render timeline
 	parentDiv = $(".fc-slats:visible").parent();
 	timeline = parentDiv.children(".timeline");
-	
-	if (timeline.length === 0) 
+
+	if (timeline.length === 0)
 	{ //if timeline isn't there, add it
 		timeline = $("<hr>").addClass("timeline");
 		parentDiv.prepend(timeline);
 	}
 	timeline.css('left', $("td .fc-axis").width() + 10);
-	
+
 	timeline.show();
-	
+
 	curSeconds = (now.getHours() * 60 * 60) + (now.getMinutes() * 60) + now.getSeconds();
 	percentOfDay = curSeconds / 86400; //24 * 60 * 60 = 86400, % of seconds in a day
 	topLoc = Math.floor(parentDiv.height() * percentOfDay);
@@ -568,34 +569,34 @@ CCalendarView.prototype.viewRenderCallback = function (oView, oElement)
 		constDate = "01/01/1971 ",
 		timelineInterval
 	;
-	
+
 	this.changeDate();
-	
+
 	if (!this.loaded)
 	{
 		this.initResizing();
 	}
-	
+
 	if(typeof(timelineInterval) !== "undefined")
 	{
 		window.clearInterval(timelineInterval);
 	}
-	
+
 	timelineInterval = window.setInterval(_.bind(function () {
 		this.setTimeline();
 	}, this), 60000);
-	
-	try 
+
+	try
 	{
 		this.setTimeline();
-	} 
-	catch(err) { }	
-	
+	}
+	catch(err) { }
+
 	if (oView.name !== 'month' && Settings.HighlightWorkingHours)
 	{
 		$('.fc-slats tr').each(function() {
 			$('tr .fc-time span').each(function() {
-				var 
+				var
 					theValue = $(this).eq(0).text(),
 					theDate = (theValue !== '') ? Date.parse(constDate + theValue) : prevDate,
 					rangeTimeFrom = Date.parse(constDate + Settings.WorkdayStarts + ':00'),
@@ -608,15 +609,15 @@ CCalendarView.prototype.viewRenderCallback = function (oView, oElement)
 					$(this).parent().parent().next().addClass("fc-non-working-time");
 				}
 			});
-		});	
+		});
 	}
-	
+
 	this.activateCustomScrollInDayAndWeekView();
 };
 
 CCalendarView.prototype.collectBusyDays = function ()
 {
-	var 
+	var
 		aBusyDays = [],
 		oStart = null,
 		oEnd = null,
@@ -631,7 +632,7 @@ CCalendarView.prototype.collectBusyDays = function ()
 		{
 			oEnd.subtract(1, 'days');
 		}
-		
+
 		iDaysDiff = oEnd ? oEnd.diff(oStart, 'days') : 0;
 		iIndex = 0;
 
@@ -647,7 +648,7 @@ CCalendarView.prototype.collectBusyDays = function ()
 CCalendarView.prototype.refreshDatePicker = function ()
 {
 	var self = this;
-	
+
 	_.defer(function () {
 		self.collectBusyDays();
 		self.$datePicker.datepicker('refresh');
@@ -669,7 +670,7 @@ CCalendarView.prototype.getDayDescription = function (oDate)
 		sDayClass = oFindedBusyDay ? 'day_with_events' : '',
 		sDayTitle = ''
 	;
-	
+
 	return [bSelectable, sDayClass, sDayTitle];
 };
 
@@ -709,7 +710,7 @@ CCalendarView.prototype.dayNamesResize = function ()
 			oFirstWeekWidth = $(oFirstWeek[0]).width(),
 			iIndex = 0
 		;
-		
+
 		if (oDayNamesHeaderItem.length === 7 && oFirstWeek.length === 7 && oFirstWeekWidth !== 0)
 		{
 			for(; iIndex < 7; iIndex++)
@@ -747,7 +748,7 @@ CCalendarView.prototype.selectDateFromDatePicker = function (sDate, oInst)
 {
 	var oDate = moment(sDate, 'MM/DD/YYYY');
 	this.$calendarGrid.fullCalendar('gotoDate', oDate);
-	
+
 	_.defer(_.bind(this.highlightWeekInDayPicker, this));
 };
 
@@ -759,7 +760,7 @@ CCalendarView.prototype.highlightWeekInDayPicker = function ()
 		$currentMonth = this.$datePicker.find('table.ui-datepicker-calendar'),
 		oView = this.$calendarGrid.fullCalendar('getView')
 	;
-	
+
 	switch (oView.name)
 	{
 		case 'agendaDay':
@@ -772,7 +773,7 @@ CCalendarView.prototype.highlightWeekInDayPicker = function ()
 			$currentMonth.removeClass('highlight_day').removeClass('highlight_week');
 			break;
 	}
-	
+
 	$currentWeek.addClass('current_week');
 };
 
@@ -785,7 +786,7 @@ CCalendarView.prototype.changeDateTitle = function ()
 		oStart = oView.intervalStart,
 		oEnd = oView.intervalEnd ? oView.intervalEnd.add(-1, 'days') : null
 	;
-	
+
 	switch (oView.name)
 	{
 		case 'agendaDay':
@@ -811,7 +812,7 @@ CCalendarView.prototype.changeDate = function ()
 
 CCalendarView.prototype.changeDateInDatePicker = function ()
 {
-	var 
+	var
 		oDateMoment = this.$calendarGrid.fullCalendar('getDate')
 	;
 	this.changeFullCalendarDate = false;
@@ -826,8 +827,8 @@ CCalendarView.prototype.activateCustomScrollInDayAndWeekView = function ()
 	{
 		return;
 	}
-	
-	var 
+
+	var
 		oView = this.$calendarGrid.fullCalendar('getView'),
 		sGridType = oView.name === 'month' ? 'day' : 'time',
 		oGridContainer = $('.fc-' + sGridType + '-grid-container'),
@@ -836,13 +837,13 @@ CCalendarView.prototype.activateCustomScrollInDayAndWeekView = function ()
 
 	oGridContainer.parent().append(oScrollWrapper);
 	oGridContainer.appendTo(oScrollWrapper);
-	
+
 	if (!oScrollWrapper.hasClass('scroll-wrap'))
 	{
 		oScrollWrapper.attr('data-bind', 'customScrollbar: {x: false, y: true, top: 0, scrollTo: topPositionToday, oScroll: scrollModel}');
 		oGridContainer.css({'overflow': 'hidden'}).addClass('scroll-inner');
 		ko.applyBindings(this, oScrollWrapper[0]);
-		
+
 	}
 	this.domScrollWrapper = oScrollWrapper;
 };
@@ -886,14 +887,14 @@ CCalendarView.prototype.changeView = function (viewName)
 		this.loadOnce = false;
 	}
 	this.$calendarGrid.fullCalendar('changeView', viewName);
-	
+
 };
 
 CCalendarView.prototype.setAutoReloadTimer = function ()
 {
 	var self = this;
 	clearTimeout(this.iAutoReloadTimer);
-	
+
 	if (UserSettings.AutoRefreshIntervalMinutes > 0)
 	{
 		this.iAutoReloadTimer = setTimeout(function () {
@@ -908,7 +909,7 @@ CCalendarView.prototype.getTimeLimits = function ()
 		iStart = this.getDateFromCurrentView('start'),
 		iEnd = this.getDateFromCurrentView('end')
 	;
-	
+
 	if (this.startDateTime === 0 && this.endDateTime === 0)
 	{
 		this.startDateTime = iStart;
@@ -938,7 +939,7 @@ CCalendarView.prototype.getTimeLimits = function ()
 CCalendarView.prototype.getCalendars = function ()
 {
 	this.checkStarted(true);
-	this.setCalendarGridVisibility();	
+	this.setCalendarGridVisibility();
 
 	Ajax.send('GetCalendars', {
 			'IsPublic': this.isPublic,
@@ -959,7 +960,7 @@ CCalendarView.prototype.onGetCalendarsResponse = function (oResponse, oParameter
 		oCalendar = null,
 		oClientCalendar = null
 	;
-	
+
 	if (this.loadOnce && this.selectedView() === 'month')
 	{
 		this.scrollHeight = this.scrollModel()['vertical'].get();
@@ -968,7 +969,7 @@ CCalendarView.prototype.onGetCalendarsResponse = function (oResponse, oParameter
 	{
 		this.scrollHeight = 0;
 	}
-	
+
 	if (oResponse.Result)
 	{
 		this.loaded = true;
@@ -1010,7 +1011,7 @@ CCalendarView.prototype.onGetCalendarsResponse = function (oResponse, oParameter
 				oCalendar.reloadEvents();
 			}
 		}, this);
-		
+
 		this.getEvents(aNewCalendarIds);
 	}
 	else
@@ -1049,7 +1050,7 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
 {
 	if (oResponse.Result)
 	{
-		var 
+		var
 			oCalendar = null,
 			oParameters = oRequest.Parameters,
 			aCalendarIds = _.isArray(oParameters.CalendarIds) ? oParameters.CalendarIds : [],
@@ -1057,7 +1058,7 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
 		;
 
 		_.each(oResponse.Result, function (oEventData) {
-			oCalendar = this.calendars.getCalendarById(oEventData.calendarId);			
+			oCalendar = this.calendars.getCalendarById(oEventData.calendarId);
 			if (oCalendar)
 			{
 				aEvents.push(oEventData.id);
@@ -1072,7 +1073,7 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
 				}
 			}
 		}, this);
-		
+
 		_.each(aCalendarIds, function (sCalendarId){
 			oCalendar = this.calendars.getCalendarById(sCalendarId);
 			if (oCalendar && oCalendar.eventsCount() > 0 && oCalendar.active())
@@ -1083,10 +1084,10 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
 
 		this.refreshView();
 	}
-	
+
 	this.setAutoReloadTimer();
 	this.checkStarted(false);
-	
+
 	this.getTasks(aCalendarIds);
 };
 
@@ -1118,7 +1119,7 @@ CCalendarView.prototype.onGetTasksResponse = function (oResponse, oRequest)
 {
 	if (oResponse.Result)
 	{
-		var 
+		var
 			oCalendar = null,
 			oParameters = oRequest.Parameters,
 			aCalendarIds = _.isArray(oParameters.CalendarIds) ? oParameters.CalendarIds : [],
@@ -1126,7 +1127,7 @@ CCalendarView.prototype.onGetTasksResponse = function (oResponse, oRequest)
 		;
 
 		_.each(oResponse.Result, function (oTaskData) {
-			oCalendar = this.calendars.getCalendarById(oTaskData.calendarId);			
+			oCalendar = this.calendars.getCalendarById(oTaskData.calendarId);
 			if (oCalendar)
 			{
 				aTasks.push(oTaskData.id);
@@ -1141,7 +1142,7 @@ CCalendarView.prototype.onGetTasksResponse = function (oResponse, oRequest)
 				}
 			}
 		}, this);
-		
+
 		_.each(aCalendarIds, function (sCalendarId){
 			oCalendar = this.calendars.getCalendarById(sCalendarId);
 			if (oCalendar && oCalendar.eventsCount() > 0 && oCalendar.active())
@@ -1152,7 +1153,7 @@ CCalendarView.prototype.onGetTasksResponse = function (oResponse, oRequest)
 
 		this.refreshView();
 	}
-	
+
 	this.setAutoReloadTimer();
 	this.checkStarted(false);
 };
@@ -1166,11 +1167,11 @@ CCalendarView.prototype.setCalendarGridVisibility = function ()
 		.css('visibility', '')
 	;
 };
-	
+
 CCalendarView.prototype.getUnusedColor = function ()
 {
 	var colors = _.difference(this.colors, this.calendars.getColors());
-	
+
 	return (colors.length > 0) ? colors[0] :  this.colors[0];
 };
 
@@ -1268,7 +1269,7 @@ CCalendarView.prototype.onUpdateCalendarResponse = function (oResponse, oRequest
 			oParameters = oRequest.Parameters,
 			oCalendar = this.calendars.getCalendarById(oParameters.Id)
 		;
-		
+
 		if (oCalendar)
 		{
 			oCalendar.name(oParameters.Name);
@@ -1307,7 +1308,7 @@ CCalendarView.prototype.onUpdateCalendarColorResponse = function (oResponse, oRe
 			oParameters = oRequest.Parameters,
 			oCalendar = this.calendars.getCalendarById(oParameters.Id)
 		;
-		
+
 		if (oCalendar)
 		{
 			oCalendar.color(oParameters.Color);
@@ -1355,7 +1356,7 @@ CCalendarView.prototype.onUpdateCalendarPublicResponse = function (oResponse, oR
 			oParameters = oRequest.Parameters,
 			oCalendar = this.calendars.getCalendarById(oParameters.Id)
 		;
-		
+
 		if (oCalendar)
 		{
 			oCalendar.isPublic(oParameters.IsPublic);
@@ -1382,11 +1383,11 @@ CCalendarView.prototype.deleteCalendar = function (sId, bIsUnsubscribe)
 			}
 		}, this)
 	;
-	
+
 	if (!this.isPublic && oCalendar)
 	{
 		Popups.showPopup(ConfirmPopup, [sConfirm, fRemove]);
-	}	
+	}
 };
 
 /**
@@ -1401,7 +1402,7 @@ CCalendarView.prototype.onDeleteCalendarResponse = function (oResponse, oRequest
 			oParameters = oRequest.Parameters,
 			oCalendar = this.calendars.getCalendarById(oParameters.Id)
 		;
-		
+
 		if (oCalendar && !oCalendar.isDefault)
 		{
 			if (this.calendars.currentCal().id === oCalendar.id)
@@ -1428,11 +1429,11 @@ CCalendarView.prototype.onEventDragStop = function (oEvent)
 	if (this.delayOnEventResult && this.delayOnEventResultData && 0 < this.delayOnEventResultData.length)
 	{
 		this.delayOnEventResult = false;
-		
+
 		_.each(this.delayOnEventResultData, function (aData) {
 			self.onEventActionResponse(aData[0], aData[1], false);
 		});
-		
+
 		this.delayOnEventResultData = [];
 		this.refreshView();
 	}
@@ -1480,7 +1481,7 @@ CCalendarView.prototype.createEventInCurrentCalendar = function ()
 CCalendarView.prototype.createEventToday = function (oCalendar)
 {
 	var oToday = moment();
-	
+
 	if (oToday.minutes() > 30)
 	{
 		oToday.add(60 - oToday.minutes(), 'minutes');
@@ -1492,7 +1493,7 @@ CCalendarView.prototype.createEventToday = function (oCalendar)
 	oToday
 		.seconds(0)
 		.milliseconds(0);
-	
+
 	this.openEventPopup(oCalendar, oToday, oToday.clone().add(30, 'minutes'), false);
 };
 
@@ -1644,7 +1645,7 @@ CCalendarView.prototype.eventClickCallback = function (oEventData)
 				{
 					oParams.Start = oEventData.start.clone();
 					oParams.Start = oParams.Start.local();
-					
+
 					oParams.End = oEventData.end.clone();
 					oParams.End = oParams.End.local();
 				}
@@ -1652,7 +1653,7 @@ CCalendarView.prototype.eventClickCallback = function (oEventData)
 			}
 		}, this)
 	;
-	
+
 	if (oEventData.rrule)
 	{
 		if (oEventData.excluded)
@@ -1678,12 +1679,12 @@ CCalendarView.prototype.eventClickCallback = function (oEventData)
 CCalendarView.prototype.eventAction = function (sMethod, oParameters, fRevertFunc)
 {
 	var oCalendar = this.calendars.getCalendarById(oParameters.calendarId);
-	
+
 	if (!oCalendar.isEditable())
 	{
 		if (fRevertFunc)
 		{
-			fRevertFunc();		
+			fRevertFunc();
 		}
 	}
 	else
@@ -1694,7 +1695,7 @@ CCalendarView.prototype.eventAction = function (sMethod, oParameters, fRevertFun
 			{
 				this.revertFunction = fRevertFunc;
 			}
-			
+
 			Ajax.send(
 				sMethod,
 				oParameters,
@@ -1710,10 +1711,10 @@ CCalendarView.prototype.eventAction = function (sMethod, oParameters, fRevertFun
 CCalendarView.prototype.updateEvent = function (oEventData)
 {
 	var oParameters = this.getParamsFromEventData(oEventData);
-	
+
 	oParameters.selectStart = this.getDateFromCurrentView('start');
 	oParameters.selectEnd = this.getDateFromCurrentView('end');
-	
+
 	if (oEventData.modified)
 	{
 		this.calendars.setDefault(oEventData.newCalendarId);
@@ -1729,7 +1730,7 @@ CCalendarView.prototype.updateEvent = function (oEventData)
 CCalendarView.prototype.moveEvent = function (oEventData, delta, revertFunc)
 {
 	var oParameters = this.getParamsFromEventData(oEventData);
-	
+
 	oParameters.selectStart = this.getDateFromCurrentView('start');
 	oParameters.selectEnd = this.getDateFromCurrentView('end');
 	if (!this.isPublic)
@@ -1743,8 +1744,8 @@ CCalendarView.prototype.moveEvent = function (oEventData, delta, revertFunc)
 			oParameters.allEvents = Enums.CalendarEditRecurrenceEvent.AllEvents;
 			this.eventAction('UpdateEvent', oParameters, revertFunc);
 		}
-	}	
-	
+	}
+
 };
 
 /**
@@ -1771,7 +1772,7 @@ CCalendarView.prototype.resizeEvent = function (oEventData, delta, revertFunc)
 			}
 		}, this)
 	;
-	
+
 	oParameters.selectStart = this.getDateFromCurrentView('start');
 	oParameters.selectEnd = this.getDateFromCurrentView('end');
 	if (oEventData.rrule)
@@ -1830,14 +1831,14 @@ CCalendarView.prototype.onEventActionResponse = function (oResponse, oRequest, b
 		oEvent = null,
 		iScrollTop = 0
 	;
-	
+
 	if (oResponse && oResponse.Result && oCalendar)
 	{
 		iScrollTop = $('.calendar .fc-widget-content .scroll-inner').scrollTop();
 		if (oRequest.Method === 'CreateEvent' || oRequest.Method === 'UpdateEvent')
 		{
 			oEvent = oCalendar.getEvent(oParameters.id);
-			
+
 			if ((oEvent && oEvent.rrule || oParameters.rrule) && oParameters.allEvents === Enums.CalendarEditRecurrenceEvent.AllEvents)
 			{
 				oCalendar.removeEventByUid(oParameters.uid, true);
@@ -1846,18 +1847,18 @@ CCalendarView.prototype.onEventActionResponse = function (oResponse, oRequest, b
 			{
 				oCalendar.removeEvent(oParameters.id);
 			}
-			
+
 			if (oParameters.newCalendarId && oParameters.newCalendarId !== oParameters.calendarId)
 			{
-				oCalendar = this.calendars.getCalendarById(oParameters.newCalendarId);			
+				oCalendar = this.calendars.getCalendarById(oParameters.newCalendarId);
 			}
 
 			_.each(oResponse.Result.Events, function (oEventData) {
 				oCalendar.addEvent(oEventData);
 			}, this);
-			
+
 			oCalendar.sSyncToken = oResponse.Result.SyncToken;
-			
+
 			if (!oCalendar.active())
 			{
 				oCalendar.active(true);
@@ -1873,7 +1874,7 @@ CCalendarView.prototype.onEventActionResponse = function (oResponse, oRequest, b
 		}
 		else if (oRequest.Method === 'DeleteEvent')
 		{
-			oCalendar.sSyncToken = oResponse.Result; 
+			oCalendar.sSyncToken = oResponse.Result;
 			if(oParameters.allEvents === Enums.CalendarEditRecurrenceEvent.OnlyThisInstance)
 			{
 				oCalendar.removeEvent(oParameters.id);
@@ -1899,13 +1900,13 @@ CCalendarView.prototype.onEventActionResponse = function (oResponse, oRequest, b
 	else
 	{
 		Api.showErrorByCode(oResponse, TextUtils.i18n('%MODULENAME%/ERROR_EVENT_NOT_UPDATED'));
-		
+
 		if (this.revertFunction)
 		{
 			this.revertFunction();
 		}
 	}
-	
+
 	this.revertFunction = null;
 };
 
@@ -1937,10 +1938,10 @@ CCalendarView.prototype.refreshView = function () {};
  */
 CCalendarView.prototype.initUploader = function ()
 {
-	var 
+	var
 		self = this
 	;
-	
+
 	if (this.uploaderArea())
 	{
 		this.oJua = new CJua({
