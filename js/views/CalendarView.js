@@ -459,7 +459,8 @@ CCalendarView.prototype.onBind = function ()
 
 CCalendarView.prototype.onShow = function ()
 {
-	if (!this.initialized())
+	var bInitialized = this.initialized();
+	if (!bInitialized)
 	{
 		this.initDatePicker();
 
@@ -490,7 +491,10 @@ CCalendarView.prototype.onShow = function ()
 	}
 
 	this.$calendarGrid.fullCalendar();
-	this.getCalendars(); // TODO: sash
+	if (bInitialized)
+	{
+		this.getCalendars();
+	}
 	this.refetchEvents();
 };
 
@@ -976,22 +980,25 @@ CCalendarView.prototype.onGetCalendarsResponse = function (oResponse, oParameter
 		this.loaded = true;
 
 		_.each(oResponse.Result.Calendars, function (oCalendarData) {
-			oCalendar = this.calendars.parseCalendar(oCalendarData);
-			aCalendarIds.push(oCalendar.id);
-			oClientCalendar = this.calendars.getCalendarById(oCalendar.id);
-			if (this.needsToReload || (oClientCalendar && oClientCalendar.sSyncToken) !== (oCalendar && oCalendar.sSyncToken))
+			if (!_.isEmpty(oCalendarData))
 			{
-				oCalendar = this.calendars.parseAndAddCalendar(oCalendarData);
-				if (oCalendar)
+				oCalendar = this.calendars.parseCalendar(oCalendarData);
+				aCalendarIds.push(oCalendar.id);
+				oClientCalendar = this.calendars.getCalendarById(oCalendar.id);
+				if (this.needsToReload || (oClientCalendar && oClientCalendar.sSyncToken) !== (oCalendar && oCalendar.sSyncToken))
 				{
-					oCalendar.davUrl(Types.pString(oResponse.Result.ServerUrl));
-					if (this.isPublic)
+					oCalendar = this.calendars.parseAndAddCalendar(oCalendarData);
+					if (oCalendar)
 					{
-						var oPublicHeaderItem = require('modules/%ModuleName%/js/views/PublicHeaderItem.js');
-						oPublicHeaderItem.linkText(oCalendar.name());
-						this.browserTitle(oCalendar.name());
+						oCalendar.davUrl(Types.pString(oResponse.Result.ServerUrl));
+						if (this.isPublic)
+						{
+							var oPublicHeaderItem = require('modules/%ModuleName%/js/views/PublicHeaderItem.js');
+							oPublicHeaderItem.linkText(oCalendar.name());
+							this.browserTitle(oCalendar.name());
+						}
+						aNewCalendarIds.push(oCalendar.id);
 					}
-					aNewCalendarIds.push(oCalendar.id);
 				}
 			}
 		}, this);
@@ -999,7 +1006,7 @@ CCalendarView.prototype.onGetCalendarsResponse = function (oResponse, oParameter
 		if (this.calendars.count() === 0 && this.isPublic && this.needsToReload)
 		{
 			this.browserTitle(TextUtils.i18n('%MODULENAME%/INFO_NO_CALENDAR_FOUND'));
-			Api.showErrorByCode(0, TextUtils.i18n('%MODULENAME%/INFO_NO_CALENDAR_FOUND'));
+			Api.showErrorByCode(0, TextUtils.i18n('%MODULENAME%/INFO_NO_CALENDAR_FOUND'), true);
 		}
 
 		this.needsToReload = false;
@@ -1013,7 +1020,7 @@ CCalendarView.prototype.onGetCalendarsResponse = function (oResponse, oParameter
 			}
 		}, this);
 
-		this.getEvents(aNewCalendarIds);
+		this.requestEvents(aNewCalendarIds);
 	}
 	else
 	{
@@ -1025,7 +1032,7 @@ CCalendarView.prototype.onGetCalendarsResponse = function (oResponse, oParameter
 /**
  * @param {Array} aCalendarIds
  */
-CCalendarView.prototype.getEvents = function (aCalendarIds)
+CCalendarView.prototype.requestEvents = function (aCalendarIds)
 {
 	if (aCalendarIds.length > 0)
 	{
