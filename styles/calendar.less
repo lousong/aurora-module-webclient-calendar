@@ -1051,6 +1051,9 @@ fc-month-view .fc-content,
 			&.task .icon:before {
 				content: "\e90b";
 			}
+			&.task.selected .icon:before {
+				color: #000;
+			}
 			
 			&.guests {
 				.icon:before {
@@ -1197,7 +1200,7 @@ fc-month-view .fc-content,
 				float: right;
 				font-size: 0;
 				height: 0;
-				margin-right: 53px;
+				margin-right: 8px;
 				width: 0;
 			}
 
@@ -1323,6 +1326,29 @@ fc-month-view .fc-content,
 			top: 5px;
 			width: 16px;
 		}
+	}
+	
+	.show_left_side_panel {
+		background: #fff;
+		margin-left: -40px;
+		padding-left: 40px;
+	}
+	
+	.left_side_panel {
+		float: left;
+		margin-left: -40px;
+		padding-top: 54px;
+		padding-left: 20px;
+		width: 20px;
+		opacity: 0;
+		visibility: hidden;
+	}	
+	
+	.show_left_side_panel .left_side_panel {
+		opacity: 1;
+		visibility: visible;
+
+		.transition (opacity 300ms ease 300ms);
 	}
 	
 	.show_side_panel {

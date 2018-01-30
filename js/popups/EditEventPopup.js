@@ -1325,4 +1325,9 @@ CEditEventPopup.prototype.setDayOfWeek = function ()
 	}
 };
 
+CEditEventPopup.prototype.switchTask = function (isTask)
+{
+	this.isTask(isTask);
+}
+
 module.exports = new CEditEventPopup();

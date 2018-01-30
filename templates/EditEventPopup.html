@@ -1,9 +1,20 @@
 <div class="popup calendar_popup calendar_event" style="display: none;">
 	<div class="mask clear" data-bind="visible: dateEdit(), click: onMainPanelClick"></div>
 	<div class="mask" data-bind="click: cancelPopup"></div>
-	<div class="popup_panel" data-bind="css: {'show_side_panel': bAllowAppointments && (guestsEdit() || attendees().length > 0), 'editable': isEditable, 'offset': dateEdit()}">
+	<div class="popup_panel" data-bind="css: {'show_left_side_panel': isTask, 'show_side_panel': bAllowAppointments && (guestsEdit() || attendees().length > 0), 'editable': isEditable, 'offset': dateEdit()}">
 
 		<div class="panel_wrap clearfix">
+			<div class="left_side_panel fields">
+				<div class="fieldset">
+					<div class="row name">
+						<label class="custom_checkbox" data-bind="css: {'checked': status}">
+							<span class="icon"></span>
+							<input type="checkbox" data-bind="checked: status"/>
+						</label>
+					</div>
+				</div>
+			</div>
+
 			<div class="side_panel fields">
 				<div class="fieldset">
 					<div class="row owner">
@@ -193,18 +204,13 @@
 
 					<div class="fieldset main">
 						<div style="display: flex;">
-							<div class="row name" style="margin-top: 10px; padding: 5px;" data-bind="visible: eventType() === 'todo'">
-								<label class="custom_checkbox" data-bind="css: {'checked': status}">
-									<span class="icon"></span>
-									<input type="checkbox" data-bind="checked: status"/>
-								</label>
-							</div>
 							<div class="row name" data-bind="css: {'focused': subjectFocus(), 'filled': subject().length > 0}">
 								<label for="event_subject" class="label placeholder" data-bind="i18n: {'key': '%MODULENAME%/LABEL_SUBJECT'}"></label>
 								<div class="value scrollable_field" data-bind="customScrollbar: {x: false}">
 									<div class="scroll-inner">
 										<span class="input" data-bind="text: subject, visible: !isEditable()"></span>
 										<textarea id="event_subject" class="input autosize" data-bind="
+											style: {'text-decoration': status() ? 'line-through' : 'none'},
 											autosize: {minHeight: 40, autosizeTrigger: autosizeTrigger, scrollableHeight: 110}, 
 											onEnter: onSaveClick,
 											value: subject, valueUpdate: 'afterkeydown', hasfocus: subjectFocus, visible: isEditable()"></textarea>
@@ -234,13 +240,6 @@
 										value: location, valueUpdate: 'afterkeydown', hasfocus: locationFocus, visible: isEditable()"></textarea>
 								</div>
 							</div>
-						</div>
-						<div class="row name" style="margin-top: 10px; padding: 5px;">
-							<label class="custom_checkbox" data-bind="css: {'checked': isTask}">
-								<span class="icon"></span>
-								<input type="checkbox" data-bind="checked: isTask" id="isTask"/>
-							</label>
-							<label for="isTask" data-bind="i18n: {'key': '%MODULENAME%/LABEL_IS_TASK'}"></label>							
 						</div>
 					</div>
 					<div class="alarms_helper" data-bind="foreach: displayedAlarms()">
@@ -283,6 +282,13 @@
 						</div>
 
 						<div class="additional_buttons">
+							<span class="item task"  data-bind="
+									css: {'selected' : isTask}, 
+									customTooltip: '%MODULENAME%/LABEL_THIS_IS_A_TASK',
+									click: switchTask(!isTask())">
+								<span class="icon"></span>
+								<span class="text" data-bind="i18n: {'key': '%MODULENAME%/LABEL_THIS_IS_A_TASK'}"></span>
+							</span>
 							<span class="item alarm" data-bind="click: isEditableReminders() ? addFirstAlarm : '', 
 									css: {'selected': displayedAlarms().length > 0, 'readonly': !isEditableReminders()},
 									customTooltip: '%MODULENAME%/ACTION_ADD_FIRST_ALARM', visible: isEditableReminders()">
