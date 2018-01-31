@@ -210,7 +210,7 @@
 									<div class="scroll-inner">
 										<span class="input" data-bind="text: subject, visible: !isEditable()"></span>
 										<textarea id="event_subject" class="input autosize" data-bind="
-											style: {'text-decoration': status() ? 'line-through' : 'none'},
+											style: {'text-decoration': status() && isTask() ? 'line-through' : 'none'},
 											autosize: {minHeight: 40, autosizeTrigger: autosizeTrigger, scrollableHeight: 110}, 
 											onEnter: onSaveClick,
 											value: subject, valueUpdate: 'afterkeydown', hasfocus: subjectFocus, visible: isEditable()"></textarea>
