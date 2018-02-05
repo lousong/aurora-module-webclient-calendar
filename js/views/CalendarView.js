@@ -196,7 +196,7 @@ function CCalendarView()
 			{
 				var
 					content = oEl.find('.fc-title'),
-					completed = $("<label class=\"custom_checkbox\"><span class=\"icon\"></span><input type=\"checkbox\"></label>")
+					completed = $("<label class=\"custom_checkbox round\"><span class=\"icon\"></span><input type=\"checkbox\"></label>")
 				;
 
 				if (oEv.status)

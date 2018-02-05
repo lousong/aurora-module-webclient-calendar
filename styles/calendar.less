@@ -1337,11 +1337,21 @@ fc-month-view .fc-content,
 	.left_side_panel {
 		float: left;
 		margin-left: -40px;
-		padding-top: 54px;
+		padding-top: 50px;
 		padding-left: 20px;
 		width: 20px;
 		opacity: 0;
 		visibility: hidden;
+		
+		.custom_checkbox.round .icon {
+			padding: 5px;
+			border-radius: 50%;
+
+			&:before {
+				margin-left: -2px;
+				font-size: 13pt;
+			}
+		}
 	}	
 	
 	.show_left_side_panel .left_side_panel {
@@ -1569,4 +1579,13 @@ fc-month-view .fc-content,
 	white-space: normal;
 	-webkit-line-clamp: 3;//number of lines to show
 	-webkit-box-orient: vertical;
+	
+	.custom_checkbox.round .icon{
+		border-radius: 50%;
+		
+		&:before {
+			margin-top: 1px;
+		}
+	}
+	
 }
