@@ -191,6 +191,7 @@ function CEditEventPopup()
 	this.eventType = ko.observable('event');
 	this.status = ko.observable(false);
 	this.isTask = ko.observable(false);
+	this.isTaskApp = ko.observable(false);
 	
 	this.isTask.subscribe(function(value) {
 		this.eventType(value ? 'todo' : 'event');
@@ -356,6 +357,8 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	this.location(oParameters.Location || '');
 	this.description(oParameters.Description || '');
 	this.allEvents(oParameters.AllEvents || Enums.CalendarEditRecurrenceEvent.AllEvents);
+	
+	this.isTaskApp(oParameters.IsTask || false);
 
 	this.populateAlarms(oParameters.Alarms);
 
