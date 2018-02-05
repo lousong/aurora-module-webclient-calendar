@@ -358,7 +358,8 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	this.description(oParameters.Description || '');
 	this.allEvents(oParameters.AllEvents || Enums.CalendarEditRecurrenceEvent.AllEvents);
 	
-	this.isTaskApp(oParameters.IsTask || false);
+	this.isTaskApp(oParameters.IsTaskApp || false);
+	console.log(this.isTaskApp());
 
 	this.populateAlarms(oParameters.Alarms);
 
