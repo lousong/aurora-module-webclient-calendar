@@ -930,8 +930,6 @@ CEditEventPopup.prototype.autocompleteCallback = function (oRequest, fResponse)
 	}
 };
 
-CEditEventPopup.prototype.autocompleteDeleteItem = ModulesManager.run('ContactsWebclient', 'getSuggestionsAutocompleteDeleteHandler');
-
 /**
  * @param {Object} oRepeatRule
  */
