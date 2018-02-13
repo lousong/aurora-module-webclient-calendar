@@ -793,11 +793,11 @@ CCalendarView.prototype.highlightWeekInDayPicker = function ()
 CCalendarView.prototype.changeDateTitle = function ()
 {
 	var
-		oDate = this.$calendarGrid.fullCalendar('getDate'),
+		oDate = this.$calendarGrid.fullCalendar('getDate').clone().locale(moment.locale()),
 		oView = this.$calendarGrid.fullCalendar('getView'),
 		sTitle = oDate.format('MMMM YYYY'),
-		oStart = oView.intervalStart,
-		oEnd = oView.intervalEnd ? oView.intervalEnd.add(-1, 'days') : null
+		oStart = oView.intervalStart.clone().locale(moment.locale()),
+		oEnd = oView.intervalEnd ? oView.intervalEnd.clone().add(-1, 'days').locale(moment.locale()) : null
 	;
 
 	switch (oView.name)
@@ -812,6 +812,7 @@ CCalendarView.prototype.changeDateTitle = function ()
 			}
 			break;
 	}
+	
 	this.dateTitle(sTitle);
 };
 
