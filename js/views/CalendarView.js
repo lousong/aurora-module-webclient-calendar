@@ -4,7 +4,7 @@ var
 	_ = require('underscore'),
 	$ = require('jquery'),
 	ko = require('knockout'),
-	moment = require('moment'),
+	moment = require('moment-timezone'),
 
 	DateUtils = require('%PathToCoreWebclientModule%/js/utils/Date.js'),
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
@@ -122,8 +122,16 @@ function CCalendarView()
 
 	this.startDateTime = 0;
 	this.endDateTime = 0;
-
 	this.needsToReload = false;
+	this.bTimezoneChanged = false;
+	
+	UserSettings.timezone.subscribe(function () {
+		this.startDateTime = 0;
+		this.endDateTime = 0;
+		this.needsToReload = true;
+		this.bTimezoneChanged = true;
+		this.getCalendars();
+	}, this);
 
 	this.calendarListClick = function (oItem) {
 		oItem.active(!oItem.active());
@@ -1075,12 +1083,13 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
 				{
 					oCalendar.addEvent(oEventData);
 				}
-				else if (oEvent.lastModified !== oEventData.lastModified)
+				else if (this.bTimezoneChanged || oEvent.lastModified !== oEventData.lastModified)
 				{
 					oCalendar.updateEvent(oEventData);
 				}
 			}
 		}, this);
+		this.bTimezoneChanged = false;
 
 		_.each(aCalendarIds, function (sCalendarId){
 			oCalendar = this.calendars.getCalendarById(sCalendarId);
@@ -1104,7 +1113,7 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
  */
 CCalendarView.prototype.getTasks = function (aCalendarIds)
 {
-	if (aCalendarIds.length > 0)
+	if (Types.isNonEmptyArray(aCalendarIds))
 	{
 		Ajax.send('GetTasks', {
 			'CalendarIds': aCalendarIds,
@@ -1510,6 +1519,13 @@ CCalendarView.prototype.createEventToday = function (oCalendar)
  */
 CCalendarView.prototype.getParamsFromEventData = function (oEventData)
 {
+	var
+		sBrowserTimezone = moment.tz.guess(),
+		sServerTimezone = UserSettings.timezone(),
+		oStart = moment.tz(oEventData.start.format('YYYY-MM-DD HH:mm:ss'), sServerTimezone || sBrowserTimezone),
+		oEnd = moment.tz(oEventData.end.format('YYYY-MM-DD HH:mm:ss'), sServerTimezone || sBrowserTimezone)
+	;
+	
 	return {
 		id: oEventData.id,
 		uid: oEventData.uid,
@@ -1526,10 +1542,10 @@ CCalendarView.prototype.getParamsFromEventData = function (oEventData)
 		excluded: oEventData.excluded,
 		allEvents: oEventData.allEvents,
 		modified: oEventData.modified ? 1 : 0,
-		start: oEventData.start.local().toDate(),
-		end: oEventData.end.local().toDate(),
-		startTS: oEventData.start.unix(),
-		endTS: oEventData.end ? oEventData.end.unix() : oEventData.end.unix(),
+		start: oStart.format(),
+		end: oEnd.format(),
+		startTS: oStart.unix(),
+		endTS: oEnd.unix(),
 		rrule: oEventData.rrule ? JSON.stringify(oEventData.rrule) : null,
 		type: oEventData.type,
 		status: oEventData.status
@@ -1738,7 +1754,7 @@ CCalendarView.prototype.updateEvent = function (oEventData)
 CCalendarView.prototype.moveEvent = function (oEventData, delta, revertFunc)
 {
 	var oParameters = this.getParamsFromEventData(oEventData);
-
+	
 	oParameters.selectStart = this.getDateFromCurrentView('start');
 	oParameters.selectEnd = this.getDateFromCurrentView('end');
 	if (!this.isPublic)
