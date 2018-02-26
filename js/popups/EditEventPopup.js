@@ -292,6 +292,9 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	
 	this.iDiffInMinutes = null;
 
+	this.eventType(oParameters.Type || '');
+	this.isTask(this.eventType() === 'todo');
+
 	this.calendarId(oParameters.SelectedCalendar);
 	this.calendars = oParameters.Calendars;
 
@@ -351,15 +354,13 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	this.recurrenceId(oParameters.RecurrenceId || null);
 	
 	this.subject(oParameters.Subject || '');
-	this.eventType(oParameters.Type || '');
-	this.isTask(this.eventType() === 'todo');
+	
 	this.status(oParameters.Status || false);
 	this.location(oParameters.Location || '');
 	this.description(oParameters.Description || '');
 	this.allEvents(oParameters.AllEvents || Enums.CalendarEditRecurrenceEvent.AllEvents);
 	
 	this.isTaskApp(oParameters.IsTaskApp || false);
-	console.log(this.isTaskApp());
 
 	this.populateAlarms(oParameters.Alarms);
 
@@ -586,6 +587,7 @@ CEditEventPopup.prototype.hideAll = function ()
 
 CEditEventPopup.prototype.cleanAll = function ()
 {
+	this.isTask(false);
 	this.subject('');
 	this.description('');
 	this.location('');
