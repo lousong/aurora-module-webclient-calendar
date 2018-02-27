@@ -203,34 +203,37 @@ function CCalendarView()
 			if (oEv.type === 'todo')
 			{
 				var
-					content = oEl.find('.fc-title'),
-					completed = $("<label class=\"custom_checkbox round\"><span class=\"icon\"></span><input type=\"checkbox\"></label>")
+					content = oEl.find('.fc-content'),
+					title = content.find('.fc-title'),
+					completed = $("<label class=\"custom_checkbox round\"><span class=\"icon\"></span><input type=\"checkbox\"></label>"),
+					fcTime = content.find('.fc-time')
 				;
-
+				
 				if (oEv.status)
 				{
 					completed.addClass('checked');
-					content.css("text-decoration-line", "line-through");
+					title.css("text-decoration-line", "line-through");
 				}
 				else
 				{
 					completed.removeClass('checked');
-					content.css("text-decoration-line", "unset");
+					title.css("text-decoration-line", "unset");
 				}
 
-				content.prepend(completed);
+				fcTime.css("margin-left", "18px");
+				title.prepend(completed);
 				completed.click(function(event){
 					if (oEv.status)
 					{
 						oEv.status = false;
 						completed.removeClass('checked');
-						content.css("text-decoration-line", "unset");
+						title.css("text-decoration-line", "unset");
 					}
 					else
 					{
 						oEv.status = true;
 						completed.addClass('checked');
-						content.css("text-decoration-line", "line-through");
+						title.css("text-decoration-line", "line-through");
 					}
 					oEv.modified = true;
 					self.updateEvent(oEv);
