@@ -193,7 +193,7 @@ function CEditEventPopup()
 	this.isTask = ko.observable(false);
 	this.isTaskApp = ko.observable(false);
 	this.withDate = ko.observable(true);
-}	
+
 	this.isTask.subscribe(function(value) {
 		this.eventType(value ? 'todo' : 'event');
 	}, this);
@@ -234,7 +234,7 @@ function CEditEventPopup()
 	this.aReminderPhrase = TextUtils.i18n('%MODULENAME%/INFO_REMINDER').split('%');
 
 	this.isAppointmentButtonsVisible = ko.observable(false);
-
+}
 
 _.extendOwn(CEditEventPopup.prototype, CAbstractPopup.prototype);
 
