@@ -232,6 +232,7 @@ function CEditEventPopup()
 	this.aReminderPhrase = TextUtils.i18n('%MODULENAME%/INFO_REMINDER').split('%');
 
 	this.isAppointmentButtonsVisible = ko.observable(false);
+	this.withDate = ko.observable(true);
 }
 
 _.extendOwn(CEditEventPopup.prototype, CAbstractPopup.prototype);
@@ -283,12 +284,34 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 {
 	var
 		owner = App.getUserPublicId(),
-		oEndMomentDate = oParameters.End ? oParameters.End.clone() : null,
-		oStartMomentDate = oParameters.Start.clone(),
+		oEndMomentDate = null,
+		oStartMomentDate = null,
 		sAttendee = '',
 		oCalendar = null,
-		sCalendarOwner = ''
+		sCalendarOwner = '',
+		oToday = moment()
 	;
+
+	this.withDate(oParameters.Start && oParameters.End);
+
+	if (!oParameters.Start && !oParameters.End)
+	{
+		if (oToday.minutes() > 30)
+		{
+			oToday.add(60 - oToday.minutes(), 'minutes');
+		}
+		else
+		{
+			oToday.minutes(30);
+		}
+		oToday
+			.seconds(0)
+			.milliseconds(0);	
+		oParameters.Start = oToday;
+		oParameters.End = oToday.clone().add(30, 'minutes');
+	}
+	oEndMomentDate = oParameters.End ? oParameters.End.clone() : null;
+	oStartMomentDate = oParameters.Start ? oParameters.Start.clone() : null;
 	
 	this.iDiffInMinutes = null;
 
@@ -318,19 +341,24 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	
 	this.allDay(oParameters.AllDay);
 	
-	this.setStartDate(oStartMomentDate, true);
-	this.startTime(oStartMomentDate.format(this.timeFormatMoment));
-
+	if (oStartMomentDate)
+	{
+		this.setStartDate(oStartMomentDate, true);
+		this.startTime(oStartMomentDate.format(this.timeFormatMoment));
+	}
 	if (oEndMomentDate && this.allDay())
 	{
 		oEndMomentDate.subtract(1, 'days');
 	}
-	if (!oEndMomentDate)
+	if (!oEndMomentDate && oStartMomentDate)
 	{
 		oEndMomentDate = oStartMomentDate;
 	}
-	this.setEndDate(oEndMomentDate, true);
-	this.endTime(oEndMomentDate.format(this.timeFormatMoment));
+	if (oEndMomentDate)
+	{
+		this.setEndDate(oEndMomentDate, true);
+		this.endTime(oEndMomentDate.format(this.timeFormatMoment));
+	}
 
 	if (this.calendars)
 	{
@@ -449,7 +477,6 @@ CEditEventPopup.prototype.onSaveClick = function ()
 					allEvents:  this.allEvents(),
 					subject: this.subject(),
 					title: CalendarUtils.getTitleForEvent(this.subject(), this.description()),
-					start: oStart,
 					allDay: this.allDay(),
 					location: this.location(),
 					description: this.description(),
@@ -459,6 +486,7 @@ CEditEventPopup.prototype.onSaveClick = function ()
 					modified: this.modified,
 					type: this.eventType(),
 					status: this.status(),
+					withDate: this.withDate()
 				},
 				iAlways = Types.pInt(this.always())
 			;
@@ -467,6 +495,8 @@ CEditEventPopup.prototype.onSaveClick = function ()
 			{
 				oEnd.add(1, 'days');
 			}
+			
+			oEventData.start = oStart;
 			oEventData.end = oEnd;
 
 			if (iPeriod)
@@ -587,6 +617,14 @@ CEditEventPopup.prototype.hideAll = function ()
 
 CEditEventPopup.prototype.cleanAll = function ()
 {
+	if (this.isTask())
+	{
+		this.withDate(false);
+	}
+	else
+	{
+		this.withDate(true);
+	}
 	this.isTask(false);
 	this.subject('');
 	this.description('');

@@ -71,7 +71,7 @@
 
 				<div class="fields">
 					<div class="fieldset">
-						<div class="row dates" data-bind="click: isEditable() ? showDates : '', css: {'editable': isEditable()}">
+						<div class="row dates" data-bind="visible: withDate() || !isTask(), click: isEditable() ? showDates : '', css: {'editable': isEditable()}">
 							<span class="value" data-bind="text: startDate()"></span>,
 							<span class="value" data-bind="text: !allDay() ? ', ' : ' '"></span>
 							<span class="value" data-bind="text: startTime, visible: !allDay()"></span>
@@ -80,6 +80,8 @@
 							<span class="value" data-bind="text: !allDay() ? ', ' : ' ', visible: !isEvOneDay()"></span>
 							<span class="value" data-bind="text: endTime, visible: !allDay() && (!isEvOneDay() || !isEvOneTime())"></span>
 						</div>
+						<span class="dates close" data-bind="style: {'float': 'none'}, visible: withDate() && isTask(), click: function(){withDate(false);}"></span>
+						<div class="row dates" data-bind="visible: !withDate() && isTask() , click: function(){withDate(true);}"><a>Add date</a></div>
 
 						<span data-bind="css: {'repeat': isRepeat()}, customTooltip: '%MODULENAME%/INFO_RECURRING_EVENT'"></span>
 

@@ -1552,7 +1552,8 @@ CCalendarView.prototype.getParamsFromEventData = function (oEventData)
 		endTS: oEnd.unix(),
 		rrule: oEventData.rrule ? JSON.stringify(oEventData.rrule) : null,
 		type: oEventData.type,
-		status: oEventData.status
+		status: oEventData.status,
+		withDate: oEventData.withDate
 	};
 };
 
@@ -1615,7 +1616,7 @@ CCalendarView.prototype.openEventPopup = function (oCalendar, oStart, oEnd, bAll
 CCalendarView.prototype.createEvent = function (oEventData)
 {
 	var aParameters = this.getParamsFromEventData(oEventData);
-
+	
 	if (!this.isPublic)
 	{
 		aParameters.calendarId = oEventData.newCalendarId;
