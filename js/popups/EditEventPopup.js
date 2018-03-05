@@ -225,6 +225,7 @@ function CEditEventPopup()
 		this.selectedCalendarId();
 		this.status();
 		this.isTask();
+		this.withDate();
 		
 		this.modified = true;
 	}, this);
