@@ -250,7 +250,7 @@
 
 					<div class="buttons clearfix">
 						<div class="subforms">
-							<div class="alarm_form" data-bind="visible: displayedAlarms().length > 0">
+							<div class="alarm_form" data-bind="visible: displayedAlarms().length > 0 && withDate()">
 								<div class="form_content">
 									<div class="alarms" data-bind="foreach: displayedAlarms()">
 										<span class="item alarm">
@@ -294,7 +294,7 @@
 							</span>
 							<span class="item alarm" data-bind="click: isEditableReminders() ? addFirstAlarm : '', 
 									css: {'selected': displayedAlarms().length > 0, 'readonly': !isEditableReminders()},
-									customTooltip: '%MODULENAME%/ACTION_ADD_FIRST_ALARM', visible: isEditableReminders()">
+									customTooltip: '%MODULENAME%/ACTION_ADD_FIRST_ALARM', visible: isEditableReminders() && withDate()">
 								<span class="icon"></span>
 								<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_ADD_FIRST_ALARM'}"></span>
 							</span>
