@@ -1743,7 +1743,7 @@ CCalendarView.prototype.updateEvent = function (oEventData)
 
 	oParameters.selectStart = this.getDateFromCurrentView('start');
 	oParameters.selectEnd = this.getDateFromCurrentView('end');
-
+	
 	if (oEventData.modified)
 	{
 		this.calendars.setDefault(oEventData.newCalendarId);
