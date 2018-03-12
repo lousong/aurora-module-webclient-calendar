@@ -16,6 +16,16 @@ var
 	Settings = require('modules/%ModuleName%/js/Settings.js')
 ;
 
+function GetClosestValue(aTimes, sValue)
+{
+	var
+		oTime = _.find(aTimes, function (oTmpTime) {
+			return oTmpTime.value === sValue;
+		})
+	;
+	return (oTime || !aTimes[0]) ? sValue : aTimes[0].value;
+}
+
 /**
  * @constructor
  */
@@ -30,8 +40,8 @@ function CCalendarSettingsFormView()
 
 	/* Editable fields */
 	this.showWeekends = ko.observable(Settings.HighlightWorkingDays);
-	this.selectedWorkdayStarts = ko.observable(Settings.WorkdayStarts);
-	this.selectedWorkdayEnds = ko.observable(Settings.WorkdayEnds);
+	this.selectedWorkdayStarts = ko.observable(GetClosestValue(this.availableTimes(), Settings.WorkdayStarts));
+	this.selectedWorkdayEnds = ko.observable(GetClosestValue(this.availableTimes(), Settings.WorkdayEnds));
 	this.showWorkday = ko.observable(Settings.HighlightWorkingHours);
 	this.weekStartsOn = ko.observable(Settings.CalendarWeekStartsOn);
 	this.defaultTab = ko.observable(Settings.DefaultTab);
@@ -57,8 +67,8 @@ CCalendarSettingsFormView.prototype.getCurrentValues = function()
 CCalendarSettingsFormView.prototype.revertGlobalValues = function()
 {
 	this.showWeekends(Settings.HighlightWorkingDays);
-	this.selectedWorkdayStarts(Settings.WorkdayStarts);
-	this.selectedWorkdayEnds(Settings.WorkdayEnds);
+	this.selectedWorkdayStarts(GetClosestValue(this.availableTimes(), Settings.WorkdayStarts));
+	this.selectedWorkdayEnds(GetClosestValue(this.availableTimes(), Settings.WorkdayEnds));
 	this.showWorkday(Settings.HighlightWorkingHours);
 	this.weekStartsOn(Settings.WeekStartsOn);
 	this.defaultTab(Settings.DefaultTab);
