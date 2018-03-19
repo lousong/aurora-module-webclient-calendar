@@ -251,6 +251,7 @@ function CCalendarView()
 	this.revertFunction = null;
 
 	this.bAllowShare = Settings.AllowShare;
+	this.bAllowTasks = Settings.AllowTasks;
 
 	this.defaultViewName = ko.computed(function () {
 		switch (Settings.DefaultTab)
@@ -1117,18 +1118,21 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
  */
 CCalendarView.prototype.getTasks = function (aCalendarIds)
 {
-	if (Types.isNonEmptyArray(aCalendarIds))
+	if (this.bAllowTasks)
 	{
-		Ajax.send('GetTasks', {
-			'CalendarIds': aCalendarIds,
-			'Start': this.startDateTime,
-			'End': this.endDateTime,
-			'IsPublic': this.isPublic
-		}, this.onGetTasksResponse, this);		}
-	else
-	{
-		this.setAutoReloadTimer();
-		this.checkStarted(false);
+		if (Types.isNonEmptyArray(aCalendarIds))
+		{
+			Ajax.send('GetTasks', {
+				'CalendarIds': aCalendarIds,
+				'Start': this.startDateTime,
+				'End': this.endDateTime,
+				'IsPublic': this.isPublic
+			}, this.onGetTasksResponse, this);		}
+		else
+		{
+			this.setAutoReloadTimer();
+			this.checkStarted(false);
+		}
 	}
 };
 

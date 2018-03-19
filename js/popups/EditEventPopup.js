@@ -187,6 +187,8 @@ function CEditEventPopup()
 	this.callbackAttendeeActionDecline = null;
 
 	this.bAllowAppointments = Settings.AllowAppointments;
+	console.log(Settings);
+	this.bAllowTasks = Settings.AllowTasks;
 
 	this.eventType = ko.observable('event');
 	this.status = ko.observable(false);

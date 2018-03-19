@@ -14,6 +14,7 @@ module.exports = {
 	AddDescriptionToTitle: false,
 	AllowAppointments: true,
 	AllowShare: true,
+	AllowTasks: true,
 	DefaultTab: '3', // 1 - day, 2 - week, 3 - month
 	HighlightWorkingDays: true,
 	HighlightWorkingHours: true,
@@ -40,6 +41,7 @@ module.exports = {
 			}
 			this.AllowAppointments = Types.pBool(oAppDataSection.AllowAppointments, this.AllowAppointments);
 			this.AllowShare = Types.pBool(oAppDataSection.AllowShare, this.AllowShare);
+			this.AllowTasks = Types.pBool(oAppDataSection.AllowTasks, this.AllowTasks);
 			this.DefaultTab = Types.pString(oAppDataSection.DefaultTab, this.DefaultTab); // 1 - day, 2 - week, 3 - month
 			this.HighlightWorkingDays = Types.pBool(oAppDataSection.HighlightWorkingDays, this.HighlightWorkingDays);
 			this.HighlightWorkingHours = Types.pBool(oAppDataSection.HighlightWorkingHours, this.HighlightWorkingHours);
