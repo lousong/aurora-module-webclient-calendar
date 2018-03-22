@@ -80,7 +80,7 @@ CEditCalendarPopup.prototype.save = function ()
 {
 	if (this.calendarName() === '')
 	{
-		Popups.showPopup(AlertPopup, [TextUtils.i18n('%MODULENAME%/WARNING_BLANK_CALENDAR_NAME')]);
+		Popups.showPopup(AlertPopup, [TextUtils.i18n('%MODULENAME%/ERROR_CALENDAR_NAME_BLANK')]);
 	}
 	else
 	{
