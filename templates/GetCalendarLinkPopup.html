@@ -30,7 +30,8 @@
 				</div>
 			</div>		
 			<div class="buttons">
-				<span class="button" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_CLOSE'}, click: cancelPopup"></span>
+				<span class="button" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_CLOSE'}, visible: !isPublicChanged(), click: cancelPopup"></span>
+				<span class="button" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SAVE'}, visible: isPublicChanged, click: cancelPopup"></span>
 			</div>
 		</div>
 	</div>

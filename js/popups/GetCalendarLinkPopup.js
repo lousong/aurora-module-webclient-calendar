@@ -22,7 +22,11 @@ function CGetCalendarLinkPopup()
 	this.calendarUrl = ko.observable('');
 	this.exportUrl = ko.observable('');
 	this.icsLink = ko.observable('');
+	this.isPublicSourceValue = ko.observable(false);
 	this.isPublic = ko.observable(false);
+	this.isPublicChanged = ko.computed(function () {
+		return this.isPublicSourceValue() !== this.isPublic();
+	}, this);
 	this.pubUrl = ko.observable('');
 }
 
@@ -47,6 +51,7 @@ CGetCalendarLinkPopup.prototype.onOpen = function (fCallback, oCalendar)
 		this.calendarUrl(oCalendar.davUrl() + oCalendar.url());
 		this.exportUrl(oCalendar.exportUrl());
 		this.icsLink(oCalendar.davUrl() + oCalendar.url() + '?export');
+		this.isPublicSourceValue(oCalendar.isPublic());
 		this.isPublic(oCalendar.isPublic());
 		this.pubUrl(oCalendar.pubUrl());
 		this.exportUrl(oCalendar.exportUrl());
