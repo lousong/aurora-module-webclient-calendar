@@ -187,6 +187,7 @@ function CEditEventPopup()
 	this.callbackAttendeeActionDecline = null;
 
 	this.bAllowAppointments = Settings.AllowAppointments;
+	console.log(Settings);
 	this.bAllowTasks = Settings.AllowTasks;
 
 	this.eventType = ko.observable('event');
@@ -294,7 +295,7 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 		oToday = moment()
 	;
 
-	this.withDate(oParameters.Start && oParameters.End);
+	this.withDate(!!oParameters.Start && !!oParameters.End);
 
 	if (!oParameters.Start && !oParameters.End)
 	{
