@@ -197,7 +197,7 @@ function CEditEventPopup()
 	this.withDate = ko.observable(true);
 
 	this.isTask.subscribe(function(value) {
-		this.eventType(value ? 'todo' : 'event');
+		this.eventType(value ? 'VTODO' : 'VEVENT');
 	}, this);
 
 	this.allChanges = ko.computed(function () {
@@ -319,7 +319,7 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	this.iDiffInMinutes = null;
 
 	this.eventType(oParameters.Type || '');
-	this.isTask(this.eventType() === 'todo');
+	this.isTask(this.eventType() === 'VTODO');
 
 	this.calendarId(oParameters.SelectedCalendar);
 	this.calendars = oParameters.Calendars;
@@ -448,7 +448,7 @@ CEditEventPopup.prototype.changeCalendarColor = function (sId)
 
 CEditEventPopup.prototype.onIsTaskClick = function ()
 {
-	this.eventType(this.eventType() === 'todo' ? 'event' : 'todo');
+	this.eventType(this.eventType() === 'VTODO' ? 'VEVENT' : 'VTODO');
 };
 
 CEditEventPopup.prototype.onSaveClick = function ()

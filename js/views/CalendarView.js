@@ -200,7 +200,7 @@ function CCalendarView()
 						+ '<span class="loc-title">' + $.trim(oEv.location.replace(/[\n\r]/g, ' ')) + '</span>');
 			}
 
-			if (oEv.type === 'todo')
+			if (oEv.type === 'VTODO')
 			{
 				var
 					content = oEl.find('.fc-content'),
@@ -236,7 +236,14 @@ function CCalendarView()
 						title.css("text-decoration-line", "line-through");
 					}
 					oEv.modified = true;
+					
+					if (oEv.rrule)
+					{
+						oEv.allEvents = Enums.CalendarEditRecurrenceEvent.OnlyThisInstance;
+					}
+
 					self.updateEvent(oEv);
+					
 					event.preventDefault();
 					event.stopPropagation();
 				});
@@ -1172,7 +1179,7 @@ CCalendarView.prototype.onGetTasksResponse = function (oResponse, oRequest)
 			oCalendar = this.calendars.getCalendarById(sCalendarId);
 			if (oCalendar && oCalendar.eventsCount() > 0 && oCalendar.active())
 			{
-				oCalendar.expungeEvents(aTasks, this.startDateTime, this.endDateTime, 'todo');
+				oCalendar.expungeEvents(aTasks, this.startDateTime, this.endDateTime, 'VTODO');
 			}
 		}, this);
 
