@@ -2077,7 +2077,7 @@ CCalendarView.prototype.uploadToSelectedCalendar = function (selectedCalendarId,
  */
 CCalendarView.prototype.restoreScroll = function (iScrollTop)
 {
-	if (this.domScrollWrapper)
+	if (Types.isPositiveNumber(iScrollTop) && this.domScrollWrapper && this.domScrollWrapper.data('customscroll') && this.domScrollWrapper.data('customscroll')['vertical'])
 	{
 		this.domScrollWrapper.data('customscroll')['vertical'].set(iScrollTop);
 	}

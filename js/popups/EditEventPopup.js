@@ -189,7 +189,7 @@ function CEditEventPopup()
 	this.bAllowAppointments = Settings.AllowAppointments;
 	this.bAllowTasks = Settings.AllowTasks;
 
-	this.eventType = ko.observable('event');
+	this.eventType = ko.observable('VEVENT');
 	this.status = ko.observable(false);
 	this.isTask = ko.observable(false);
 	this.isTaskApp = ko.observable(false);
@@ -317,7 +317,7 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	
 	this.iDiffInMinutes = null;
 
-	this.eventType(oParameters.Type || '');
+	this.eventType(oParameters.Type || 'VEVENT');
 	this.isTask(this.eventType() === 'VTODO');
 
 	this.calendarId(oParameters.SelectedCalendar);
