@@ -531,10 +531,13 @@ CCalendarView.prototype.setTimeline = function ()
 	;
 
 	if (todayDate < nowDate)
-	{// the day has changed
-		this.execCommand("today");
-		this.todayDate = this.$calendarGrid.fullCalendar("getDate").toDate();
-		this.$calendarGrid.fullCalendar("render");
+	{ // the day has changed
+		this.execCommand('gotoDate', now);
+		this.todayDate = this.execCommand('getDate').toDate();
+		var view = this.execCommand('getView');
+		view.unrenderDates();
+		view.renderDates();		
+		this.execCommand('rerenderEvents');
 	}
 
 	// render timeline
@@ -879,14 +882,18 @@ CCalendarView.prototype.activateCustomScrollInDayAndWeekView = function ()
  */
 CCalendarView.prototype.execCommand = function (sCmd, sParam)
 {
+	var 
+		result = null
+	;
 	if (sParam)
 	{
-		this.$calendarGrid.fullCalendar(sCmd, sParam);
+		result = this.$calendarGrid.fullCalendar(sCmd, sParam);
 	}
 	else
 	{
-		this.$calendarGrid.fullCalendar(sCmd);
+		result = this.$calendarGrid.fullCalendar(sCmd);
 	}
+	return result;
 };
 
 CCalendarView.prototype.displayToday = function ()
