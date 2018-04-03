@@ -185,13 +185,13 @@
 													<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_REPEAT_WEEK'}"></span>
 												</span>
 
-												<label data-bind="css: {'checked': always}, visible: repeatPeriod() === Enums.CalendarRepeatPeriod.Daily || repeatPeriod() === Enums.CalendarRepeatPeriod.Weekly">
-													<input type="radio" name="always" value="1" data-bind="checked: always" />
+												<label data-bind="visible: repeatPeriod() === Enums.CalendarRepeatPeriod.Daily || repeatPeriod() === Enums.CalendarRepeatPeriod.Weekly">
+													<input type="radio" name="always" data-bind="checkedValue: 1, checked: always" />
 													<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_REPEAT_ALWAYS'}"></span>
 												</label>
 
 												<label data-bind="visible: repeatPeriod() === Enums.CalendarRepeatPeriod.Daily || repeatPeriod() === Enums.CalendarRepeatPeriod.Weekly">
-													<input type="radio" name="always" value="0" data-bind="checked: always" />
+													<input type="radio" name="always" data-bind="checkedValue: 0, checked: always" />
 													<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_REPEAT_UNTIL'}"></span>
 													<input class="date input" spellcheck="false" type="text" readonly="readonly" data-bind="initDom: repeatEndDom, value: repeatEndDate" />
 												</label>
