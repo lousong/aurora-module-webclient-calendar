@@ -62,6 +62,12 @@ function CCalendarModel()
 	
 	this.startDateTime = 0;
 	this.endDateTime = 0;
+	this.canShare = ko.computed(function () {
+		
+		return (!this.isShared() || this.isShared() && this.access() === Enums.CalendarAccess.Write || this.isOwner())	
+		}, this
+	);
+	this.calendarSharing = Settings.AllowShare;
 }
 
 /**
@@ -106,11 +112,11 @@ CCalendarModel.prototype.parse = function (oData)
 	this.owner(Types.pString(oData.Owner));
 	this.active(Storage.hasData(this.id) ? Storage.getData(this.id) : true);
 	this.isDefault = !!oData.IsDefault;
-	this.access(oData.Access);
 	this.isShared(!!oData.Shared);
 	this.isSharedToAll(!!oData.SharedToAll);
 	this.sharedToAllAccess = oData.SharedToAllAccess;
 	this.isPublic(!!oData.IsPublic);
+	this.access(oData.Access);
 
 	this.color(this.parseCssColor(oData.Color));
 	this.url(Types.pString(oData.Url));

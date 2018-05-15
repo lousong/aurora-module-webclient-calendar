@@ -27,6 +27,7 @@ var
 	GetCalendarLinkPopup = require('modules/%ModuleName%/js/popups/GetCalendarLinkPopup.js'),
 	ImportCalendarPopup = require('modules/%ModuleName%/js/popups/ImportCalendarPopup.js'),
 	SelectCalendarPopup = require('modules/%ModuleName%/js/popups/SelectCalendarPopup.js'),
+	CalendarSharePopup = require('modules/%ModuleName%/js/popups/CalendarSharePopup.js'),
 
 	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
 	CalendarCache = require('modules/%ModuleName%/js/Cache.js'),
@@ -1012,7 +1013,7 @@ CCalendarView.prototype.onGetCalendarsResponse = function (oResponse, oParameter
 				oCalendar = this.calendars.parseCalendar(oCalendarData);
 				aCalendarIds.push(oCalendar.id);
 				oClientCalendar = this.calendars.getCalendarById(oCalendar.id);
-				if (this.needsToReload || (oClientCalendar && oClientCalendar.sSyncToken) !== (oCalendar && oCalendar.sSyncToken))
+				if (this.needsToReload || oClientCalendar.isSharedToAll || (oClientCalendar && oClientCalendar.sSyncToken) !== (oCalendar && oCalendar.sSyncToken))
 				{
 					oCalendar = this.calendars.parseAndAddCalendar(oCalendarData);
 					if (oCalendar)
@@ -1264,6 +1265,65 @@ CCalendarView.prototype.openImportCalendarForm = function (oCalendar)
 		Popups.showPopup(ImportCalendarPopup, [_.bind(this.getCalendars, this), oCalendar]);
 	}
 };
+
+/**
+ * @param {Object} oCalendar
+ */
+CCalendarView.prototype.openShareCalendarForm  = function (oCalendar)
+{
+	Popups.showPopup(CalendarSharePopup, [_.bind(this.shareCalendar, this), oCalendar]);
+};
+
+/**
+ * @param {string} sId
+ * @param {boolean} bIsPublic
+ * @param {Array} aShares
+ * @param {boolean} bShareToAll
+ * @param {number} iShareToAllAccess
+ */
+CCalendarView.prototype.shareCalendar = function (sId, bIsPublic, aShares, bShareToAll, iShareToAllAccess)
+{
+	if (!this.isPublic)
+	{
+		Ajax.send(
+			'UpdateCalendarShare',
+			{
+				'Id': sId,
+				'IsPublic': bIsPublic ? 1 : 0,
+				'Shares': JSON.stringify(aShares),
+				'ShareToAll': bShareToAll ? 1 : 0, 
+				'ShareToAllAccess': iShareToAllAccess
+			}, this.onUpdateShareResponse, this
+		);
+	}
+};
+
+/**
+ * @param {Object} oResponse
+ * @param {Object} oRequest
+ */
+CCalendarView.prototype.onUpdateShareResponse = function (oResponse, oRequest)
+{
+	if (oResponse.Result)
+	{
+		var	oCalendar = this.calendars.getCalendarById(oRequest.Parameters.Id);
+		if (oCalendar)
+		{
+			oCalendar.shares(JSON.parse(oRequest.Parameters.Shares));
+			if (oRequest.Parameters.ShareToAll === 1)
+			{
+				oCalendar.isShared(true);
+				oCalendar.isSharedToAll(true);
+				oCalendar.sharedToAllAccess = oRequest.Parameters.ShareToAllAccess;
+			}
+			else
+			{
+				oCalendar.isSharedToAll(false);
+			}
+		}
+	}
+};
+
 
 /**
  * @param {Object} oCalendar
