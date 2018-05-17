@@ -29,8 +29,7 @@
 								'declined': status === 2,
 								'tentative': status === 3
 							 }">
-							<!--span class="control remove" data-bind="visible: $parent.isEditable(), click: $parent.removeGuest.bind($parent), customTooltip: 'COREWEBCLIENT/ACTION_REMOVE'"></span-->
-							<!--<span class="name" data-bind="css: {'recivedAnim': $parent.recivedAnim}">-->
+							<span class="control remove" data-bind="visible: $parent.isEditable(), click: $parent.removeGuest.bind($parent), customTooltip: 'COREWEBCLIENT/ACTION_REMOVE'"></span>
 							<span class="name" data-bind="css: {'recivedAnim': $parent.recivedAnim() && email === $parent.whomAnimate()}">
 								<span class="icon status" data-bind="customTooltip: function () { return $parent.getAttenderTextStatus(status); }"></span>
 								<span class="text" data-bind="customTooltip: email, text: name, visible: name !== ''"></span>
@@ -38,7 +37,12 @@
 							</span>
 						</div>
 					</div>
-					<div class="row" data-bind="visible: isAppointmentButtonsVisible">
+						<div class="row add_attender" data-bind="visible: isEditable(), css: {'focused': guestEmailFocus()}">
+						<span class="control add" data-bind="customTooltip: '%MODULENAME%/ACTION_ADD_GUESTS', click: onAddGuestClick"></span>
+						<label for="add_attender_input" class="label placeholder" data-i18n="%MODULENAME%/LABEL_EMAIL_OR_NAME" data-bind="i18n: 'text', visible: guestAutocomplete() === ''"></label>
+						<input id="add_attender_input" class="value input" spellcheck="false"  type="text" autocomplete="on" data-bind="value: guestAutocomplete, hasfocus: guestEmailFocus, valueUpdate: ['blur', 'afterkeydown'], autocompleteSimple: {callback: autocompleteCallback.bind($data), dataAccessor: guestAutocompleteItem}" />
+					</div>
+					<div class="row appointment" data-bind="visible: isAppointmentButtonsVisible">
 						<div class="buttons">
 							<span class="button" data-bind="i18n: {'key': '%MODULENAME%/ACTION_ACCEPT_APPOINTMENT'}, css: {'selected_button': attenderStatus() === Enums.IcalConfigInt.Accepted},
 									click: function(){ setAppointmentAction(Enums.IcalConfig.Accepted); }"></span>
@@ -279,7 +283,7 @@
 									</div>
 									<span class="link" data-bind="i18n: {'key': '%MODULENAME%/ACTION_NEW_ALARM'}, click: addAlarm, visible: isEditableReminders() && (displayedAlarms().length < 5)"></span>
 								</div>
-								<span class="form_arrow"></span>
+								<span class="form_arrow" data-bind="css: {'arrorw_with_appointmens' : bAllowAppointments}"></span>
 							</div>
 						</div>
 
@@ -297,6 +301,13 @@
 									customTooltip: '%MODULENAME%/ACTION_ADD_FIRST_ALARM', visible: isEditableReminders() && (withDate() || !isTask())">
 								<span class="icon"></span>
 								<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_ADD_FIRST_ALARM'}"></span>
+							</span>
+							<span class="item guests" data-bind="
+									visible: bAllowAppointments,
+									customTooltip: '%MODULENAME%/ACTION_EDIT_GUESTS',
+									click: isEditable() ? showGuests : '',">
+								<span class="icon"></span>
+								<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_EDIT_GUESTS'}"></span>
 							</span>
 						</div>
 						<span class="button" data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SAVE'}, click: onSaveClick, visible: isEditable() || isEditableReminders()"></span>
