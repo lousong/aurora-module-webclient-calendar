@@ -1306,6 +1306,8 @@ CCalendarView.prototype.onUpdateShareResponse = function (oResponse, oRequest)
 {
 	if (oResponse.Result)
 	{
+		this.getCalendars();
+/*		TODO:
 		var	oCalendar = this.calendars.getCalendarById(oRequest.Parameters.Id);
 		if (oCalendar)
 		{
@@ -1321,6 +1323,7 @@ CCalendarView.prototype.onUpdateShareResponse = function (oResponse, oRequest)
 				oCalendar.isSharedToAll(false);
 			}
 		}
+*/		
 	}
 };
 
