@@ -265,7 +265,7 @@ CIcalModel.prototype.setAppointmentAction = function ()
 		},
 		this.onSetAppointmentActionResponse,
 		this,
-		'CorporateCalendar'
+		'CalendarMeetingsPlugin'
 	);
 };
 
@@ -336,7 +336,7 @@ CIcalModel.prototype.updateAttendeeStatus = function (sEmail)
 			},
 			this.onUpdateAttendeeStatusResponse,
 			this,
-			'CorporateCalendar'
+			'CalendarMeetingsPlugin'
 		);
 
 		this.showChanges();
