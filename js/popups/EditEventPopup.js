@@ -1276,7 +1276,7 @@ CEditEventPopup.prototype.setAppointmentAction = function (sDecision)
 				CalendarCache.markIcalNonexistent(this.uid());
 				break;
 		}
-		Ajax.send('SetAppointmentAction', oParameters, this.onSetAppointmentActionResponse, this);
+		Ajax.send('SetAppointmentAction', oParameters, this.onSetAppointmentActionResponse, this, 'CorporateCalendar');
 
 		oAttendee.status = iDecision;
 		this.attendees([]);

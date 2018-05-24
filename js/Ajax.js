@@ -27,7 +27,13 @@ Ajax.registerAbortRequestHandler(Settings.ServerModuleName, function (oRequest, 
 });
 
 module.exports = {
-	send: function (sMethod, oParameters, fResponseHandler, oContext) {
-		Ajax.send(Settings.ServerModuleName, sMethod, oParameters, fResponseHandler, oContext);
+	send: function (sMethod, oParameters, fResponseHandler, oContext, sServerModuleName) {
+		Ajax.send(
+			sServerModuleName ? sServerModuleName : Settings.ServerModuleName,
+			sMethod,
+			oParameters,
+			fResponseHandler,
+			oContext
+		);
 	}
 };

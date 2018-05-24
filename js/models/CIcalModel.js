@@ -255,12 +255,18 @@ CIcalModel.prototype.markAccepted = function ()
 
 CIcalModel.prototype.setAppointmentAction = function ()
 {
-	Ajax.send('SetAppointmentAction', {
-		'AppointmentAction': this.icalConfig(),
-		'CalendarId': this.selectedCalendarId(),
-		'File': this.file(),
-		'Attendee': this.attendee()
-	}, this.onSetAppointmentActionResponse, this);
+	Ajax.send(
+		'SetAppointmentAction',
+		{
+			'AppointmentAction': this.icalConfig(),
+			'CalendarId': this.selectedCalendarId(),
+			'File': this.file(),
+			'Attendee': this.attendee()
+		},
+		this.onSetAppointmentActionResponse,
+		this,
+		'CorporateCalendar'
+	);
 };
 
 /**
@@ -323,11 +329,16 @@ CIcalModel.prototype.updateAttendeeStatus = function (sEmail)
 {
 	if (this.icalType() === Enums.IcalType.Cancel || this.icalType() === Enums.IcalType.Reply)
 	{
-		Ajax.send('UpdateAttendeeStatus', {
-			'File': this.file(),
-			'FromEmail': sEmail
-		}, this.onUpdateAttendeeStatusResponse, this);
-		
+		Ajax.send('UpdateAttendeeStatus',
+			{
+				'File': this.file(),
+				'FromEmail': sEmail
+			},
+			this.onUpdateAttendeeStatusResponse,
+			this,
+			'CorporateCalendar'
+		);
+
 		this.showChanges();
 	}
 };
