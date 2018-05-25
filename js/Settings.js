@@ -10,6 +10,7 @@ var
 module.exports = {
 	ServerModuleName: 'Calendar',
 	HashModuleName: 'calendar',
+	ServerMeetingsPluginName: 'CalendarMeetingsPlugin',
 	
 	AddDescriptionToTitle: false,
 	AllowAppointments: true,
@@ -30,7 +31,10 @@ module.exports = {
 	 */
 	init: function (oAppData)
 	{
-		var oAppDataSection = oAppData[this.ServerModuleName];
+		var
+			oAppDataSection = oAppData[this.ServerModuleName],
+			oAppMeetingsDataSection = oAppData[this.ServerMeetingsPluginName]
+		;
 		
 		if (!_.isEmpty(oAppDataSection))
 		{
@@ -39,7 +43,6 @@ module.exports = {
 			{
 				$('html').addClass('AddDescriptionToTitle');
 			}
-			this.AllowAppointments = Types.pBool(oAppDataSection.AllowAppointments, this.AllowAppointments);
 			this.AllowShare = Types.pBool(oAppDataSection.AllowShare, this.AllowShare);
 			this.AllowTasks = Types.pBool(oAppDataSection.AllowTasks, this.AllowTasks);
 			this.DefaultTab = Types.pString(oAppDataSection.DefaultTab, this.DefaultTab); // 1 - day, 2 - week, 3 - month
@@ -49,6 +52,10 @@ module.exports = {
 			this.WeekStartsOn = Types.pString(oAppDataSection.WeekStartsOn, this.WeekStartsOn); // 0 - sunday
 			this.WorkdayEnds = Types.pString(oAppDataSection.WorkdayEnds, this.WorkdayEnds);
 			this.WorkdayStarts = Types.pString(oAppDataSection.WorkdayStarts, this.WorkdayStarts);
+		}
+		if (!_.isEmpty(oAppMeetingsDataSection))
+		{
+			this.AllowAppointments = Types.pBool(oAppMeetingsDataSection.AllowAppointments, this.AllowAppointments);
 		}
 	},
 	

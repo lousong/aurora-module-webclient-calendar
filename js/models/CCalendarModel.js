@@ -12,8 +12,7 @@ var
 	Storage = require('%PathToCoreWebclientModule%/js/Storage.js'),
 	
 	CalendarUtils = require('modules/%ModuleName%/js/utils/Calendar.js'),
-	Settings = require('modules/%ModuleName%/js/Settings.js'),
-	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js')
+	Settings = require('modules/%ModuleName%/js/Settings.js')
 ;
 
 /**
@@ -68,6 +67,7 @@ function CCalendarModel()
 		}, this
 	);
 	this.calendarSharing = Settings.AllowShare;
+	this.bAllowAppointments = Settings.AllowAppointments;
 }
 
 /**
@@ -290,7 +290,7 @@ CCalendarModel.prototype.parseEvent = function (oEvent)
 			return sItem !== 'fc-event-repeat'; 
 		});		
 	}
-	if (Types.isNonEmptyArray(oEvent.attendees))
+	if (Types.isNonEmptyArray(oEvent.attendees) && this.bAllowAppointments)
 	{
 		oEvent.className.push('fc-event-appointment');
 	}
