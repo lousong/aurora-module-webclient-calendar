@@ -2,6 +2,7 @@
 
 module.exports = function (oAppData) {
 	var
+		_ = require('underscore'),
 		TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 		
 		App = require('%PathToCoreWebclientModule%/js/App.js'),
@@ -68,6 +69,25 @@ module.exports = function (oAppData) {
 						});
 					}
 					ModulesManager.run('SettingsWebclient', 'registerSettingsTab', [function () { return require('modules/%ModuleName%/js/views/CalendarSettingsFormView.js'); }, Settings.HashModuleName, TextUtils.i18n('%MODULENAME%/LABEL_SETTINGS_TAB')]);
+
+					App.subscribeEvent('MailWebclient::ParseMessage::after', function (oParams) {
+						var
+							bIsAppointmen = false
+						;
+
+						_.each(oParams.msg.aExtend, function(oExtend) {
+							if (oExtend.Type && oExtend.Type !== 'SAVE')
+							{
+								bIsAppointmen = true;
+							}
+						});
+						if (bIsAppointmen)
+						{
+							oParams.msg.text('');
+							oParams.msg.textRaw('');
+							oParams.msg.$text = null;
+						}
+					});
 				},
 				getScreens: function () {
 					var oScreens = {};
