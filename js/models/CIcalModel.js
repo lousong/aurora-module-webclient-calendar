@@ -168,7 +168,7 @@ CIcalModel.prototype.fillDecisions = function ()
 			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_ACCEPTED_APPOINTMENT', {'ATTENDEE': this.attendee()}));
 			break;
 		case Enums.IcalConfig.Declined:
-			this.replyDecision(TextUtils.i18n('%MODULENAME%/APPOINTMENT_DECLINED', {'ATTENDEE': this.attendee()}));
+			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_DECLINED_APPOINTMENT', {'ATTENDEE': this.attendee()}));
 			break;
 		case Enums.IcalConfig.Tentative:
 			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_TENTATIVELY_ACCEPTED_APPOINTMENT', {'ATTENDEE': this.attendee()}));
