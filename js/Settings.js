@@ -11,6 +11,7 @@ module.exports = {
 	ServerModuleName: 'Calendar',
 	HashModuleName: 'calendar',
 	ServerMeetingsPluginName: 'CalendarMeetingsPlugin',
+	ServerCorporateCalendarName: 'CorporateCalendar',
 	
 	AddDescriptionToTitle: false,
 	AllowAppointments: true,
@@ -33,7 +34,8 @@ module.exports = {
 	{
 		var
 			oAppDataSection = oAppData[this.ServerModuleName],
-			oAppMeetingsDataSection = oAppData[this.ServerMeetingsPluginName]
+			oAppMeetingsDataSection = oAppData[this.ServerMeetingsPluginName],
+			oAppCorporateCalendarDataSection = oAppData[this.ServerCorporateCalendarName]
 		;
 		
 		if (!_.isEmpty(oAppDataSection))
@@ -43,7 +45,7 @@ module.exports = {
 			{
 				$('html').addClass('AddDescriptionToTitle');
 			}
-			this.AllowShare = Types.pBool(oAppDataSection.AllowShare, this.AllowShare);
+			this.AllowShare = Types.pBool(oAppCorporateCalendarDataSection.AllowShare, this.AllowShare);
 			this.AllowTasks = Types.pBool(oAppDataSection.AllowTasks, this.AllowTasks);
 			this.DefaultTab = Types.pString(oAppDataSection.DefaultTab, this.DefaultTab); // 1 - day, 2 - week, 3 - month
 			this.HighlightWorkingDays = Types.pBool(oAppDataSection.HighlightWorkingDays, this.HighlightWorkingDays);
