@@ -1325,6 +1325,10 @@ CCalendarView.prototype.onUpdateShareResponse = function (oResponse, oRequest)
 		}
 */		
 	}
+	else
+	{
+		Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_SHARE_NOT_UPDATED'));
+	}
 };
 
 
