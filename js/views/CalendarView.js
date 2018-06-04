@@ -1013,7 +1013,7 @@ CCalendarView.prototype.onGetCalendarsResponse = function (oResponse, oParameter
 				oCalendar = this.calendars.parseCalendar(oCalendarData);
 				aCalendarIds.push(oCalendar.id);
 				oClientCalendar = this.calendars.getCalendarById(oCalendar.id);
-				if (this.needsToReload || oClientCalendar.isSharedToAll || (oClientCalendar && oClientCalendar.sSyncToken) !== (oCalendar && oCalendar.sSyncToken))
+				if (this.needsToReload || (oClientCalendar && oClientCalendar.isSharedToAll) || (oClientCalendar && oClientCalendar.sSyncToken) !== (oCalendar && oCalendar.sSyncToken))
 				{
 					oCalendar = this.calendars.parseAndAddCalendar(oCalendarData);
 					if (oCalendar)
