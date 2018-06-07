@@ -1115,7 +1115,7 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
 			oCalendar = this.calendars.getCalendarById(sCalendarId);
 			if (oCalendar && oCalendar.eventsCount() > 0 && oCalendar.active())
 			{
-				oCalendar.expungeEvents(aEvents, this.startDateTime, this.endDateTime, 'event');
+				oCalendar.expungeEvents(aEvents, this.startDateTime, this.endDateTime, 'VEVENT');
 			}
 		}, this);
 
