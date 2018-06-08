@@ -16,7 +16,7 @@
 					<a class="control download" data-bind="attr: {href: exportUrl()}"></a>
 				</div>
 			</div>
-			<div class="fieldset web_access">
+			<div class="fieldset web_access" data-bind="visible: canShare()">
 				<div class="row web_access_switch">
 					<label class="custom_checkbox" data-bind="css: {'checked': isPublic}">
 						<span class="icon"></span>

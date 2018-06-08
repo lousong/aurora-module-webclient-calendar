@@ -28,6 +28,7 @@ function CGetCalendarLinkPopup()
 		return this.isPublicSourceValue() !== this.isPublic();
 	}, this);
 	this.pubUrl = ko.observable('');
+	this.canShare = ko.observable(false);
 }
 
 _.extendOwn(CGetCalendarLinkPopup.prototype, CAbstractPopup.prototype);
@@ -55,6 +56,7 @@ CGetCalendarLinkPopup.prototype.onOpen = function (fCallback, oCalendar)
 		this.isPublic(oCalendar.isPublic());
 		this.pubUrl(oCalendar.pubUrl());
 		this.exportUrl(oCalendar.exportUrl());
+		this.canShare(oCalendar.canShare());
 	}
 };
 
