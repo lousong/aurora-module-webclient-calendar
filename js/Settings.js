@@ -45,7 +45,10 @@ module.exports = {
 			{
 				$('html').addClass('AddDescriptionToTitle');
 			}
-			this.AllowShare = Types.pBool(oAppCorporateCalendarDataSection.AllowShare, this.AllowShare);
+			if (!_.isEmpty(oAppCorporateCalendarDataSection))
+			{
+				this.AllowShare = Types.pBool(oAppCorporateCalendarDataSection.AllowShare, this.AllowShare);
+			}
 			this.AllowTasks = Types.pBool(oAppDataSection.AllowTasks, this.AllowTasks);
 			this.DefaultTab = Types.pString(oAppDataSection.DefaultTab, this.DefaultTab); // 1 - day, 2 - week, 3 - month
 			this.HighlightWorkingDays = Types.pBool(oAppDataSection.HighlightWorkingDays, this.HighlightWorkingDays);
