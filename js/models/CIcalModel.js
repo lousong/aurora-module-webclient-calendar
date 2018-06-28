@@ -338,8 +338,6 @@ CIcalModel.prototype.updateAttendeeStatus = function (sEmail)
 			this,
 			'CalendarMeetingsPlugin'
 		);
-
-		this.showChanges();
 	}
 };
 
@@ -351,6 +349,7 @@ CIcalModel.prototype.onUpdateAttendeeStatusResponse = function (oResponse, oRequ
 {
 	if (oResponse.Result)
 	{
+		this.showChanges();
 		this.markChanges();
 	}
 };
