@@ -1062,14 +1062,23 @@ CCalendarView.prototype.onGetCalendarsResponse = function (oResponse, oParameter
  */
 CCalendarView.prototype.requestEvents = function (aCalendarIds)
 {
-	if (aCalendarIds.length > 0)
-	{
-		Ajax.send('GetEvents', {
+	var
+		oOptions = {
 			'CalendarIds': aCalendarIds,
 			'Start': this.startDateTime,
 			'End': this.endDateTime,
 			'IsPublic': this.isPublic
-		}, this.onGetEventsResponse, this);
+		}
+	;
+
+	if (this.isPublic && !App.getUserId())
+	{
+		oOptions.DefaultTimeZone = moment.tz.guess();
+	}
+
+	if (aCalendarIds.length > 0)
+	{
+		Ajax.send('GetEvents', oOptions, this.onGetEventsResponse, this);
 	}
 	else
 	{
