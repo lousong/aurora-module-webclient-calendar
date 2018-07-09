@@ -15,7 +15,7 @@ module.exports = {
 	
 	AddDescriptionToTitle: false,
 	AllowAppointments: true,
-	AllowShare: true,
+	AllowShare: false,
 	AllowTasks: true,
 	DefaultTab: '3', // 1 - day, 2 - week, 3 - month
 	HighlightWorkingDays: true,
