@@ -62,11 +62,10 @@ function CCalendarModel()
 	this.startDateTime = 0;
 	this.endDateTime = 0;
 	this.canShare = ko.computed(function () {
-		
-		return (!this.isShared() || this.isShared() && this.access() === Enums.CalendarAccess.Write || this.isOwner())	
+			return (!this.isShared() || this.isShared() && this.access() === Enums.CalendarAccess.Write || this.isOwner());
 		}, this
 	);
-	this.calendarSharing = Settings.AllowShare;
+	this.bAllowShare = Settings.AllowShare;
 	this.bAllowAppointments = Settings.AllowAppointments;
 }
 
@@ -308,11 +307,6 @@ CCalendarModel.prototype.reloadEvents = function ()
 	this.events(_.map(this.events(), function (oEvent) {
 		return this.parseEvent(oEvent);
 	}, this));
-};
-
-CCalendarModel.prototype.canShare = function ()
-{
-	return (!this.isShared() || this.isShared() && this.access() === Enums.CalendarAccess.Write || this.isOwner());
 };
 
 module.exports = CCalendarModel;
