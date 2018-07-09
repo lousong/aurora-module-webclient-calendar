@@ -76,11 +76,9 @@ function CCalendarSharePopup()
 	this.sharedToAllAccess = ko.observable(Enums.CalendarAccess.Read);
 	this.canAdd = ko.observable(false);
 	this.aAccess = [
-		{'value': Enums.CalendarAccess.Read, 'display': TextUtils.i18n('%MODULENAME%/LABEL_CAN_SEE')},
-		{'value': Enums.CalendarAccess.Write, 'display': TextUtils.i18n('%MODULENAME%/LABEL_CAN_EDIT')}
+		{'value': Enums.CalendarAccess.Read, 'display': TextUtils.i18n('%MODULENAME%/LABEL_READ_ACCESS')},
+		{'value': Enums.CalendarAccess.Write, 'display': TextUtils.i18n('%MODULENAME%/LABEL_WRITE_ACCESS')}
 	];
-
-	this.showGlobalContacts = false; // todo:!!AppData.User.ShowGlobalContacts;
 }
 
 _.extendOwn(CCalendarSharePopup.prototype, CAbstractPopup.prototype);
