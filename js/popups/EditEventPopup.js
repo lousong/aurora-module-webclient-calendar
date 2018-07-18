@@ -1340,7 +1340,7 @@ CEditEventPopup.prototype.setDayOfWeek = function ()
 	if (this.repeatPeriod() === Enums.CalendarRepeatPeriod.Weekly && !this.getDays().length)
 	{
 		var iDayOfWeek = this.getDateTime(this.startDom()).getUTCDay();
-
+		
 		switch (iDayOfWeek)
 		{
 			case 0:
