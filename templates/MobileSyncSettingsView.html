@@ -1,9 +1,7 @@
-<div class="fieldset" data-bind="visible: visible">
+<div class="fieldgroup" data-bind="visible: visible, foreach: davCalendars">
 	<h2 class="subheading" data-bind="i18n: {'key': '%MODULENAME%/HEADING_CALDAV_ACCESS'}"></h2>
-	<div class="fieldgroup" data-bind="foreach: davCalendars">
-		<div class="row">
-			<span class="label" data-bind="text: Name"></span>
-			<span class="value" data-bind="text: Url"></span>
-		</div>
+	<div class="row">
+		<span class="label" data-bind="text: Name"></span>
+		<span class="value" data-bind="text: Url"></span>
 	</div>
 </div>
