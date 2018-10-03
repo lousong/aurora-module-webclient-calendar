@@ -35,7 +35,7 @@ CIcalAttachmentView.prototype.doAfterPopulatingMessage = function (oMessageProps
 	var
 		aExtend = (oMessageProps && Types.isNonEmptyArray(oMessageProps.aExtend)) ? oMessageProps.aExtend : [],
 		oFoundRawIcal = _.find(aExtend, function (oRawIcal) {
-			return oRawIcal['@Object'] === 'Object/Aurora\\Modules\\Mail\\Classes\\Ics';
+			return oRawIcal['@Object'] === 'Object/Aurora\\Modules\\Calendar\\Classes\\Ics';
 		})
 	;
 
