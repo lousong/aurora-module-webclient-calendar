@@ -41,10 +41,6 @@ function CCalendarModel()
 	}, this);
 	this.access = ko.observable(Enums.CalendarAccess.Write);
 	
-	this.control = ko.computed(function() {
-		return !(this.access() === Enums.CalendarAccess.Read && this.isSharedToAll());
-	}, this);
-	
 	this.color = ko.observable('');
 	this.color.subscribe(function(){
 		
