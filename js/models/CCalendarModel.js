@@ -58,7 +58,11 @@ function CCalendarModel()
 	this.startDateTime = 0;
 	this.endDateTime = 0;
 	this.canShare = ko.computed(function () {
-			return (!this.isShared() || this.isShared() && this.access() === Enums.CalendarAccess.Write || this.isOwner());
+			return (!this.isShared()
+				|| (this.isShared()
+					&& this.access() === Enums.CalendarAccess.Write
+					&& this.shares().length !== 0)
+				|| this.isOwner());
 		}, this
 	);
 	this.bAllowShare = Settings.AllowShare;
