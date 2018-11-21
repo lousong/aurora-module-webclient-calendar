@@ -48,7 +48,8 @@ Enums.CalendarAlways = {
 Enums.CalendarDefaultTab = {
 	'Day': '1',
 	'Week': '2',
-	'Month': '3'
+	'Month': '3',
+	'List': '4'
 };
 
 /**

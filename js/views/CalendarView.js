@@ -264,6 +264,8 @@ function CCalendarView()
 	this.defaultViewName = ko.computed(function () {
 		switch (Settings.DefaultTab)
 		{
+			case Enums.CalendarDefaultTab.List:
+				return 'listWeek';
 			case Enums.CalendarDefaultTab.Day:
 				return 'agendaDay';
 			case Enums.CalendarDefaultTab.Week:
