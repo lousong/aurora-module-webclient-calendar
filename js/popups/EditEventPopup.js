@@ -272,7 +272,9 @@ CEditEventPopup.prototype.initializeDatePickers = function ()
 {
 	this.createDatePickerObject(this.startDom(), this.selectStartDate.bind(this));
 	this.createDatePickerObject(this.endDom(), this.selectEndDate.bind(this));
-	this.createDatePickerObject(this.repeatEndDom(), function () {});
+	this.createDatePickerObject(this.repeatEndDom(), function (sNewValue) {
+		this.repeatEndDate(sNewValue);
+	}.bind(this));
 
 	this.startDom().datepicker('option', 'dateFormat', this.dateFormatDatePicker);
 	this.endDom().datepicker('option', 'dateFormat', this.dateFormatDatePicker);
