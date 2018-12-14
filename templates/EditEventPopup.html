@@ -1,7 +1,7 @@
 <div class="popup calendar_popup calendar_event" style="display: none;">
 	<div class="mask clear" data-bind="visible: dateEdit(), click: onMainPanelClick"></div>
 	<div class="mask" data-bind="click: cancelPopup"></div>
-	<div class="popup_panel" data-bind="css: {'show_left_side_panel': isTask, 'show_side_panel': bAllowAppointments && (guestsEdit() || attendees().length > 0), 'editable': isEditable, 'offset': dateEdit()}">
+	<div class="popup_panel" data-bind="css: {'show_left_side_panel': isTask(), 'show_side_panel': !isTask() && bAllowAppointments && (guestsEdit() || attendees().length > 0), 'editable': isEditable, 'offset': dateEdit()}">
 
 		<div class="panel_wrap clearfix">
 			<div class="left_side_panel fields">
@@ -289,8 +289,8 @@
 
 						<div class="additional_buttons">
 							<span class="item task"  data-bind="
-									visible: !isTaskApp() && bAllowTasks,
-									css: {'selected' : isTask}, 
+									visible: !isTaskApp() && bAllowTasks && attendees().length === 0,
+									css: {'selected' : isTask()}, 
 									customTooltip: '%MODULENAME%/LABEL_THIS_IS_A_TASK',
 									click: switchTask(!isTask())">
 								<span class="icon"></span>
@@ -303,7 +303,7 @@
 								<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_ADD_FIRST_ALARM'}"></span>
 							</span>
 							<span class="item guests" data-bind="
-									visible: bAllowAppointments,
+									visible: bAllowAppointments && !isTask(),
 									customTooltip: '%MODULENAME%/ACTION_EDIT_GUESTS',
 									click: isEditable() ? showGuests : '',">
 								<span class="icon"></span>
