@@ -55,14 +55,6 @@ CCalendarSettingsFormView.prototype.ViewTemplate = '%ModuleName%_CalendarSetting
 
 CCalendarSettingsFormView.prototype.getCurrentValues = function()
 {
-	console.log([
-		this.showWeekends(),
-		this.selectedWorkdayStarts(),
-		this.selectedWorkdayEnds(),
-		this.showWorkday(),
-		this.weekStartsOn(),
-		this.defaultTab()
-	]);
 	return [
 		this.showWeekends(),
 		this.selectedWorkdayStarts(),
