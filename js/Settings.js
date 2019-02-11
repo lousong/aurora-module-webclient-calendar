@@ -21,7 +21,7 @@ module.exports = {
 	HighlightWorkingDays: true,
 	HighlightWorkingHours: true,
 	PublicCalendarId: '',
-	WeekStartsOn: '0', // 0 - sunday
+	WeekStartsOn: '0', // 0 - sunday, 1 - monday, 6 - saturday
 	WorkdayEnds: '18',
 	WorkdayStarts: '9',
 	

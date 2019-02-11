@@ -6,9 +6,10 @@ var
 	
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
 	
+	App = require('%PathToCoreWebclientModule%/js/App.js'),
 	UserSettings = require('%PathToCoreWebclientModule%/js/Settings.js'),
 	ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js'),
-	CAbstractSettingsFormView = ModulesManager.run('SettingsWebclient', 'getAbstractSettingsFormViewClass'),
+	CAbstractSettingsFormView = App.getUserRole() === Enums.UserRole.SuperAdmin ? ModulesManager.run('AdminPanelWebclient', 'getAbstractSettingsFormViewClass') : ModulesManager.run('SettingsWebclient', 'getAbstractSettingsFormViewClass'),
 	
 	CalendarUtils = require('modules/%ModuleName%/js/utils/Calendar.js'),
 	
@@ -43,7 +44,7 @@ function CCalendarSettingsFormView()
 	this.selectedWorkdayStarts = ko.observable(GetClosestValue(this.availableTimes(), Settings.WorkdayStarts));
 	this.selectedWorkdayEnds = ko.observable(GetClosestValue(this.availableTimes(), Settings.WorkdayEnds));
 	this.showWorkday = ko.observable(Settings.HighlightWorkingHours);
-	this.weekStartsOn = ko.observable(Settings.CalendarWeekStartsOn);
+	this.weekStartsOn = ko.observable(Settings.WeekStartsOn);
 	this.defaultTab = ko.observable(Settings.DefaultTab);
 	/*-- Editable fields */
 }
@@ -54,6 +55,14 @@ CCalendarSettingsFormView.prototype.ViewTemplate = '%ModuleName%_CalendarSetting
 
 CCalendarSettingsFormView.prototype.getCurrentValues = function()
 {
+	console.log([
+		this.showWeekends(),
+		this.selectedWorkdayStarts(),
+		this.selectedWorkdayEnds(),
+		this.showWorkday(),
+		this.weekStartsOn(),
+		this.defaultTab()
+	]);
 	return [
 		this.showWeekends(),
 		this.selectedWorkdayStarts(),

@@ -111,6 +111,26 @@ module.exports = function (oAppData) {
 			};
 		}
 	}
+	else if (App.getUserRole() === Enums.UserRole.SuperAdmin)
+	{
+		return {
+			start: function (ModulesManager) {
+				ModulesManager.run('AdminPanelWebclient', 'registerAdminPanelTab', [
+					function(resolve) {
+						require.ensure(
+							['modules/%ModuleName%/js/views/CalendarSettingsFormView.js'],
+							function() {
+								resolve(require('modules/%ModuleName%/js/views/CalendarSettingsFormView.js'));
+							},
+							"admin-bundle"
+						);
+					},
+					Settings.HashModuleName,
+					TextUtils.i18n('%MODULENAME%/LABEL_SETTINGS_TAB')
+				]);
+			}
+		};
+	}
 	
 	return null;
 };
