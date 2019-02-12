@@ -1322,16 +1322,16 @@ CEditEventPopup.prototype.getAttenderTextStatus = function (sStatus)
 	switch (sStatus)
 	{
 		case 0:
-			sStatus = 'pending';
+			sStatus = TextUtils.i18n('%MODULENAME%/LABEL_ATTENDER_STATUS_PENDING');
 			break;
 		case 1:
-			sStatus = 'accepted';
+			sStatus = TextUtils.i18n('%MODULENAME%/LABEL_ATTENDER_STATUS_ACCEPTED');
 			break;
 		case 2:
-			sStatus = 'declined';
+			sStatus = TextUtils.i18n('%MODULENAME%/LABEL_ATTENDER_STATUS_DECLINED');
 			break;
 		case 3:
-			sStatus = 'tentative';
+			sStatus = TextUtils.i18n('%MODULENAME%/LABEL_ATTENDER_STATUS_TENTATIVE');
 			break;
 	}
 	return sStatus;
