@@ -98,4 +98,9 @@ CCalendarSettingsFormView.prototype.applySavedValues = function (oParameters)
 					oParameters.WorkdayEnds, oParameters.WeekStartsOn, oParameters.DefaultTab);
 };
 
+CCalendarSettingsFormView.prototype.setAccessLevel = function (sEntityType, iEntityId)
+{
+	this.visible(sEntityType === '');
+};
+
 module.exports = new CCalendarSettingsFormView();
