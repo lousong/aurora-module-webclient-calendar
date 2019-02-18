@@ -218,8 +218,8 @@
 										<textarea id="event_subject" class="input autosize" data-bind="
 											style: {'text-decoration': status() && isTask() ? 'line-through' : 'none'},
 											autosize: {minHeight: 40, autosizeTrigger: autosizeTrigger, scrollableHeight: 110}, 
-											onEnter: onSaveClick,
-											value: subject, valueUpdate: 'afterkeydown', hasfocus: subjectFocus, visible: isEditable()"></textarea>
+											valueUpdate: 'afterkeydown', onEnter: onSaveClick,
+											value: subject, hasfocus: subjectFocus, visible: isEditable()"></textarea>
 									</div>
 								</div>
 							</div>
@@ -242,8 +242,8 @@
 									<span class="input" data-bind="text: location, visible: !isEditable()"></span>
 									<textarea id="event_location" class="input autosize" data-bind="
 										autosize: {minHeight: 26, autosizeTrigger: autosizeTrigger, scrollableHeight: 74}, 
-										onEnter: onSaveClick,
-										value: location, valueUpdate: 'afterkeydown', hasfocus: locationFocus, visible: isEditable()"></textarea>
+										valueUpdate: 'afterkeydown', onEnter: onSaveClick,
+										value: location, hasfocus: locationFocus, visible: isEditable()"></textarea>
 								</div>
 							</div>
 						</div>
