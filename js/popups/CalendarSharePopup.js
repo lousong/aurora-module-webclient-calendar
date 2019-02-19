@@ -5,19 +5,13 @@ var
 	$ = require('jquery'),
 	ko = require('knockout'),
 	
-	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
-	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
-	Utils = require('%PathToCoreWebclientModule%/js/utils/Common.js'),
 	AddressUtils = require('%PathToCoreWebclientModule%/js/utils/Address.js'),
-
+	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	
 	App = require('%PathToCoreWebclientModule%/js/App.js'),
-	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
 	CAbstractPopup = require('%PathToCoreWebclientModule%/js/popups/CAbstractPopup.js'),
-	AlertPopup = require('%PathToCoreWebclientModule%/js/popups/AlertPopup.js'),
-	Ajax = require('%PathToCoreWebclientModule%/js/Ajax.js')
+	ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js')
 ;
-
 
 /**
  * @constructor
@@ -54,7 +48,6 @@ function CCalendarSharePopup()
 		}
 	}, this);
 
-
 	this.fCallback = null;
 
 	this.calendarId = ko.observable(null);
@@ -84,7 +77,6 @@ function CCalendarSharePopup()
 _.extendOwn(CCalendarSharePopup.prototype, CAbstractPopup.prototype);
 
 CCalendarSharePopup.prototype.PopupTemplate = '%ModuleName%_CalendarSharePopup';
-
 
 /**
  * @param {Function} fCallback
@@ -121,11 +113,6 @@ CCalendarSharePopup.prototype.onSaveClick = function ()
 	this.closePopup();
 };
 
-CCalendarSharePopup.prototype.onEscHandler = function ()
-{
-	this.onCancelClick();
-};
-
 CCalendarSharePopup.prototype.onClose = function ()
 {
 	this.cleanAll();
@@ -141,41 +128,6 @@ CCalendarSharePopup.prototype.cleanAll = function ()
 };
 
 /**
- * @param {string} sTerm
- * @param {Function} fResponse
- */
-CCalendarSharePopup.prototype.autocompleteCallback = function (sTerm, fResponse)
-{
-	var	oParameters = {
-			'Search': sTerm,
-			'SortField': Enums.ContactSortField.Frequency,
-			'SortOrder': 1,
-			'Storage': 'team'
-		}
-	;
-	
-	Ajax.send('Contacts', 'GetContacts', oParameters, function (oData) {
-		var aList = [];
-		if (oData && oData.Result && oData.Result && oData.Result.List)
-		{
-			aList = _.map(oData.Result.List, function (oItem) {
-				return oItem && oItem.ViewEmail && oItem.ViewEmail !== this.owner() ?
-					(oItem.Name && 0 < Utils.trim(oItem.Name).length ?
-						oItem.ForSharedToAll ? {value: oItem.Name, name: oItem.Name, email: oItem.ViewEmail, frequency: oItem.Frequency} :
-						{value:'"' + oItem.Name + '" <' + oItem.ViewEmail + '>', name: oItem.Name, email: oItem.ViewEmail, frequency: oItem.Frequency} : {value: oItem.ViewEmail, name: '', email: oItem.ViewEmail, frequency: oItem.Frequency}) : null;
-			}, this);
-
-			aList = _.sortBy(_.compact(aList), function(num){
-				return num.frequency;
-			}).reverse();
-		}
-
-		fResponse(aList);
-
-	}, this);
-};
-
-/**
  * @param {string} sEmail
  */
 CCalendarSharePopup.prototype.itsMe = function (sEmail)
@@ -183,20 +135,18 @@ CCalendarSharePopup.prototype.itsMe = function (sEmail)
 	return (sEmail === App.getUserPublicId());
 };
 
-CCalendarSharePopup.prototype.initInputosaurus = function (koDom, ko, koLock)
+CCalendarSharePopup.prototype.initInputosaurus = function (koDom, koAddr, koLockAddr)
 {
 	if (koDom() && $(koDom()).length > 0)
 	{
 		$(koDom()).inputosaurus({
 			width: 'auto',
 			parseOnBlur: true,
-			autoCompleteSource: _.bind(function (oData, fResponse) {
-				this.autocompleteCallback(oData.term, fResponse);
-			}, this),
+			autoCompleteSource: ModulesManager.run('ContactsWebclient', 'getSuggestionsAutocompleteComposeCallback') || function () {},
 			change : _.bind(function (ev) {
-				koLock(true);
-				this.setRecipient(ko, ev.target.value);
-				koLock(false);
+				koLockAddr(true);
+				this.setRecipient(koAddr, ev.target.value);
+				koLockAddr(false);
 			}, this),
 			copy: _.bind(function (sVal) {
 				this.inputosaurusBuffer = sVal;
