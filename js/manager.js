@@ -40,7 +40,7 @@ module.exports = function (oAppData) {
 			}
 		};
 	}
-	else if (App.getUserRole() === Enums.UserRole.NormalUser)
+	else if (App.isUserNormalOrTenant())
 	{
 		if (App.isNewTab())
 		{
