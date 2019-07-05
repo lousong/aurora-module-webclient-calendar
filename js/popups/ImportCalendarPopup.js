@@ -104,7 +104,7 @@ CImportCalendarPopup.prototype.onFileUploadStart = function ()
  */
 CImportCalendarPopup.prototype.onFileUploadComplete = function (sFileUid, bResponseReceived, oResponse)
 {
-	var bError = !bResponseReceived || !oResponse || oResponse.Error|| oResponse.Result.Error || false;
+	var bError = !bResponseReceived || !oResponse || !oResponse.Result;
 
 	this.importing(false);
 	

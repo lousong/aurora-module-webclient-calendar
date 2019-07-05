@@ -2124,7 +2124,7 @@ CCalendarView.prototype.onFileDrop = function (oFile, oEvent, fProceedUploading)
 
 CCalendarView.prototype.onFileUploadComplete = function (sFileUid, bResponseReceived, oResponse)
 {
-	var bError = !bResponseReceived || !oResponse || oResponse.Error|| oResponse.Result.Error || false;
+	var bError = !bResponseReceived || !oResponse || !oResponse.Result;
 
 	if (!bError)
 	{
