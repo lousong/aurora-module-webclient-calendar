@@ -693,11 +693,11 @@ CCalendarView.prototype.getDayDescription = function (oDate)
 {
 	var
 		bSelectable = true,
-		oFindedBusyDay = _.find(this.busyDays(), function (oBusyDay) {
+		oFoundBusyDay = _.find(this.busyDays(), function (oBusyDay) {
 			return oBusyDay.getDate() === oDate.getDate() && oBusyDay.getMonth() === oDate.getMonth() &&
 				oBusyDay.getYear() === oDate.getYear();
 		}, this),
-		sDayClass = oFindedBusyDay ? 'day_with_events' : '',
+		sDayClass = oFoundBusyDay ? 'day_with_events' : '',
 		sDayTitle = ''
 	;
 
