@@ -1179,7 +1179,9 @@ CEditEventPopup.prototype.getDateTime = function (oInput, sTime)
 		aTime = sTime ? sTime.split(':') : []
 	;
 	
-	if (aTime.length === 2)
+	//in some cases aTime is a current time (it happens only once after page loading), in this case oDate is null, so code falls. 
+	// the checking if oDate is not null is necessary
+	if (aTime.length === 2 && oDate !== null) 
 	{
 		oDate.setHours(aTime[0]);
 		oDate.setMinutes(aTime[1]);
