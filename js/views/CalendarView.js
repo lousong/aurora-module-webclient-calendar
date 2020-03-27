@@ -297,6 +297,8 @@ function CCalendarView()
 	this.domScrollWrapper = null;
 	this.hotKeysBind();
 
+	this.viewEventRoute = null;
+
 	App.broadcastEvent('%ModuleName%::ConstructView::after', {'Name': this.ViewConstructorName, 'View': this});
 }
 
@@ -519,6 +521,60 @@ CCalendarView.prototype.onShow = function ()
 	}
 	this.refetchEvents();
 };
+
+/**
+ * @param {Array} aParams
+ */
+CCalendarView.prototype.onRoute = function (aParams)
+{
+	var 
+		sCalendarId = aParams[0],
+		sEventId = aParams[1],
+		start = aParams[2],
+		oEvent = null
+	;
+	this.$calendarGrid.fullCalendar('gotoDate', moment(start));
+	oEvent = this.getClientEvent(sCalendarId, sEventId);
+	if (oEvent !== null)
+	{
+		this.eventClickCallback(oEvent);
+	}
+	else
+	{
+		this.viewEventRoute = {
+			'CalendarId': sCalendarId,
+			'EventId': sEventId
+		};
+	}
+}
+
+CCalendarView.prototype.getClientEvent = function (sCalendarId, sEventId)
+{
+	var 
+		oCalendar = null,
+		oEvent = null,
+		oEventResult = null,
+		aEvents = []
+	; 
+	aEvents = this.$calendarGrid.fullCalendar("clientEvents", sEventId);		
+
+	if (Array.isArray(aEvents) && aEvents.length > 0)
+	{
+		oCalendar = this.calendars.getCalendarById(sCalendarId);
+		if (oCalendar !== undefined)
+		{
+			oEvent = _.find(aEvents, function (oEvent) {
+				return oEvent.calendarId === sCalendarId;
+			}, this);
+			if (oEvent !== undefined)
+			{
+				oEventResult = oEvent;
+			}
+		}
+	}
+
+	return oEventResult;
+}
 
 CCalendarView.prototype.setTimeline = function ()
 {
@@ -1131,11 +1187,19 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
 		}, this);
 
 		this.refreshView();
+		if (this.viewEventRoute)
+		{
+			var oEvent = this.getClientEvent(this.viewEventRoute.CalendarId, this.viewEventRoute.EventId);
+			this.viewEventRoute = false;
+			if (oEvent !== null)
+			{
+				this.eventClickCallback(oEvent);
+			}
+		}
 	}
 
 	this.setAutoReloadTimer();
 	this.checkStarted(false);
-
 	this.getTasks(aCalendarIds);
 };
 
