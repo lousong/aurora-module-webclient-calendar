@@ -311,6 +311,8 @@ CIcalModel.prototype.onAddEventsFromFileResponse = function (oResponse, oRequest
 {
 	if (!oResponse.Result)
 	{
+		this.isJustSaved(false);
+		this.calendarId('');
 		Api.showErrorByCode(oResponse);
 	}
 	else
