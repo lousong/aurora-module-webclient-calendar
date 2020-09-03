@@ -38,12 +38,18 @@ function CIcalModel(oRawIcal, sAttendee)
 	this.description = ko.observable(Types.pString(oRawIcal.Description).replace(/\r/g, '').replace(/\n/g,"<br />"));
 	this.when = ko.observable(Types.pString(oRawIcal.When));
 	this.calendarId = ko.observable(Types.pString(oRawIcal.CalendarId));
+	this.calendarId.subscribe(function () {
+		// change oRawIcal so that the calendarId will be correct in a new tab
+		this.oRawIcal.CalendarId = this.calendarId();
+	}, this);
 	this.selectedCalendarId = ko.observable(Types.pString(oRawIcal.CalendarId));
 	CalendarCache.addIcal(this);
 	
 	this.icalType = ko.observable('');
 	this.icalConfig = ko.observable('');
 	this.type.subscribe(function () {
+		// change oRawIcal so that the type will be correct in a new tab
+		this.oRawIcal.Type = this.type();
 		this.parseType();
 	}, this);
 	
