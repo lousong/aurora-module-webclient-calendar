@@ -317,9 +317,9 @@ CIcalModel.prototype.onAddEventsFromFileResponse = function (oResponse, oRequest
 	}
 	else
 	{
-		if (oResponse.Result.Uid)
+		if (_.isArray(oResponse.Result) && oResponse.Result.length > 0)
 		{
-			this.uid(oResponse.Result.Uid);
+			this.uid(oResponse.Result[0]);
 		}
 		this.markChanges();
 	}
