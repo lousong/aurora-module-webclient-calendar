@@ -165,6 +165,7 @@ function CCalendarView()
 		selectable: !this.isPublic,
 		allDayText: TextUtils.i18n('%MODULENAME%/LABEL_ALL_DAY'),
 		dayNames: this.aDayNames,
+		monthNames: this.aMonthNames,
 		isRTL: UserSettings.IsRTL,
 		scrollTime: moment.duration(8, 'hours'),
 		forceEventDuration: true,
