@@ -83,9 +83,7 @@ module.exports = function (oAppData) {
 						});
 						if (bIsAppointmen)
 						{
-							oParams.msg.text('');
-							oParams.msg.textRaw('');
-							oParams.msg.$text = null;
+							oParams.msg.changeText('');
 						}
 					});
 				},
