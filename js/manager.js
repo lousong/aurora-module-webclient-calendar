@@ -69,23 +69,6 @@ module.exports = function (oAppData) {
 						});
 					}
 					ModulesManager.run('SettingsWebclient', 'registerSettingsTab', [function () { return require('modules/%ModuleName%/js/views/CalendarSettingsFormView.js'); }, Settings.HashModuleName, TextUtils.i18n('%MODULENAME%/LABEL_SETTINGS_TAB')]);
-
-					App.subscribeEvent('MailWebclient::ParseMessage::after', function (oParams) {
-						var
-							bIsAppointmen = false
-						;
-
-						_.each(oParams.msg.aExtend, function(oExtend) {
-							if (oExtend.Type && oExtend.Type !== 'SAVE')
-							{
-								bIsAppointmen = true;
-							}
-						});
-						if (bIsAppointmen)
-						{
-							oParams.msg.changeText('');
-						}
-					});
 				},
 				getScreens: function () {
 					var oScreens = {};
