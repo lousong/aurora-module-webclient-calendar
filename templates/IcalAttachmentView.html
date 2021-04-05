@@ -1,6 +1,6 @@
 <div class="appointment" data-bind="visible: !!ical(), with: ical">
 	<div class="fields">
-		<div class="row">
+		<div class="row row_controls">
 			<div data-bind="visible: lastModification">
 				<div class="buttons" data-bind="visible: visibleRequestButtons,
 					css: {'touched': isAccepted() || isTentative() || isDeclined(), 'animation': animation}">
