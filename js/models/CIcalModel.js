@@ -3,18 +3,18 @@
 var
 	_ = require('underscore'),
 	ko = require('knockout'),
-	
+
 	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
 	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js'),
-	
+
 	Api = require('%PathToCoreWebclientModule%/js/Api.js'),
 	App = require('%PathToCoreWebclientModule%/js/App.js'),
-	
+
 	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
 	CalendarCache = require('modules/%ModuleName%/js/Cache.js'),
-	
+
 	HeaderItemView = (!App.isNewTab() && !App.isMobile()) ? require('modules/%ModuleName%/js/views/HeaderItemView.js') : null,
-	
+
 	MainTab = App.isNewTab() && window.opener ? window.opener.MainTabCalendarMethods : null
 ;
 
@@ -26,7 +26,7 @@ var
 function CIcalModel(oRawIcal, sAttendee)
 {
 	this.oRawIcal = oRawIcal;
-	
+
 	this.uid = ko.observable(Types.pString(oRawIcal.Uid));
 	this.lastModification = ko.observable(true);
 	this.sSequence = Types.pInt(oRawIcal.Sequence);
@@ -44,7 +44,7 @@ function CIcalModel(oRawIcal, sAttendee)
 	}, this);
 	this.selectedCalendarId = ko.observable(Types.pString(oRawIcal.CalendarId));
 	CalendarCache.addIcal(this);
-	
+
 	this.icalType = ko.observable('');
 	this.icalConfig = ko.observable('');
 	this.type.subscribe(function () {
@@ -52,7 +52,8 @@ function CIcalModel(oRawIcal, sAttendee)
 		this.oRawIcal.Type = this.type();
 		this.parseType();
 	}, this);
-	
+	this.isAppointmentActionInProgress = ko.observable(false);
+
 	this.isRequestType = ko.computed(function () {
 		return this.icalType() === Enums.IcalType.Request;
 	}, this);
@@ -68,7 +69,7 @@ function CIcalModel(oRawIcal, sAttendee)
 		return this.icalType() === Enums.IcalType.Save;
 	}, this);
 	this.isJustSaved = ko.observable(false);
-	
+
 	this.isAccepted = ko.computed(function () {
 		return this.icalConfig() === Enums.IcalConfig.Accepted;
 	}, this);
@@ -79,7 +80,7 @@ function CIcalModel(oRawIcal, sAttendee)
 		return this.icalConfig() === Enums.IcalConfig.Tentative;
 	}, this);
 	this.calendars = ko.observableArray(CalendarCache.calendars());
-	
+
 	if (this.calendars().length === 0)
 	{
 		var fCalSubscription = CalendarCache.calendars.subscribe(function () {
@@ -97,42 +98,42 @@ function CIcalModel(oRawIcal, sAttendee)
 				return oCal.id === this.calendarId();
 			}, this);
 		}
-		
+
 		return oFoundCal ? oFoundCal.name : '';
 	}, this);
-	
+
 	this.calendarIsChosen = ko.computed(function () {
 		return this.chosenCalendarName() !== '';
 	}, this);
-	
+
 	this.visibleCalendarDropdown = ko.computed(function () {
 		return !this.calendarIsChosen() && this.calendars().length > 1 && (this.isRequestType() || this.isSaveType());
 	}, this);
-	
+
 	this.visibleCalendarName = ko.computed(function () {
 		return this.calendarIsChosen();
 	}, this);
-	
+
 	this.firstCalendarName = ko.computed(function () {
 		return this.calendars()[0] ? this.calendars()[0].name : '';
 	}, this);
-	
+
 	this.visibleFirstCalendarName = ko.computed(function () {
 		return this.calendars().length === 1 && !this.calendarIsChosen();
 	}, this);
-	
+
 	this.visibleCalendarRow = ko.computed(function () {
 		return this.attendee() !== '' && (this.visibleCalendarDropdown() || this.visibleCalendarName() || this.visibleFirstCalendarName());
 	}, this);
-	
+
 	this.visibleRequestButtons = ko.computed(function () {
 		return this.isRequestType() && this.attendee() !== '';
 	}, this);
-	
+
 	// animation of buttons turns on with delay
 	// so it does not trigger when placing initial values
 	this.animation = ko.observable(false);
-	
+
 	this.parseType();
 }
 
@@ -168,7 +169,7 @@ CIcalModel.prototype.parseType = function ()
 CIcalModel.prototype.fillDecisions = function ()
 {
 	this.cancelDecision(TextUtils.i18n('%MODULENAME%/INFO_CANCELED_APPOINTMENT', {'SENDER': App.currentAccountEmail()}));
-	
+
 	switch (this.icalConfig())
 	{
 		case Enums.IcalConfig.Accepted:
@@ -185,21 +186,27 @@ CIcalModel.prototype.fillDecisions = function ()
 
 CIcalModel.prototype.acceptAppointment = function ()
 {
-	this.calendarId(this.selectedCalendarId());
-	this.changeAndSaveConfig(Enums.IcalConfig.Accepted);
+	if (!this.isAppointmentActionInProgress()) {
+		this.calendarId(this.selectedCalendarId());
+		this.changeAndSaveConfig(Enums.IcalConfig.Accepted);
+	}
 };
 
 CIcalModel.prototype.tentativeAppointment = function ()
 {
-	this.calendarId(this.selectedCalendarId());
-	this.changeAndSaveConfig(Enums.IcalConfig.Tentative);
+	if (!this.isAppointmentActionInProgress()) {
+		this.calendarId(this.selectedCalendarId());
+		this.changeAndSaveConfig(Enums.IcalConfig.Tentative);
+	}
 };
 
 CIcalModel.prototype.declineAppointment = function ()
 {
-	this.calendarId('');
-	this.selectedCalendarId('');
-	this.changeAndSaveConfig(Enums.IcalConfig.Declined);
+	if (!this.isAppointmentActionInProgress()) {
+		this.calendarId('');
+		this.selectedCalendarId('');
+		this.changeAndSaveConfig(Enums.IcalConfig.Declined);
+	}
 };
 
 /**
@@ -262,6 +269,7 @@ CIcalModel.prototype.markAccepted = function ()
 
 CIcalModel.prototype.setAppointmentAction = function ()
 {
+	this.isAppointmentActionInProgress(true);
 	Ajax.send(
 		'SetAppointmentAction',
 		{
@@ -282,6 +290,7 @@ CIcalModel.prototype.setAppointmentAction = function ()
  */
 CIcalModel.prototype.onSetAppointmentActionResponse = function (oResponse, oRequest)
 {
+	this.isAppointmentActionInProgress(false);
 	if (!oResponse.Result)
 	{
 		Api.showErrorByCode(oResponse, TextUtils.i18n('COREWEBCLIENT/ERROR_UNKNOWN'));
@@ -298,14 +307,14 @@ CIcalModel.prototype.addEvents = function ()
 		'CalendarId': this.selectedCalendarId(),
 		'File': this.file()
 	}, this.onAddEventsFromFileResponse, this);
-	
+
 	this.isJustSaved(true);
 	this.calendarId(this.selectedCalendarId());
-	
+
 	setTimeout(_.bind(function () {
 		this.isJustSaved(false);
 	}, this), 20000);
-	
+
 	this.showChanges();
 };
 
