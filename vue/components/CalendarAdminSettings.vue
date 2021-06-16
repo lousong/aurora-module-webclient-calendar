@@ -9,17 +9,17 @@
           <div class="row q-ml-md">
             <div class="col-1 q-my-sm q-ml-md" v-t="'CALENDARWEBCLIENT.LABEL_WORKDAY_STARTS'"></div>
             <div class="col-4 q-ml-sm">
-              <q-select  flat
-                         outlined
-                         dense class="bg-white" v-model="workdayStarts"
-                         :options="timeList" />
+              <q-select flat
+                        outlined
+                        dense class="bg-white" v-model="workdayStarts"
+                        :options="timeList"/>
             </div>
             <div class="col-1 q-my-sm q-pl-md" v-t="'CALENDARWEBCLIENT.LABEL_WORKDAY_ENDS'"></div>
             <div class="col-4">
-              <q-select  flat
-                         outlined
-                         dense class="bg-white" v-model="workdayEnds"
-                         :options="timeList" />
+              <q-select flat
+                        outlined
+                        dense class="bg-white" v-model="workdayEnds"
+                        :options="timeList"/>
             </div>
           </div>
           <div class="row">
@@ -35,10 +35,10 @@
           <div class="row q-ml-md">
             <div class="col-1 q-my-sm q-ml-md" v-t="'CALENDARWEBCLIENT.LABEL_WEEK_STARTS_ON'"></div>
             <div class="col-4 q-ml-sm">
-              <q-select  flat
-                         outlined
-                         dense class="bg-white" v-model="weekStartsOn"
-                         :options="weekStartsList" />
+              <q-select flat
+                        outlined
+                        dense class="bg-white" v-model="weekStartsOn"
+                        :options="weekStartsList"/>
             </div>
           </div>
           <div class="row">
@@ -55,9 +55,11 @@
             <div class="col-1 q-my-sm q-ml-md" v-t="'CALENDARWEBCLIENT.LABEL_DEFAULT_TAB'"></div>
             <div class="col-5 q-ml-sm">
               <div class="  q-my-sm">
-                <q-radio dense v-model="timeFormat" val="1" :label="$t('CALENDARWEBCLIENT.ACTION_SHOW_DAY_VIEW')" />
-                <q-radio class="q-ml-md" dense v-model="timeFormat" val="2" :label="$t('CALENDARWEBCLIENT.ACTION_SHOW_WEEK_VIEW')" />
-                <q-radio class="q-ml-md" dense v-model="timeFormat" val="3" :label="$t('CALENDARWEBCLIENT.ACTION_SHOW_MONTH_VIEW')" />
+                <q-radio dense v-model="timeFormat" val="1" :label="$t('CALENDARWEBCLIENT.ACTION_SHOW_DAY_VIEW')"/>
+                <q-radio class="q-ml-md" dense v-model="timeFormat" val="2"
+                         :label="$t('CALENDARWEBCLIENT.ACTION_SHOW_WEEK_VIEW')"/>
+                <q-radio class="q-ml-md" dense v-model="timeFormat" val="3"
+                         :label="$t('CALENDARWEBCLIENT.ACTION_SHOW_MONTH_VIEW')"/>
               </div>
             </div>
           </div>
@@ -75,23 +77,21 @@
 
 <script>
 import UnsavedChangesDialog from 'src/components/UnsavedChangesDialog'
-import settings from "../../../CalendarWebclient/vue/settings"
-import _ from "lodash";
-import webApi from "../../../AdminPanelWebclient/vue/src/utils/web-api";
-import notification from "../../../AdminPanelWebclient/vue/src/utils/notification";
-import errors from "../../../AdminPanelWebclient/vue/src/utils/errors";
+import settings from '../../../CalendarWebclient/vue/settings'
+import _ from 'lodash'
+import webApi from '../../../AdminPanelWebclient/vue/src/utils/web-api'
+import notification from '../../../AdminPanelWebclient/vue/src/utils/notification'
+import errors from '../../../AdminPanelWebclient/vue/src/utils/errors'
 import Calendar from '../utils/Calendar'
-import AdminPanelSettings from "../../../AdminPanelWebclient/vue/src/settings";
 
 export default {
-  name: "CalendarAdminSettings",
+  name: 'CalendarAdminSettings',
   components: {
     UnsavedChangesDialog
   },
-  data() {
+  data () {
     return {
       saving: false,
-
       highlightWorkingDays: false,
       highlightWorkingHours: false,
       workdayEnds: '',
@@ -101,10 +101,10 @@ export default {
     }
   },
   computed: {
-    timeList() {
+    timeList () {
       const timeList = Calendar.getTimeListStepHalfHour()
-      let timeListOptions = []
-      for (let i =0; i < timeList.length; i++) {
+      const timeListOptions = []
+      for (let i = 0; i < timeList.length; i++) {
         timeListOptions.push({
           label: timeList[i],
           value: i
@@ -112,7 +112,7 @@ export default {
       }
       return timeListOptions
     },
-    weekStartsList() {
+    weekStartsList () {
       return [
         {
           label: 'Saturday',
@@ -129,7 +129,7 @@ export default {
       ]
     }
   },
-  mounted() {
+  mounted () {
     this.populate()
   },
   beforeRouteLeave (to, from, next) {
@@ -143,13 +143,13 @@ export default {
     hasChanges () {
       const data = settings.getCalendarSettings()
       return this.highlightWorkingDays !== data.HighlightWorkingDays ||
-      this.highlightWorkingHours !== data.HighlightWorkingHours ||
-      this.workdayEnds.value !== Number(data.WorkdayEnds) ||
-      this.workdayStarts.value !== Number(data.WorkdayStarts) ||
-      this.timeFormat !== data.DefaultTab ||
-      this.weekStartsOn.value !== Number(data.WeekStartsOn)
+          this.highlightWorkingHours !== data.HighlightWorkingHours ||
+          this.workdayEnds.value !== Number(data.WorkdayEnds) ||
+          this.workdayStarts.value !== Number(data.WorkdayStarts) ||
+          this.timeFormat !== data.DefaultTab ||
+          this.weekStartsOn.value !== Number(data.WeekStartsOn)
     },
-    populate() {
+    populate () {
       const data = settings.getCalendarSettings()
       this.highlightWorkingDays = data.HighlightWorkingDays
       this.highlightWorkingHours = data.HighlightWorkingHours
@@ -158,7 +158,7 @@ export default {
       this.timeFormat = data.DefaultTab
       this.weekStartsOn = this.chooseTime(Number(data.WeekStartsOn), this.weekStartsList)
     },
-    save() {
+    save () {
       if (!this.saving) {
         this.saving = true
         const parameters = {
@@ -188,14 +188,14 @@ export default {
         })
       }
     },
-    chooseTime(value, arr) {
+    chooseTime (value, arr) {
       let workday = {}
-       arr.forEach((elem => {
+      arr.forEach((elem) => {
         if (elem.value === value) {
           workday = elem
           return true
         }
-      }))
+      })
       return workday
     },
   }
