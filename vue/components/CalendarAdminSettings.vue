@@ -2,7 +2,7 @@
   <q-scroll-area class="full-height full-width">
     <div class="q-pa-lg" style="min-width: 800px">
       <div class="row q-mb-md">
-        <div class="col text-h5">{{ $t('CALENDARWEBCLIENT.HEADING_SETTINGS_TAB') }}</div>
+        <div class="col text-h5" v-t="'CALENDARWEBCLIENT.HEADING_SETTINGS_TAB'" />
       </div>
       <q-card flat bordered class="card-edit-settings">
         <q-card-section>
@@ -27,7 +27,7 @@
             <q-item>
               <q-item-section>
                 <q-checkbox v-model="highlightWorkingHours" color="primary">
-                  <q-item-label caption>{{ $t('CALENDARWEBCLIENT.LABEL_SHOW_WORKDAY') }}</q-item-label>
+                  <q-item-label caption v-t="'CALENDARWEBCLIENT.LABEL_SHOW_WORKDAY'" />
                 </q-checkbox>
               </q-item-section>
             </q-item>
@@ -46,7 +46,7 @@
             <q-item>
               <q-item-section>
                 <q-checkbox v-model="highlightWorkingDays" color="primary">
-                  <q-item-label caption>{{ $t('CALENDARWEBCLIENT.LABEL_HIGHLIGHT_WORK_DAYS') }}</q-item-label>
+                  <q-item-label caption v-t="'CALENDARWEBCLIENT.LABEL_HIGHLIGHT_WORK_DAYS'" />
                 </q-checkbox>
               </q-item-section>
             </q-item>
@@ -79,9 +79,9 @@
 import UnsavedChangesDialog from 'src/components/UnsavedChangesDialog'
 import settings from '../../../CalendarWebclient/vue/settings'
 import _ from 'lodash'
-import webApi from '../../../AdminPanelWebclient/vue/src/utils/web-api'
-import notification from '../../../AdminPanelWebclient/vue/src/utils/notification'
-import errors from '../../../AdminPanelWebclient/vue/src/utils/errors'
+import webApi from 'src/utils/web-api'
+import notification from 'src/utils/notification'
+import errors from 'src/utils/errors'
 import Calendar from '../utils/Calendar'
 
 export default {
@@ -115,15 +115,15 @@ export default {
     weekStartsList () {
       return [
         {
-          label: 'Saturday',
+          label: this.$t('CALENDARWEBCLIENT.LABEL_SATURDAY'),
           value: 6
         },
         {
-          label: 'Sunday',
+          label: this.$t('CALENDARWEBCLIENT.LABEL_SUNDAY'),
           value: 0
         },
         {
-          label: 'Monday',
+          label: this.$t('CALENDARWEBCLIENT.LABEL_MONDAY'),
           value: 1
         },
       ]
@@ -201,7 +201,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>
