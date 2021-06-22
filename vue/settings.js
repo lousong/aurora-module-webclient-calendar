@@ -6,24 +6,24 @@ class CalendarSettings {
   constructor (appData) {
     const calendarWebclientData = typesUtils.pObject(appData.Calendar)
     if (!_.isEmpty(calendarWebclientData)) {
-      this.AllowTasks = typesUtils.pBool(calendarWebclientData.AllowTasks, this.AllowTasks);
-      this.DefaultTab = typesUtils.pString(calendarWebclientData.DefaultTab, this.DefaultTab); // 1 - day, 2 - week, 3 - month
-      this.HighlightWorkingDays = typesUtils.pBool(calendarWebclientData.HighlightWorkingDays, this.HighlightWorkingDays);
-      this.HighlightWorkingHours = typesUtils.pBool(calendarWebclientData.HighlightWorkingHours, this.HighlightWorkingHours);
-      this.PublicCalendarId = typesUtils.pString(calendarWebclientData.PublicCalendarId, this.PublicCalendarId);
-      this.WeekStartsOn = typesUtils.pString(calendarWebclientData.WeekStartsOn, this.WeekStartsOn); // 0 - sunday
-      this.WorkdayEnds = typesUtils.pString(calendarWebclientData.WorkdayEnds, this.WorkdayEnds);
-      this.WorkdayStarts = typesUtils.pString(calendarWebclientData.WorkdayStarts, this.WorkdayStarts);
+      this.allowTasks = typesUtils.pBool(calendarWebclientData.AllowTasks)
+      this.defaultTab = typesUtils.pInt(calendarWebclientData.DefaultTab) // 1 - day, 2 - week, 3 - month
+      this.highlightWorkingDays = typesUtils.pBool(calendarWebclientData.HighlightWorkingDays)
+      this.highlightWorkingHours = typesUtils.pBool(calendarWebclientData.HighlightWorkingHours)
+      this.publicCalendarId = typesUtils.pString(calendarWebclientData.PublicCalendarId)
+      this.weekStartsOn = typesUtils.pInt(calendarWebclientData.WeekStartsOn); // 0 - sunday
+      this.workdayEnds = typesUtils.pInt(calendarWebclientData.WorkdayEnds)
+      this.workdayStarts = typesUtils.pInt(calendarWebclientData.WorkdayStarts)
     }
   }
 
-  saveCalendarSettings ({ HighlightWorkingDays, HighlightWorkingHours, WorkdayStarts, WorkdayEnds, WeekStartsOn, DefaultTab }) {
-    this.DefaultTab = DefaultTab
-    this.HighlightWorkingDays = HighlightWorkingDays
-    this.HighlightWorkingHours = HighlightWorkingHours
-    this.WeekStartsOn = WeekStartsOn
-    this.WorkdayEnds = WorkdayEnds
-    this.WorkdayStarts = WorkdayStarts
+  saveCalendarSettings ({ highlightWorkingDays, highlightWorkingHours, workdayStarts, workdayEnds, weekStartsOn, defaultTab }) {
+    this.defaultTab = defaultTab
+    this.highlightWorkingDays = highlightWorkingDays
+    this.highlightWorkingHours = highlightWorkingHours
+    this.weekStartsOn = weekStartsOn
+    this.workdayEnds = workdayEnds
+    this.workdayStarts = workdayStarts
   }
 }
 
@@ -38,12 +38,12 @@ export default {
   },
   getCalendarSettings () {
     return {
-      HighlightWorkingDays: settings.HighlightWorkingDays,
-      HighlightWorkingHours: settings.HighlightWorkingHours,
-      WorkdayStarts: settings.WorkdayStarts,
-      WorkdayEnds: settings.WorkdayEnds,
-      WeekStartsOn: settings.WeekStartsOn,
-      DefaultTab: settings.DefaultTab
+      highlightWorkingDays: settings.highlightWorkingDays,
+      highlightWorkingHours: settings.highlightWorkingHours,
+      workdayStarts: settings.workdayStarts,
+      workdayEnds: settings.workdayEnds,
+      weekStartsOn: settings.weekStartsOn,
+      defaultTab: settings.defaultTab
     }
   },
 

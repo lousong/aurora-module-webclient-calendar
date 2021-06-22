@@ -55,10 +55,10 @@
             <div class="col-1 q-my-sm q-ml-md" v-t="'CALENDARWEBCLIENT.LABEL_DEFAULT_TAB'"></div>
             <div class="col-5 q-ml-sm">
               <div class="  q-my-sm">
-                <q-radio dense v-model="timeFormat" val="1" :label="$t('CALENDARWEBCLIENT.ACTION_SHOW_DAY_VIEW')"/>
-                <q-radio class="q-ml-md" dense v-model="timeFormat" val="2"
+                <q-radio dense v-model="timeFormat" :val="1" :label="$t('CALENDARWEBCLIENT.ACTION_SHOW_DAY_VIEW')"/>
+                <q-radio class="q-ml-md" dense v-model="timeFormat" :val="2"
                          :label="$t('CALENDARWEBCLIENT.ACTION_SHOW_WEEK_VIEW')"/>
-                <q-radio class="q-ml-md" dense v-model="timeFormat" val="3"
+                <q-radio class="q-ml-md" dense v-model="timeFormat" :val="3"
                          :label="$t('CALENDARWEBCLIENT.ACTION_SHOW_MONTH_VIEW')"/>
               </div>
             </div>
@@ -82,7 +82,7 @@ import _ from 'lodash'
 import webApi from 'src/utils/web-api'
 import notification from 'src/utils/notification'
 import errors from 'src/utils/errors'
-import Calendar from '../utils/Calendar'
+import calendar from '../utils/calendar'
 
 export default {
   name: 'CalendarAdminSettings',
@@ -102,15 +102,13 @@ export default {
   },
   computed: {
     timeList () {
-      const timeList = Calendar.getTimeListStepHalfHour()
-      const timeListOptions = []
-      for (let i = 0; i < timeList.length; i++) {
-        timeListOptions.push({
-          label: timeList[i],
-          value: i
-        })
-      }
-      return timeListOptions
+      const timeList = calendar.getTimeListStepHalfHour()
+      return timeList.map((timeData, key) => {
+        return {
+          label: timeData,
+          value: key
+        }
+      })
     },
     weekStartsList () {
       return [
@@ -142,21 +140,21 @@ export default {
   methods: {
     hasChanges () {
       const data = settings.getCalendarSettings()
-      return this.highlightWorkingDays !== data.HighlightWorkingDays ||
-          this.highlightWorkingHours !== data.HighlightWorkingHours ||
-          this.workdayEnds.value !== Number(data.WorkdayEnds) ||
-          this.workdayStarts.value !== Number(data.WorkdayStarts) ||
-          this.timeFormat !== data.DefaultTab ||
-          this.weekStartsOn.value !== Number(data.WeekStartsOn)
+      return this.highlightWorkingDays !== data.highlightWorkingDays ||
+          this.highlightWorkingHours !== data.highlightWorkingHours ||
+          this.workdayEnds.value !== data.workdayEnds ||
+          this.workdayStarts.value !== data.workdayStarts ||
+          this.timeFormat !== data.defaultTab ||
+          this.weekStartsOn.value !== data.weekStartsOn
     },
     populate () {
       const data = settings.getCalendarSettings()
-      this.highlightWorkingDays = data.HighlightWorkingDays
-      this.highlightWorkingHours = data.HighlightWorkingHours
-      this.workdayEnds = this.chooseTime(Number(data.WorkdayEnds), this.timeList)
-      this.workdayStarts = this.chooseTime(Number(data.WorkdayStarts), this.timeList)
-      this.timeFormat = data.DefaultTab
-      this.weekStartsOn = this.chooseTime(Number(data.WeekStartsOn), this.weekStartsList)
+      this.highlightWorkingDays = data.highlightWorkingDays
+      this.highlightWorkingHours = data.highlightWorkingHours
+      this.workdayEnds = this.chooseTime(data.workdayEnds, this.timeList)
+      this.workdayStarts = this.chooseTime(data.workdayStarts, this.timeList)
+      this.timeFormat = data.defaultTab
+      this.weekStartsOn = this.chooseTime(data.weekStartsOn, this.weekStartsList)
     },
     save () {
       if (!this.saving) {
@@ -176,7 +174,14 @@ export default {
         }).then(result => {
           this.saving = false
           if (result === true) {
-            settings.saveCalendarSettings(parameters)
+            settings.saveCalendarSettings({
+              highlightWorkingDays: this.highlightWorkingDays,
+              highlightWorkingHours: this.highlightWorkingHours,
+              workdayStarts: this.workdayStarts.value,
+              workdayEnds: this.workdayEnds.value,
+              weekStartsOn: this.weekStartsOn.value,
+              defaultTab: this.timeFormat
+            })
             this.populate()
             notification.showReport(this.$t('COREWEBCLIENT.REPORT_SETTINGS_UPDATE_SUCCESS'))
           } else {
@@ -188,15 +193,8 @@ export default {
         })
       }
     },
-    chooseTime (value, arr) {
-      let workday = {}
-      arr.forEach((elem) => {
-        if (elem.value === value) {
-          workday = elem
-          return true
-        }
-      })
-      return workday
+    chooseTime (timeValue, timeList) {
+      return timeList.find(elem => elem.value === timeValue)
     },
   }
 }
