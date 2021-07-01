@@ -8,21 +8,23 @@
         <q-card-section>
           <div class="row">
             <div class="col-2 q-my-sm" v-t="'CALENDARWEBCLIENT.LABEL_WORKDAY_STARTS'"></div>
-            <div class="col-4">
+            <div class="col-2">
               <q-select flat
                         outlined
                         dense class="bg-white" v-model="workdayStarts"
                         :options="timeList"/>
             </div>
-            <div class="col-1 q-my-sm q-pl-md" v-t="'CALENDARWEBCLIENT.LABEL_WORKDAY_ENDS'"></div>
-            <div class="col-4">
+            <div class="col-1 q-my-sm">
+              <div class="q-mr-md" style="text-align: right">{{ $t('CALENDARWEBCLIENT.LABEL_WORKDAY_ENDS') }}</div>
+            </div>
+            <div class="col-2">
               <q-select flat
                         outlined
                         dense class="bg-white" v-model="workdayEnds"
                         :options="timeList"/>
             </div>
           </div>
-          <div class="row q-my-sm">
+          <div class="row q-my-md">
             <div class="col-2 q-my-md"></div>
                 <q-checkbox dense v-model="highlightWorkingHours" color="primary">
                   <q-item-label v-t="'CALENDARWEBCLIENT.LABEL_SHOW_WORKDAY'" />
@@ -30,14 +32,14 @@
           </div>
           <div class="row">
             <div class="col-2 q-my-sm" v-t="'CALENDARWEBCLIENT.LABEL_WEEK_STARTS_ON'"></div>
-            <div class="col-4">
+            <div class="col-2">
               <q-select flat
                         outlined
                         dense class="bg-white" v-model="weekStartsOn"
                         :options="weekStartsList"/>
             </div>
           </div>
-          <div class="row q-my-sm">
+          <div class="row q-my-md">
             <div class="col-2 q-my-md"></div>
                 <q-checkbox dense v-model="highlightWorkingDays" color="primary">
                   <q-item-label v-t="'CALENDARWEBCLIENT.LABEL_HIGHLIGHT_WORK_DAYS'" />
