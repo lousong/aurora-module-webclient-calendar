@@ -15,7 +15,7 @@ export default {
         tabName: 'calendar',
         title: 'CALENDARWEBCLIENT.LABEL_SETTINGS_TAB',
         component () {
-          return import('src/../../../CalendarWebclient/vue/components/CalendarAdminSettings')
+          return import('./components/CalendarAdminSettings')
         },
       },
     ]
