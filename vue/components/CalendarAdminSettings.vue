@@ -11,7 +11,7 @@
             <div class="col-2">
               <q-select flat
                         outlined
-                        dense class="bg-white" v-model="workdayStarts"
+                        dense class="bg-white select" v-model="workdayStarts"
                         :options="timeList"/>
             </div>
             <div class="col-1 q-my-sm">
@@ -20,7 +20,7 @@
             <div class="col-2">
               <q-select flat
                         outlined
-                        dense class="bg-white" v-model="workdayEnds"
+                        dense class="bg-white select" v-model="workdayEnds"
                         :options="timeList"/>
             </div>
           </div>
@@ -35,7 +35,7 @@
             <div class="col-2">
               <q-select flat
                         outlined
-                        dense class="bg-white" v-model="weekStartsOn"
+                        dense class="bg-white select" v-model="weekStartsOn"
                         :options="weekStartsList"/>
             </div>
           </div>
@@ -193,3 +193,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.select {
+  border-radius: 6px;
+}
+</style>
