@@ -65,24 +65,20 @@
         </q-btn>
       </div>
     </div>
-    <UnsavedChangesDialog ref="unsavedChangesDialog"/>
   </q-scroll-area>
 </template>
 
 <script>
-import UnsavedChangesDialog from 'src/components/UnsavedChangesDialog'
-import settings from '../../../CalendarWebclient/vue/settings'
-import _ from 'lodash'
 import webApi from 'src/utils/web-api'
-import notification from 'src/utils/notification'
 import errors from 'src/utils/errors'
+import notification from 'src/utils/notification'
+
+import settings from '../settings'
 import calendar from '../utils/calendar'
 
 export default {
   name: 'CalendarAdminSettings',
-  components: {
-    UnsavedChangesDialog
-  },
+
   data () {
     return {
       saving: false,
@@ -94,6 +90,7 @@ export default {
       weekStartsOn: ''
     }
   },
+
   computed: {
     timeList () {
       const timeList = calendar.getTimeListStepHalfHour()
@@ -121,17 +118,19 @@ export default {
       ]
     }
   },
+
   mounted () {
     this.populate()
   },
+
   beforeRouteLeave (to, from, next) {
-    if (this.hasChanges() && _.isFunction(this?.$refs?.unsavedChangesDialog?.openConfirmDiscardChangesDialog)) {
-      this.$refs.unsavedChangesDialog.openConfirmDiscardChangesDialog(next)
-    } else {
-      next()
-    }
+    this.doBeforeRouteLeave(to, from, next)
   },
+
   methods: {
+    /**
+     * Method is used in doBeforeRouteLeave mixin
+     */
     hasChanges () {
       const data = settings.getCalendarSettings()
       return this.highlightWorkingDays !== data.highlightWorkingDays ||
@@ -141,6 +140,16 @@ export default {
           this.timeFormat !== data.defaultTab ||
           this.weekStartsOn.value !== data.weekStartsOn
     },
+
+    /**
+     * Method is used in doBeforeRouteLeave mixin,
+     * do not use async methods - just simple and plain reverting of values
+     * !! hasChanges method must return true after executing revertChanges method
+     */
+    revertChanges () {
+      this.populate()
+    },
+
     populate () {
       const data = settings.getCalendarSettings()
       this.highlightWorkingDays = data.highlightWorkingDays
