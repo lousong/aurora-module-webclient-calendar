@@ -10,7 +10,8 @@ var
 	
 	App = require('%PathToCoreWebclientModule%/js/App.js'),
 	CAbstractPopup = require('%PathToCoreWebclientModule%/js/popups/CAbstractPopup.js'),
-	ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js')
+	ModulesManager = require('%PathToCoreWebclientModule%/js/ModulesManager.js'),
+	Screens = require('%PathToCoreWebclientModule%/js/Screens.js')
 ;
 
 /**
@@ -106,11 +107,19 @@ CCalendarSharePopup.prototype.onOpen = function (fCallback, oCalendar)
 
 CCalendarSharePopup.prototype.onSaveClick = function ()
 {
-	if (this.fCallback)
+	var
+		aOwners = AddressUtils.getArrayRecipients(this.owners(), false),
+		aGuests = AddressUtils.getArrayRecipients(this.guests(), false)
+	;
+
+	if (this.isValidShares(aOwners, aGuests))
 	{
-		this.fCallback(this.calendarId(), this.isPublic(), this.getShares(), this.sharedToAll(), this.sharedToAllAccess());
+		if (this.fCallback)
+		{
+			this.fCallback(this.calendarId(), this.isPublic(), this.getShares(aOwners, aGuests), this.sharedToAll(), this.sharedToAllAccess());
+		}
+		this.closePopup();
 	}
-	this.closePopup();
 };
 
 CCalendarSharePopup.prototype.onClose = function ()
@@ -173,16 +182,38 @@ CCalendarSharePopup.prototype.setRecipient = function (koRecipient, sRecipient)
 	}
 };
 
-CCalendarSharePopup.prototype.getShares = function ()
+CCalendarSharePopup.prototype.isValidShares = function (aOwners, aGuests)
 {
-	return $.merge(_.map(AddressUtils.getArrayRecipients(this.guests(), false), function(oGuest){
+	var aConflictEmails = [];
+	_.each(aOwners, function (oOwnerAddress) {
+		_.each(aGuests, function (oGuestAddress) {
+			if (oOwnerAddress.email === oGuestAddress.email) {
+				aConflictEmails.push(oOwnerAddress.fullEmail);
+			}
+		});
+	});
+	if (aConflictEmails.length > 0)
+	{
+		var
+			sConflictEmails = TextUtils.encodeHtml(aConflictEmails.join(', ')),
+			iConflictCount = aConflictEmails.length
+		;
+		Screens.showError(TextUtils.i18n('%MODULENAME%/ERROR_SHARE_CONFLICT_EMAILS', {'CONFLICT_EMAILS': sConflictEmails}, null, iConflictCount));
+		return false;
+	}
+	return true;
+};
+
+CCalendarSharePopup.prototype.getShares = function (aOwners, aGuests)
+{
+	return $.merge(_.map(aGuests, function(oGuest){
 			return {
 				name: oGuest.name,
 				email: oGuest.email,
 				access: Enums.CalendarAccess.Read
 			};
 		}),
-		_.map(AddressUtils.getArrayRecipients(this.owners(), false), function(oOwner){
+		_.map(aOwners, function(oOwner){
 			return {
 				name: oOwner.name,
 				email: oOwner.email,
