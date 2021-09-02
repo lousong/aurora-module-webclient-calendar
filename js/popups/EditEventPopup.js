@@ -296,6 +296,12 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 		oToday = moment()
 	;
 
+	this.oSaveDatetimeValues = {
+		AllDay: oParameters.AllDay,
+		Start: oParameters.Start,
+		End: oParameters.End
+	};
+
 	this.withDate(!!oParameters.Start && !!oParameters.End);
 
 	if (!oParameters.Start && !oParameters.End)
@@ -453,144 +459,189 @@ CEditEventPopup.prototype.onIsTaskClick = function ()
 
 CEditEventPopup.prototype.onSaveClick = function ()
 {
-	if (this.subject() === '')
-	{
+	if (this.subject() === '') {
 		Popups.showPopup(AlertPopup, [TextUtils.i18n('%MODULENAME%/ERROR_SUBJECT_BLANK'),
 			_.bind(function () {
 				this.subjectFocus(true);
 			}, this)]);
+		return;
 	}
-	else
-	{
-		if (this.callbackSave)
-		{
-			var
-				iPeriod = Types.pInt(this.repeatPeriod()),
-				sDate = '',
-				iUnixDate = null,
-				iInterval = 0,
-				oStart = moment(this.getDateTime(this.startDom(), this.startTime())),
-				oEnd = moment(this.getDateTime(this.endDom(), this.endTime())),
-				oEventData = {
-					calendarId: this.calendarId(),
-					newCalendarId: this.selectedCalendarId(),
-					id: this.id(),
-					uid: this.uid(),
-					recurrenceId: this.recurrenceId(),
-					allEvents:  this.allEvents(),
-					subject: this.subject(),
-					title: CalendarUtils.getTitleForEvent(this.subject(), this.description()),
-					allDay: this.allDay(),
-					location: this.location(),
-					description: this.description(),
-					alarms: this.getAlarmsArray(this.displayedAlarms()),
-					attendees: this.attendees(),
-					owner: this.owner(),
-					modified: this.modified,
-					type: this.eventType(),
-					status: this.status(),
-					withDate: this.withDate()
-				},
-				iAlways = Types.pInt(this.always())
-			;
-			
-			if (this.allDay())
-			{
-				oEnd.add(1, 'days');
+	
+	if (!_.isFunction(this.callbackSave)) {
+		return;
+	}
+	
+	var
+		oEventData = this.getEventData(),
+		bNewEvent = oEventData.id === null,
+		bCheckOverlap = bNewEvent ? true : this.hasDatetimeChanges(oEventData)
+	;
+
+	if (bCheckOverlap) {
+		Ajax.send('CheckIfHasEventOverlap', oEventData, function (oResponse) {
+			if (oResponse && oResponse.Result === true) {
+				var sOverlapConfirm = bNewEvent
+						? TextUtils.i18n('%MODULENAME%/CONFIRM_CREATE_EVENT_OVERLAP')
+						: TextUtils.i18n('%MODULENAME%/CONFIRM_UPDATE_EVENT_OVERLAP');
+				Popups.showPopup(ConfirmPopup, [sOverlapConfirm, function (bContinue) {
+					if (bContinue) {
+						this.callbackSave(oEventData);
+						this.closePopup();
+					}
+				}.bind(this)]);
+			} else {
+				this.callbackSave(oEventData);
+				this.closePopup();
 			}
-			
-			oEventData.start = oStart;
-			oEventData.end = oEnd;
-
-			if (iPeriod)
-			{
-				sDate = this.repeatEndDom().datepicker('getDate');
-				iUnixDate = sDate ? moment(sDate).unix() : null;
-				iInterval = this.repeatInterval();
-
-				if (iPeriod === Enums.CalendarRepeatPeriod.Daily && iAlways === Enums.CalendarAlways.Disable)
-				{
-					oEventData.rrule = {
-						byDays: [],
-						count: null,
-						end: 2,
-						interval: 1,
-						period: iPeriod,
-						until: iUnixDate,
-						weekNum: null
-					};
-				}
-				else if (iPeriod === Enums.CalendarRepeatPeriod.Weekly && iAlways === Enums.CalendarAlways.Disable)
-				{
-					this.setDayOfWeek();
-
-					oEventData.rrule = {
-						byDays: this.getDays(),
-						count: null,
-						end: 2,
-						interval: iInterval,
-						period: iPeriod,
-						until: iUnixDate,
-						weekNum: null
-					};
-				}
-				else if (iPeriod === Enums.CalendarRepeatPeriod.Monthly)
-				{
-					oEventData.rrule = {
-						byDays: [],
-						count: null,
-						end: 0,
-						interval: 1,
-						period: iPeriod,
-						until: null,
-						weekNum: null
-					};
-				}
-				else if (iPeriod === Enums.CalendarRepeatPeriod.Yearly)
-				{
-					oEventData.rrule = {
-						byDays: [],
-						count: null,
-						end: 0,
-						interval: 1,
-						period: iPeriod,
-						until: null,
-						weekNum: null
-					};
-				}
-				else if (iPeriod === Enums.CalendarRepeatPeriod.Daily && iAlways === Enums.CalendarAlways.Enable)
-				{
-					oEventData.rrule = {
-						byDays: [],
-						count: null,
-						end: 3,
-						interval: 1,
-						period: iPeriod,
-						until: iUnixDate,
-						weekNum: null
-					};
-				}
-				else if (iPeriod === Enums.CalendarRepeatPeriod.Weekly && iAlways === Enums.CalendarAlways.Enable)
-				{
-					this.setDayOfWeek();
-
-					oEventData.rrule = {
-						byDays: this.getDays(),
-						count: null,
-						end: 3,
-						interval: iInterval,
-						period: iPeriod,
-						until: iUnixDate,
-						weekNum: null
-					};
-				}
-			}
-
-			this.callbackSave(oEventData);
-		}
-
+		}, this);
+	} else {
+		this.callbackSave(oEventData);
 		this.closePopup();
 	}
+};
+
+CEditEventPopup.prototype.hasDatetimeChanges = function (oEventData)
+{
+	if (this.oSaveDatetimeValues.AllDay !== oEventData.allDay) {
+		return true;
+	}
+
+	if (this.oSaveDatetimeValues.Start && this.oSaveDatetimeValues.Start.diff(oEventData.start) !== 0) {
+		return true;
+	}
+
+	if (this.oSaveDatetimeValues.End && this.oSaveDatetimeValues.End.diff(oEventData.end) !== 0) {
+		return true;
+	}
+	
+	return false;
+};
+
+CEditEventPopup.prototype.getEventData = function ()
+{
+	var
+		iPeriod = Types.pInt(this.repeatPeriod()),
+		sDate = '',
+		iUnixDate = null,
+		iInterval = 0,
+		oStart = moment(this.getDateTime(this.startDom(), this.startTime())),
+		oEnd = moment(this.getDateTime(this.endDom(), this.endTime())),
+		oEventData = {
+			calendarId: this.calendarId(),
+			newCalendarId: this.selectedCalendarId(),
+			id: this.id(),
+			uid: this.uid(),
+			recurrenceId: this.recurrenceId(),
+			allEvents:  this.allEvents(),
+			subject: this.subject(),
+			title: CalendarUtils.getTitleForEvent(this.subject(), this.description()),
+			allDay: this.allDay(),
+			location: this.location(),
+			description: this.description(),
+			alarms: this.getAlarmsArray(this.displayedAlarms()),
+			attendees: this.attendees(),
+			owner: this.owner(),
+			modified: this.modified,
+			type: this.eventType(),
+			status: this.status(),
+			withDate: this.withDate()
+		},
+		iAlways = Types.pInt(this.always())
+	;
+
+	if (this.allDay())
+	{
+		oEnd.add(1, 'days');
+	}
+
+	oEventData.start = oStart;
+	oEventData.end = oEnd;
+
+	if (iPeriod)
+	{
+		sDate = this.repeatEndDom().datepicker('getDate');
+		iUnixDate = sDate ? moment(sDate).unix() : null;
+		iInterval = this.repeatInterval();
+
+		if (iPeriod === Enums.CalendarRepeatPeriod.Daily && iAlways === Enums.CalendarAlways.Disable)
+		{
+			oEventData.rrule = {
+				byDays: [],
+				count: null,
+				end: 2,
+				interval: 1,
+				period: iPeriod,
+				until: iUnixDate,
+				weekNum: null
+			};
+		}
+		else if (iPeriod === Enums.CalendarRepeatPeriod.Weekly && iAlways === Enums.CalendarAlways.Disable)
+		{
+			this.setDayOfWeek();
+
+			oEventData.rrule = {
+				byDays: this.getDays(),
+				count: null,
+				end: 2,
+				interval: iInterval,
+				period: iPeriod,
+				until: iUnixDate,
+				weekNum: null
+			};
+		}
+		else if (iPeriod === Enums.CalendarRepeatPeriod.Monthly)
+		{
+			oEventData.rrule = {
+				byDays: [],
+				count: null,
+				end: 0,
+				interval: 1,
+				period: iPeriod,
+				until: null,
+				weekNum: null
+			};
+		}
+		else if (iPeriod === Enums.CalendarRepeatPeriod.Yearly)
+		{
+			oEventData.rrule = {
+				byDays: [],
+				count: null,
+				end: 0,
+				interval: 1,
+				period: iPeriod,
+				until: null,
+				weekNum: null
+			};
+		}
+		else if (iPeriod === Enums.CalendarRepeatPeriod.Daily && iAlways === Enums.CalendarAlways.Enable)
+		{
+			oEventData.rrule = {
+				byDays: [],
+				count: null,
+				end: 3,
+				interval: 1,
+				period: iPeriod,
+				until: iUnixDate,
+				weekNum: null
+			};
+		}
+		else if (iPeriod === Enums.CalendarRepeatPeriod.Weekly && iAlways === Enums.CalendarAlways.Enable)
+		{
+			this.setDayOfWeek();
+
+			oEventData.rrule = {
+				byDays: this.getDays(),
+				count: null,
+				end: 3,
+				interval: iInterval,
+				period: iPeriod,
+				until: iUnixDate,
+				weekNum: null
+			};
+		}
+	}
+	
+	return oEventData;
 };
 
 CEditEventPopup.prototype.onEscHandler = function ()
