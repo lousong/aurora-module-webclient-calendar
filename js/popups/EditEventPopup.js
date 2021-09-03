@@ -478,7 +478,7 @@ CEditEventPopup.prototype.onSaveClick = function ()
 	;
 
 	if (bCheckOverlap) {
-		Ajax.send('CheckIfHasEventOverlap', oEventData, function (oResponse) {
+		Ajax.send('CheckIfHasEventOverlap', this.getCheckIfHasEventOverlapParameters(oEventData), function (oResponse) {
 			if (oResponse && oResponse.Result === true) {
 				var sOverlapConfirm = bNewEvent
 						? TextUtils.i18n('%MODULENAME%/CONFIRM_CREATE_EVENT_OVERLAP')
@@ -515,6 +515,27 @@ CEditEventPopup.prototype.hasDatetimeChanges = function (oEventData)
 	}
 	
 	return false;
+};
+
+CEditEventPopup.prototype.getCheckIfHasEventOverlapParameters = function (oEventData)
+{
+	var
+		sBrowserTimezone = moment.tz.guess(),
+		sServerTimezone = UserSettings.timezone(),
+		oStart = moment.tz(oEventData.start.format('YYYY-MM-DD HH:mm:ss'), sServerTimezone || sBrowserTimezone),
+		oEnd = moment.tz(oEventData.end.format('YYYY-MM-DD HH:mm:ss'), sServerTimezone || sBrowserTimezone)
+	;
+	return {
+		id: oEventData.id,
+		uid: oEventData.uid,
+		calendarId: oEventData.calendarId,
+		allDay: oEventData.allDay ? 1 : 0,
+		owner: oEventData.owner,
+		start: oStart.format(),
+		end: oEnd.format(),
+		startTS: oStart.unix(),
+		endTS: oEnd.unix()
+	};
 };
 
 CEditEventPopup.prototype.getEventData = function ()
@@ -640,7 +661,7 @@ CEditEventPopup.prototype.getEventData = function ()
 			};
 		}
 	}
-	
+
 	return oEventData;
 };
 
