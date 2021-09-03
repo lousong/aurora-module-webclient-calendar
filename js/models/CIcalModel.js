@@ -302,8 +302,7 @@ CIcalModel.prototype.setAppointmentAction = function (sPrevConfig)
 		bPrevInCalendar = sPrevConfig === Enums.IcalConfig.Accepted || sPrevConfig === Enums.IcalConfig.Tentative,
 		bNewInCalendar = this.icalConfig() === Enums.IcalConfig.Accepted || this.icalConfig() === Enums.IcalConfig.Tentative
 	;
-	console.log({oRawIcal: this.oRawIcal, oParameters});
-	console.log({sPrevConfig, icalConfig: this.icalConfig(),  bPrevInCalendar, bNewInCalendar});
+
 	if (!bPrevInCalendar && bNewInCalendar) {
 		EventsOverlapUtils.check(oParameters, true, fSetAppointmentAction, fRejectSetAppointmentAction);
 	} else {
@@ -330,19 +329,29 @@ CIcalModel.prototype.onSetAppointmentActionResponse = function (oResponse, oRequ
 
 CIcalModel.prototype.addEvents = function ()
 {
-	Ajax.send('AddEventsFromFile', {
-		'CalendarId': this.selectedCalendarId(),
-		'File': this.file()
-	}, this.onAddEventsFromFileResponse, this);
+	var
+		fAddEventsFromFile = function () {
+			Ajax.send('AddEventsFromFile', {
+				'CalendarId': this.selectedCalendarId(),
+				'File': this.file()
+			}, this.onAddEventsFromFileResponse, this);
 
-	this.isJustSaved(true);
-	this.calendarId(this.selectedCalendarId());
+			this.isJustSaved(true);
+			this.calendarId(this.selectedCalendarId());
 
-	setTimeout(_.bind(function () {
-		this.isJustSaved(false);
-	}, this), 20000);
+			setTimeout(_.bind(function () {
+				this.isJustSaved(false);
+			}, this), 20000);
 
-	this.showChanges();
+			this.showChanges();
+		}.bind(this),
+		oParameters = {
+			startTS: this.oRawIcal ? this.oRawIcal.StartTS : null,
+			endTS: this.oRawIcal ? this.oRawIcal.EndTS : null
+		}
+	;
+
+	EventsOverlapUtils.check(oParameters, true, fAddEventsFromFile);
 };
 
 /**
