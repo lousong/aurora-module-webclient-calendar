@@ -26,7 +26,7 @@ EventsOverlapUtils.getCheckParameters = function (oEventData)
 
 	if (oEventData.allDay) {
 		oStart.hour(0).minute(0).second(0).millisecond(0);
-		oEnd.hour(23).minute(59).second(59).millisecond(0);
+		oEnd.hour(0).minute(0).second(0).millisecond(0);
 	}
 
 	return {
