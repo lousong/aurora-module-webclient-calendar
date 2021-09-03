@@ -1934,7 +1934,7 @@ CCalendarView.prototype.moveEvent = function (oEventData, delta, revertFunc)
 		else
 		{
 			oParameters.allEvents = Enums.CalendarEditRecurrenceEvent.AllEvents;
-			EventsOverlapUtils.check(oParameters, function () {
+			EventsOverlapUtils.check(oParameters, false, function () {
 				this.eventAction('UpdateEvent', oParameters, revertFunc);
 			}.bind(this), revertFunc);
 		}
@@ -1958,7 +1958,7 @@ CCalendarView.prototype.resizeEvent = function (oEventData, delta, revertFunc)
 			if (iResult !== Enums.CalendarEditRecurrenceEvent.None)
 			{
 				oParameters.allEvents = iResult;
-				EventsOverlapUtils.check(oParameters, function () {
+				EventsOverlapUtils.check(oParameters, false, function () {
 					this.eventAction('UpdateEvent', oParameters, revertFunc);
 				}.bind(this), revertFunc);
 			}

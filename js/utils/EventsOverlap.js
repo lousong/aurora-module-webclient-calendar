@@ -38,7 +38,7 @@ EventsOverlapUtils.getCheckParameters = function (oEventData)
 	};
 };
 
-EventsOverlapUtils.check = function (oParameters, fContinueCallback, fRevertCallback)
+EventsOverlapUtils.check = function (oParameters, bNewEvent, fContinueCallback, fRevertCallback)
 {
 	Ajax.send('CheckIfHasEventOverlap', oParameters, function (oResponse) {
 		if (oResponse && oResponse.Result === true) {

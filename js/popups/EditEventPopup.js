@@ -483,7 +483,7 @@ CEditEventPopup.prototype.onSaveClick = function ()
 	;
 
 	if (bCheckOverlap) {
-		EventsOverlapUtils.check(EventsOverlapUtils.getCheckParameters(oEventData), fContinueCallback);
+		EventsOverlapUtils.check(EventsOverlapUtils.getCheckParameters(oEventData), bNewEvent, fContinueCallback);
 	} else {
 		fContinueCallback();
 	}
