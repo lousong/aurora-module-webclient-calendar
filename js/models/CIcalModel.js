@@ -9,6 +9,10 @@ var
 
 	Api = require('%PathToCoreWebclientModule%/js/Api.js'),
 	App = require('%PathToCoreWebclientModule%/js/App.js'),
+	ConfirmPopup = require('%PathToCoreWebclientModule%/js/popups/ConfirmPopup.js'),
+	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
+
+	EventsOverlapUtils = require('modules/%ModuleName%/js/utils/EventsOverlap.js'),
 
 	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
 	CalendarCache = require('modules/%ModuleName%/js/Cache.js'),
@@ -216,13 +220,15 @@ CIcalModel.prototype.changeAndSaveConfig = function (sConfig)
 {
 	if (this.icalConfig() !== sConfig)
 	{
+		var sPrevConfig = this.icalConfig();
+
 		if (sConfig !== Enums.IcalConfig.Declined || this.icalConfig() !== Enums.IcalConfig.NeedsAction)
 		{
 			this.showChanges();
 		}
 
 		this.changeConfig(sConfig);
-		this.setAppointmentAction();
+		this.setAppointmentAction(sPrevConfig);
 	}
 };
 
@@ -267,21 +273,42 @@ CIcalModel.prototype.markAccepted = function ()
 	this.changeConfig(Enums.IcalConfig.Accepted);
 };
 
-CIcalModel.prototype.setAppointmentAction = function ()
+CIcalModel.prototype.setAppointmentAction = function (sPrevConfig)
 {
 	this.isAppointmentActionInProgress(true);
-	Ajax.send(
-		'SetAppointmentAction',
-		{
-			'AppointmentAction': this.icalConfig(),
-			'CalendarId': this.selectedCalendarId(),
-			'File': this.file(),
-			'Attendee': this.attendee()
+	
+	var
+		fSetAppointmentAction = function () {
+			Ajax.send(
+				'SetAppointmentAction',
+				{
+					'AppointmentAction': this.icalConfig(),
+					'CalendarId': this.selectedCalendarId(),
+					'File': this.file(),
+					'Attendee': this.attendee()
+				},
+				this.onSetAppointmentActionResponse,
+				this,
+				'CalendarMeetingsPlugin'
+			);
+		}.bind(this),
+		fRejectSetAppointmentAction = function () {
+			this.isAppointmentActionInProgress(false);
+		}.bind(this),
+		oParameters = {
+			startTS: this.oRawIcal ? this.oRawIcal.StartTS : null,
+			endTS: this.oRawIcal ? this.oRawIcal.EndTS : null
 		},
-		this.onSetAppointmentActionResponse,
-		this,
-		'CalendarMeetingsPlugin'
-	);
+		bPrevInCalendar = sPrevConfig === Enums.IcalConfig.Accepted || sPrevConfig === Enums.IcalConfig.Tentative,
+		bNewInCalendar = this.icalConfig() === Enums.IcalConfig.Accepted || this.icalConfig() === Enums.IcalConfig.Tentative
+	;
+	console.log({oRawIcal: this.oRawIcal, oParameters});
+	console.log({sPrevConfig, icalConfig: this.icalConfig(),  bPrevInCalendar, bNewInCalendar});
+	if (!bPrevInCalendar && bNewInCalendar) {
+		EventsOverlapUtils.check(oParameters, true, fSetAppointmentAction, fRejectSetAppointmentAction);
+	} else {
+		fSetAppointmentAction();
+	}
 };
 
 /**
