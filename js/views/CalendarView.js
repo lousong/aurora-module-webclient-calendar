@@ -29,6 +29,8 @@ var
 	SelectCalendarPopup = require('modules/%ModuleName%/js/popups/SelectCalendarPopup.js'),
 	CalendarSharePopup = require('modules/%ModuleName%/js/popups/CalendarSharePopup.js'),
 
+	EventsOverlapUtils = require('modules/%ModuleName%/js/utils/EventsOverlap.js'),
+
 	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
 	CalendarCache = require('modules/%ModuleName%/js/Cache.js'),
 	Settings = require('modules/%ModuleName%/js/Settings.js'),
@@ -1932,7 +1934,9 @@ CCalendarView.prototype.moveEvent = function (oEventData, delta, revertFunc)
 		else
 		{
 			oParameters.allEvents = Enums.CalendarEditRecurrenceEvent.AllEvents;
-			this.eventAction('UpdateEvent', oParameters, revertFunc);
+			EventsOverlapUtils.check(oParameters, function () {
+				this.eventAction('UpdateEvent', oParameters, revertFunc);
+			}.bind(this), revertFunc);
 		}
 	}
 
@@ -1954,7 +1958,9 @@ CCalendarView.prototype.resizeEvent = function (oEventData, delta, revertFunc)
 			if (iResult !== Enums.CalendarEditRecurrenceEvent.None)
 			{
 				oParameters.allEvents = iResult;
-				this.eventAction('UpdateEvent', oParameters, revertFunc);
+				EventsOverlapUtils.check(oParameters, function () {
+					this.eventAction('UpdateEvent', oParameters, revertFunc);
+				}.bind(this), revertFunc);
 			}
 			else
 			{

@@ -23,6 +23,7 @@ var
 	ConfirmPopup = require('%PathToCoreWebclientModule%/js/popups/ConfirmPopup.js'),
 	
 	CalendarUtils = require('modules/%ModuleName%/js/utils/Calendar.js'),
+	EventsOverlapUtils = require('modules/%ModuleName%/js/utils/EventsOverlap.js'),
 	
 	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
 	CalendarCache = require('modules/%ModuleName%/js/Cache.js'),
@@ -474,29 +475,17 @@ CEditEventPopup.prototype.onSaveClick = function ()
 	var
 		oEventData = this.getEventData(),
 		bNewEvent = oEventData.id === null,
-		bCheckOverlap = bNewEvent ? true : this.hasDatetimeChanges(oEventData)
+		bCheckOverlap = bNewEvent ? true : this.hasDatetimeChanges(oEventData),
+		fContinueCallback = function () {
+			this.callbackSave(oEventData);
+			this.closePopup();
+		}.bind(this)
 	;
 
 	if (bCheckOverlap) {
-		Ajax.send('CheckIfHasEventOverlap', this.getCheckIfHasEventOverlapParameters(oEventData), function (oResponse) {
-			if (oResponse && oResponse.Result === true) {
-				var sOverlapConfirm = bNewEvent
-						? TextUtils.i18n('%MODULENAME%/CONFIRM_CREATE_EVENT_OVERLAP')
-						: TextUtils.i18n('%MODULENAME%/CONFIRM_UPDATE_EVENT_OVERLAP');
-				Popups.showPopup(ConfirmPopup, [sOverlapConfirm, function (bContinue) {
-					if (bContinue) {
-						this.callbackSave(oEventData);
-						this.closePopup();
-					}
-				}.bind(this)]);
-			} else {
-				this.callbackSave(oEventData);
-				this.closePopup();
-			}
-		}, this);
+		EventsOverlapUtils.check(EventsOverlapUtils.getCheckParameters(oEventData), fContinueCallback);
 	} else {
-		this.callbackSave(oEventData);
-		this.closePopup();
+		fContinueCallback();
 	}
 };
 
@@ -515,27 +504,6 @@ CEditEventPopup.prototype.hasDatetimeChanges = function (oEventData)
 	}
 	
 	return false;
-};
-
-CEditEventPopup.prototype.getCheckIfHasEventOverlapParameters = function (oEventData)
-{
-	var
-		sBrowserTimezone = moment.tz.guess(),
-		sServerTimezone = UserSettings.timezone(),
-		oStart = moment.tz(oEventData.start.format('YYYY-MM-DD HH:mm:ss'), sServerTimezone || sBrowserTimezone),
-		oEnd = moment.tz(oEventData.end.format('YYYY-MM-DD HH:mm:ss'), sServerTimezone || sBrowserTimezone)
-	;
-	return {
-		id: oEventData.id,
-		uid: oEventData.uid,
-		calendarId: oEventData.calendarId,
-		allDay: oEventData.allDay ? 1 : 0,
-		owner: oEventData.owner,
-		start: oStart.format(),
-		end: oEnd.format(),
-		startTS: oStart.unix(),
-		endTS: oEnd.unix()
-	};
 };
 
 CEditEventPopup.prototype.getEventData = function ()
