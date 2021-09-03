@@ -4,6 +4,10 @@ var
 	_ = require('underscore'),
 	moment = require('moment'),
 
+	TextUtils = require('%PathToCoreWebclientModule%/js/utils/Text.js'),
+
+	ConfirmPopup = require('%PathToCoreWebclientModule%/js/popups/ConfirmPopup.js'),
+	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
 	UserSettings = require('%PathToCoreWebclientModule%/js/Settings.js'),
 	
 	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
