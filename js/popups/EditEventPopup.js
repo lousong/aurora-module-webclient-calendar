@@ -98,6 +98,9 @@ function CEditEventPopup()
 	this.isRepeat = ko.observable(false);
 
 	this.location = ko.observable('').extend({'disableLinebreaks': true});
+	
+	this.allowSetPrivateEvent = ko.observable(false);
+	this.isPrivateEvent = ko.observable(false);
 
 	this.repeatPeriodOptions = ko.observableArray(this.getDisplayedPeriods());
 	this.repeatWeekIntervalOptions = ko.observableArray([1, 2, 3, 4]);
@@ -162,14 +165,18 @@ function CEditEventPopup()
 	this.selectedCalendarId = ko.observable('');
 	this.selectedCalendarName = ko.observable('');
 	this.selectedCalendarId.subscribe(function (sValue) {
-		if (sValue)
+		var oCalendar = sValue ? this.calendars.getCalendarById(sValue) : null;
+		if (oCalendar)
 		{
-			var oCalendar = this.calendars.getCalendarById(sValue);
-			
 			this.selectedCalendarName(oCalendar.name());
 			this.selectedCalendarIsShared(oCalendar.isShared());
 			this.selectedCalendarIsEditable(oCalendar.isEditable());
 			this.changeCalendarColor(sValue);
+
+			// isShared - only if shared to me
+			// isSharedToAll - shared to me and shared by me
+			// shares - shared to me and shared by me
+			this.allowSetPrivateEvent(!oCalendar.isShared() && (oCalendar.isSharedToAll() || oCalendar.shares().length > 0));
 		}
 	}, this);
 	
@@ -236,6 +243,8 @@ function CEditEventPopup()
 	this.aReminderPhrase = TextUtils.i18n('%MODULENAME%/INFO_REMINDER').split('%');
 
 	this.isAppointmentButtonsVisible = ko.observable(false);
+	
+	this.isSaving = ko.observable(false);
 }
 
 _.extendOwn(CEditEventPopup.prototype, CAbstractPopup.prototype);
@@ -435,6 +444,10 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	this.modified = false;
 
 	this.isAppointmentButtonsVisible(this.appointment() && this.selectedCalendarIsEditable() && _.find(this.attendees(), function(oAttendee){ return oAttendee.email === owner; }));
+
+	this.isPrivateEvent(!!oParameters.IsPrivate);
+	
+	this.isSaving(false);
 };
 
 /**
@@ -460,6 +473,10 @@ CEditEventPopup.prototype.onIsTaskClick = function ()
 
 CEditEventPopup.prototype.onSaveClick = function ()
 {
+	if (this.isSaving()) {
+		return;
+	}
+
 	if (this.subject() === '') {
 		Popups.showPopup(AlertPopup, [TextUtils.i18n('%MODULENAME%/ERROR_SUBJECT_BLANK'),
 			_.bind(function () {
@@ -477,13 +494,18 @@ CEditEventPopup.prototype.onSaveClick = function ()
 		bNewEvent = oEventData.id === null,
 		bCheckOverlap = bNewEvent ? true : this.hasDatetimeChanges(oEventData),
 		fContinueCallback = function () {
+			this.isSaving(false);
 			this.callbackSave(oEventData);
 			this.closePopup();
+		}.bind(this),
+		fRejectCallback = function () {
+			this.isSaving(false);
 		}.bind(this)
 	;
 
 	if (bCheckOverlap) {
-		EventsOverlapUtils.check(EventsOverlapUtils.getCheckParameters(oEventData), bNewEvent, fContinueCallback);
+		this.isSaving(true);
+		EventsOverlapUtils.check(EventsOverlapUtils.getCheckParameters(oEventData), bNewEvent, fContinueCallback, fRejectCallback);
 	} else {
 		fContinueCallback();
 	}
@@ -533,7 +555,8 @@ CEditEventPopup.prototype.getEventData = function ()
 			modified: this.modified,
 			type: this.eventType(),
 			status: this.status(),
-			withDate: this.withDate()
+			withDate: this.withDate(),
+			isPrivate: this.allowSetPrivateEvent() && this.isPrivateEvent()
 		},
 		iAlways = Types.pInt(this.always())
 	;
@@ -694,6 +717,7 @@ CEditEventPopup.prototype.cleanAll = function ()
 	this.attendees([]);
 	this.always(1);
 	this.selectedCalendarId('');
+	this.isPrivateEvent(false);
 
 	this.attendees([]);
 };

@@ -247,6 +247,13 @@
 								</div>
 							</div>
 						</div>
+						<div class="row private_event" data-bind="visible: allowSetPrivateEvent">
+							<label data-bind="css: {'checked': isPrivateEvent}" class="custom_checkbox">
+								<span class="icon"></span>
+								<input type="checkbox" data-bind="checked: isPrivateEvent" id="isPrivateEvent">
+							</label>
+							<label for="isPrivateEvent" data-bind="i18n: {'key': '%MODULENAME%/LABEL_PRIVATE_EVENT'}"></label>
+						</div>
 					</div>
 					<div class="alarms_helper" data-bind="foreach: displayedAlarms()">
 						<div></div>

@@ -204,6 +204,12 @@ function CCalendarView()
 						+ '<span class="loc-title">' + $.trim(oEv.location.replace(/[\n\r]/g, ' ')) + '</span>');
 			}
 
+			if (oEv.isCalendarShared && oEv.isPrivate) {
+				oEl.css('cursor', 'default');
+				var oTitle = oEl.find('.fc-title');
+				oTitle.html('<span class="subject-title" style="opacity: 0.5">[' + TextUtils.i18n('%MODULENAME%/LABEL_NO_EVENT_INFORMATION') + ']</span> ');
+			}
+
 			if (oEv.type === 'VTODO')
 			{
 				var
@@ -1167,6 +1173,7 @@ CCalendarView.prototype.onGetEventsResponse = function (oResponse, oRequest)
 			oCalendar = this.calendars.getCalendarById(oEventData.calendarId);
 			if (oCalendar)
 			{
+				oEventData.isCalendarShared = oCalendar.isShared();
 				aEvents.push(oEventData.id);
 				var oEvent = oCalendar.getEvent(oEventData.id);
 				if (!oEvent)
@@ -1716,7 +1723,8 @@ CCalendarView.prototype.getParamsFromEventData = function (oEventData)
 		rrule: oEventData.rrule ? JSON.stringify(oEventData.rrule) : null,
 		type: oEventData.type,
 		status: oEventData.status,
-		withDate: oEventData.withDate
+		withDate: oEventData.withDate,
+		isPrivate: oEventData.isPrivate
 	};
 };
 
@@ -1794,6 +1802,10 @@ CCalendarView.prototype.createEvent = function (oEventData)
  */
 CCalendarView.prototype.eventClickCallback = function (oEventData)
 {
+	if (oEventData.isCalendarShared && oEventData.isPrivate) {
+		return; // reject editing
+	}
+
 	var
 		/**
 		 * @param {number} iResult
@@ -1823,7 +1835,8 @@ CCalendarView.prototype.eventClickCallback = function (oEventData)
 					CallbackDelete: _.bind(this.deleteEvent, this),
 					CallbackAttendeeActionDecline: _.bind(this.attendeeActionDecline, this),
 					Type: oEventData.type,
-					Status: oEventData.status
+					Status: oEventData.status,
+					IsPrivate: oEventData.isPrivate
 				}
 			;
 			if (iResult !== Enums.CalendarEditRecurrenceEvent.None)
