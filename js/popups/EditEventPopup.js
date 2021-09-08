@@ -59,6 +59,8 @@ function CEditEventPopup()
 
 	this.isMyEvent = ko.observable(false);
 
+	this.datesFormDom = ko.observable(null);
+	this.datesFormArrowDom = ko.observable(null);
 	this.startDom = ko.observable(null);
 	this.endDom = ko.observable(null);
 	this.repeatEndDom = ko.observable(null);
@@ -463,6 +465,13 @@ CEditEventPopup.prototype.changeCalendarColor = function (sId)
 		{
 			this.calendarColor('');
 			this.calendarColor(oCalendar.color());
+			if (this.datesFormDom() && this.datesFormArrowDom()) {
+				$(this.datesFormDom()).css({
+					'background-color': oCalendar.color(),
+					'color': 'white'
+				});
+				$(this.datesFormArrowDom()).css('border-top-color', oCalendar.color());
+			}
 		}
 	}
 };
