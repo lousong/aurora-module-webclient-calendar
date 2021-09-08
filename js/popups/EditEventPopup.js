@@ -236,6 +236,7 @@ function CEditEventPopup()
 		this.status();
 		this.isTask();
 		this.withDate();
+		this.isPrivateEvent();
 		
 		this.modified = true;
 	}, this);
