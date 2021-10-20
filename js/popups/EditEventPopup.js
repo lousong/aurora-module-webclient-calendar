@@ -986,7 +986,13 @@ CEditEventPopup.prototype.repeatRuleParse = function (oRepeatRule)
 	{
 		if (oRepeatRule.until)
 		{
-			this.repeatEndDom().datepicker('setDate', new Date(oRepeatRule.until * 1000));
+			var 
+				localUntill = new Date(oRepeatRule.until * 1000),
+				utcUntil = new Date(localUntill.getUTCFullYear(), localUntill.getUTCMonth(), localUntill.getUTCDate(),  localUntill.getUTCHours(), localUntill.getUTCMinutes(), localUntill.getUTCSeconds());
+			;
+
+			this.repeatEndDom().datepicker('setDate', utcUntil);
+			console.log(utcUntil);
 		}
 
 		if (oRepeatRule.byDays.length)
