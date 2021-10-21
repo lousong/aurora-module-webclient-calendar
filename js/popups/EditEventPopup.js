@@ -992,7 +992,6 @@ CEditEventPopup.prototype.repeatRuleParse = function (oRepeatRule)
 			;
 
 			this.repeatEndDom().datepicker('setDate', utcUntil);
-			console.log(utcUntil);
 		}
 
 		if (oRepeatRule.byDays.length)
