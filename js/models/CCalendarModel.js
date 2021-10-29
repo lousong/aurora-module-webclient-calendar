@@ -214,7 +214,7 @@ CCalendarModel.prototype.removeEvent = function (sId)
 CCalendarModel.prototype.removeEventByUid = function (sUid, bSkipExcluded)
 {
 	this.events(_.filter(this.events(), function(oEvent){ 
-		return (oEvent.uid !== sUid && (!bSkipExcluded || !oEvent.excluded));
+		return oEvent.uid !== sUid || bSkipExcluded && oEvent.excluded;
 	}, this));
 };
 
