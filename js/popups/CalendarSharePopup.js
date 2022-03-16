@@ -148,10 +148,21 @@ CCalendarSharePopup.prototype.initInputosaurus = function (koDom, koAddr, koLock
 {
 	if (koDom() && $(koDom()).length > 0)
 	{
+		const
+			suggestParameters = {
+				storage: 'team',
+				addContactGroups: false,
+				addUserGroups: true,
+				exceptEmail: App.getUserPublicId()
+			},
+			autoCompleteSource = ModulesManager.run(
+				'ContactsWebclient', 'getSuggestionsAutocompleteCallback', [suggestParameters]
+			)
+		;
 		$(koDom()).inputosaurus({
 			width: 'auto',
 			parseOnBlur: true,
-			autoCompleteSource: ModulesManager.run('ContactsWebclient', 'getSuggestionsAutocompleteCallback', ['team', App.getUserPublicId()]) || function () {},
+			autoCompleteSource: _.isFunction(autoCompleteSource) ? autoCompleteSource : function () {},
 			change : _.bind(function (ev) {
 				koLockAddr(true);
 				this.setRecipient(koAddr, ev.target.value);
