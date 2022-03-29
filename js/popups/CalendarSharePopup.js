@@ -22,13 +22,7 @@ function CCalendarSharePopup()
 	CAbstractPopup.call(this);
 	
 	this.guestsDom = ko.observable();
-	this.guestsDom.subscribe(function (a) {
-		this.initInputosaurus(this.guestsDom, this.guests, this.guestsLock);
-	}, this);
 	this.ownersDom = ko.observable();
-	this.ownersDom.subscribe(function () {
-		this.initInputosaurus(this.ownersDom, this.owners, this.ownersLock);
-	}, this);
 
 	this.guestsLock = ko.observable(false);
 	this.guests = ko.observable('').extend({'reversible': true});
@@ -59,6 +53,18 @@ function CCalendarSharePopup()
 	this.isPublic = ko.observable(false);
 	this.shares = ko.observableArray([]);
 	this.owner = ko.observable('');
+	
+	ko.computed(function () {
+		if (this.owner() && this.guestsDom()) {
+			this.initInputosaurus(this.guestsDom, this.guests, this.guestsLock);
+		}
+	}, this);
+
+	ko.computed(function () {
+		if (this.owner() && this.guestsDom()) {
+			this.initInputosaurus(this.ownersDom, this.owners, this.ownersLock);
+		}
+	}, this);
 
 	this.recivedAnim = ko.observable(false).extend({'autoResetToFalse': 500});
 	this.whomAnimate = ko.observable('');
@@ -153,7 +159,7 @@ CCalendarSharePopup.prototype.initInputosaurus = function (koDom, koAddr, koLock
 				storage: 'team',
 				addContactGroups: false,
 				addUserGroups: true,
-				exceptEmail: App.getUserPublicId()
+				exceptEmail: this.owner()
 			},
 			autoCompleteSource = ModulesManager.run(
 				'ContactsWebclient', 'getSuggestionsAutocompleteCallback', [suggestParameters]
