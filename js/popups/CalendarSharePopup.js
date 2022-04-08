@@ -158,8 +158,7 @@ CCalendarSharePopup.prototype.initInputosaurus = function (koDom, koAddr, koLock
 			suggestParameters = {
 				storage: 'team',
 				addContactGroups: false,
-				addUserGroups: true,
-				addEmailsToGroups: true,
+				addUserGroups: false,
 				exceptEmail: this.owner()
 			},
 			autoCompleteSource = ModulesManager.run(
