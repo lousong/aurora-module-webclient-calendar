@@ -411,8 +411,13 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	this.setCurrentAttenderStatus(sAttendee, oParameters.Attendees || []);
 
 	this.owner(oParameters.Owner || owner);
-	
 	this.ownerName(oParameters.OwnerName || (this.isMyEvent() && this.owner() === owner ? owner : ''));
+	
+	if (sAttendee === '') {
+		this.owner(owner);
+		this.ownerName(owner);
+	}
+
 	this.guestAutocomplete('');
 
 	this.excluded(oParameters.Excluded || false);
