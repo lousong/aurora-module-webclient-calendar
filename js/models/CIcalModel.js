@@ -42,7 +42,7 @@ function CIcalModel(oRawIcal, sAttendee)
 		// change oRawIcal so that the calendarId will be correct in a new tab
 		this.oRawIcal.CalendarId = this.calendarId();
 	}, this);
-	this.selectedCalendarId = ko.observable(Types.pString(oRawIcal.CalendarId));
+
 	CalendarCache.addIcal(this);
 
 	this.icalType = ko.observable('');
@@ -85,9 +85,12 @@ function CIcalModel(oRawIcal, sAttendee)
 	{
 		var fCalSubscription = CalendarCache.calendars.subscribe(function () {
 			this.calendars(CalendarCache.calendars());
+			this.selectedCalendarId(Types.pString(oRawIcal.CalendarId));
 			fCalSubscription.dispose();
 		}, this);
 	}
+
+	this.selectedCalendarId = ko.observable(Types.pString(oRawIcal.CalendarId));
 
 	this.chosenCalendarName = ko.computed(function () {
 		var oFoundCal = null;
