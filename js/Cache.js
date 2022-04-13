@@ -32,9 +32,9 @@ function CCalendarCache()
 CCalendarCache.prototype.addIcal = function (oIcal)
 {
 	_.each(this.icalAttachments, function (oIcalItem) {
-		if (oIcalItem.uid() === oIcal.uid())
+		if (oIcalItem.uid() === oIcal.uid() && oIcal.sSequence !== oIcalItem.sSequence)
 		{
-			if (oIcal.sSequence >= oIcalItem.sSequence)
+			if (oIcal.sSequence > oIcalItem.sSequence)
 			{
 				oIcalItem.lastModification(false);
 			}
