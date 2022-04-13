@@ -26,7 +26,9 @@ var
 	
 	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
 	CalendarCache = require('modules/%ModuleName%/js/Cache.js'),
-	Settings = require('modules/%ModuleName%/js/Settings.js')
+	Settings = require('modules/%ModuleName%/js/Settings.js'),
+
+	CSimpleEditableView = require('modules/%ModuleName%/js/views/CSimpleEditableView.js')
 ;
 
 /**
@@ -66,7 +68,8 @@ function CEditEventPopup()
 	this.monthlyDayText = ko.observable('');
 
 	this.subject = ko.observable('').extend({'disableLinebreaks': true});
-	this.description = ko.observable('');
+	this.descriptionView = new CSimpleEditableView(this.isEditable, this.autosizeTrigger, TextUtils.i18n('%MODULENAME%/LABEL_DESCRIPTION'));
+	this.locationView = new CSimpleEditableView(this.isEditable, this.autosizeTrigger, TextUtils.i18n('%MODULENAME%/LABEL_LOCATION'));
 
 	this.lockSelectStartEndDate = ko.observable(false);
 	
@@ -95,8 +98,6 @@ function CEditEventPopup()
 	this.isEvOneTime = ko.observable(true);
 
 	this.isRepeat = ko.observable(false);
-
-	this.location = ko.observable('').extend({'disableLinebreaks': true});
 
 	this.repeatPeriodOptions = ko.observableArray(this.getDisplayedPeriods());
 	this.repeatWeekIntervalOptions = ko.observableArray([1, 2, 3, 4]);
@@ -174,9 +175,6 @@ function CEditEventPopup()
 	
 	this.subjectFocus = ko.observable(false);
 
-	this.descriptionFocus = ko.observable(false);
-	this.locationFocus = ko.observable(false);
-
 	this.dateEdit = ko.observable(false);
 	this.repeatEdit = ko.observable(false);
 	this.guestsEdit = ko.observable(false);
@@ -201,8 +199,8 @@ function CEditEventPopup()
 
 	this.allChanges = ko.computed(function () {
 		this.subject();
-		this.description();
-		this.location();
+		this.descriptionView.dataHtml();
+		this.locationView.dataHtml();
 		this.isRepeat();
 		this.allDay();
 		this.repeatPeriod();
@@ -388,8 +386,8 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	this.subject(oParameters.Subject || '');
 	
 	this.status(oParameters.Status || false);
-	this.location(oParameters.Location || '');
-	this.description(oParameters.Description || '');
+	this.locationView.setPlain(oParameters.Location);
+	this.descriptionView.setHtml(oParameters.Description);
 	this.allEvents(oParameters.AllEvents || Enums.CalendarEditRecurrenceEvent.AllEvents);
 	
 	this.isTaskApp(oParameters.IsTaskApp || false);
@@ -484,10 +482,10 @@ CEditEventPopup.prototype.onSaveClick = function ()
 					recurrenceId: this.recurrenceId(),
 					allEvents:  this.allEvents(),
 					subject: this.subject(),
-					title: CalendarUtils.getTitleForEvent(this.subject(), this.description()),
+					title: CalendarUtils.getTitleForEvent(this.subject(), this.descriptionView.getPlain()),
 					allDay: this.allDay(),
-					location: this.location(),
-					description: this.description(),
+					location: this.locationView.getPlain(),
+					description: this.descriptionView.getHtml(),
 					alarms: this.getAlarmsArray(this.displayedAlarms()),
 					attendees: this.attendees(),
 					owner: this.owner(),
@@ -635,8 +633,8 @@ CEditEventPopup.prototype.cleanAll = function ()
 	}
 	this.isTask(false);
 	this.subject('');
-	this.description('');
-	this.location('');
+	this.descriptionView.setHtml('');
+	this.locationView.setPlain('');
 	this.isRepeat(false);
 	this.allDay(false);
 	this.repeatPeriod(Enums.CalendarRepeatPeriod.None);
@@ -675,12 +673,12 @@ CEditEventPopup.prototype.onDeleteClick = function ()
 				recurrenceId: this.recurrenceId(),
 				allEvents:  this.allEvents(),
 				subject: this.subject(),
-				title: CalendarUtils.getTitleForEvent(this.subject(), this.description()),
+				title: CalendarUtils.getTitleForEvent(this.subject(), this.descriptionView.getPlain()),
 				start: moment(this.getDateTime(this.startDom(), this.startTime())),
 				end: moment(this.getDateTime(this.endDom(), this.endTime())),
 				allDay: this.allDay(),
-				location: this.location(),
-				description: this.description()
+				location: this.locationView.getPlain(),
+				description: this.descriptionView.getHtml()
 			}
 		;
 
@@ -1392,6 +1390,6 @@ CEditEventPopup.prototype.setDayOfWeek = function ()
 CEditEventPopup.prototype.switchTask = function (isTask)
 {
 	this.isTask(isTask);
-}
+};
 
 module.exports = new CEditEventPopup();

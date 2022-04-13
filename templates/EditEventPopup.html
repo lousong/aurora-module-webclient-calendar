@@ -224,29 +224,8 @@
 								</div>
 							</div>
 						</div>
-						<div class="row description" data-bind="css: {'focused': descriptionFocus(), 'filled': description().length > 0}">
-							<div class="value scrollable_field" data-bind="customScrollbar: {x: false}">
-								<div class="scroll-inner">
-									<label for="event_description" class="label placeholder" data-bind="i18n: {'key': '%MODULENAME%/LABEL_DESCRIPTION'}, visible: isEditable()"></label>
-									<span class="input" data-bind="text: description, visible: !isEditable()"></span>
-									<textarea id="event_description" class="input autosize" data-bind="
-										autosize: {minHeight: 26, autosizeTrigger: autosizeTrigger, scrollableHeight: 150}, 
-										value: description, valueUpdate: 'afterkeydown', hasfocus: descriptionFocus, visible: isEditable()"></textarea>
-								</div>
-							</div>
-						</div>
-						<div class="row location" data-bind="css: {'focused': locationFocus(), 'filled': (location()) ? location().length : false}">
-							<div class="value scrollable_field" data-bind="customScrollbar: {x: false}">
-								<div class="scroll-inner">
-									<label for="event_location" class="label placeholder" data-bind="i18n: {'key': '%MODULENAME%/LABEL_LOCATION'}, visible: isEditable()"></label>
-									<span class="input" data-bind="text: location, visible: !isEditable()"></span>
-									<textarea id="event_location" class="input autosize" data-bind="
-										autosize: {minHeight: 26, autosizeTrigger: autosizeTrigger, scrollableHeight: 74}, 
-										valueUpdate: 'afterkeydown', onEnter: onSaveClick,
-										value: location, hasfocus: locationFocus, visible: isEditable()"></textarea>
-								</div>
-							</div>
-						</div>
+						<!-- ko template: {data: descriptionView, name: descriptionView.PopupTemplate} --><!-- /ko -->
+						<!-- ko template: {data: locationView, name: locationView.PopupTemplate} --><!-- /ko -->
 					</div>
 					<div class="alarms_helper" data-bind="foreach: displayedAlarms()">
 						<div></div>
