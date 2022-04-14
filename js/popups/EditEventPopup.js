@@ -28,7 +28,8 @@ var
 	CalendarCache = require('modules/%ModuleName%/js/Cache.js'),
 	Settings = require('modules/%ModuleName%/js/Settings.js'),
 
-	CSimpleEditableView = require('modules/%ModuleName%/js/views/CSimpleEditableView.js')
+	CSimpleEditableView = require('modules/%ModuleName%/js/views/CSimpleEditableView.js'),
+	CLinkPopupEditableView = require('modules/%ModuleName%/js/views/CLinkPopupEditableView.js')
 ;
 
 /**
@@ -68,8 +69,22 @@ function CEditEventPopup()
 	this.monthlyDayText = ko.observable('');
 
 	this.subject = ko.observable('').extend({'disableLinebreaks': true});
-	this.descriptionView = new CSimpleEditableView(this.isEditable, this.autosizeTrigger, TextUtils.i18n('%MODULENAME%/LABEL_DESCRIPTION'));
-	this.locationView = new CSimpleEditableView(this.isEditable, this.autosizeTrigger, TextUtils.i18n('%MODULENAME%/LABEL_LOCATION'));
+
+	this.linkPopupEditableView = new CLinkPopupEditableView();
+	this.descriptionView = new CSimpleEditableView({
+		isEditableObservable: this.isEditable,
+		autosizeTriggerObservable: this.autosizeTrigger,
+		linkPopupEditableView: this.linkPopupEditableView,
+		allowEditLinks: true,
+		placeholderText: TextUtils.i18n('%MODULENAME%/LABEL_DESCRIPTION')
+	});
+	this.locationView = new CSimpleEditableView({
+		isEditableObservable: this.isEditable,
+		autosizeTriggerObservable: this.autosizeTrigger,
+		linkPopupEditableView: this.linkPopupEditableView,
+		allowEditLinks: false,
+		placeholderText: TextUtils.i18n('%MODULENAME%/LABEL_LOCATION')
+	});
 
 	this.lockSelectStartEndDate = ko.observable(false);
 	
@@ -284,6 +299,8 @@ CEditEventPopup.prototype.initializeDatePickers = function ()
  */
 CEditEventPopup.prototype.onOpen = function (oParameters)
 {
+	this.linkPopupEditableView.onOpen();
+
 	var
 		owner = App.getUserPublicId(),
 		oEndMomentDate = null,
@@ -610,6 +627,7 @@ CEditEventPopup.prototype.onEscHandler = function ()
 
 CEditEventPopup.prototype.onClose = function ()
 {
+	this.linkPopupEditableView.onClose();
 	this.hideAll();
 	this.cleanAll();
 };

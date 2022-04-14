@@ -8,7 +8,8 @@ const
 	HtmlUtils = require('modules/%ModuleName%/js/utils/Html.js')
 ;
 
-function CSimpleEditableView(isEditableObservable, autosizeTriggerObservable, placeholderText)
+function CSimpleEditableView({isEditableObservable, autosizeTriggerObservable, linkPopupEditableView,
+	allowEditLinks, placeholderText})
 {
 	this.isEditable = isEditableObservable;
 	this.autosizeTrigger = autosizeTriggerObservable;
@@ -17,21 +18,24 @@ function CSimpleEditableView(isEditableObservable, autosizeTriggerObservable, pl
 	this.dataHtml = ko.observable('');
 	this.dataDom = ko.observable(null);
 	this.dataDom.subscribe(function () {
-		this.dataDom().on('keyup paste cut', function(event) {
-			if (!event.ctrlKey &&!event.metaKey && !event.altKey && !event.shiftKey) {
-				this.dataHtml(this.dataDom().html());
-			}
-		}.bind(this));
-		this.dataDom().on('paste', function(event) {
-			event = event.originalEvent || event;
-			const clipboardData = event.clipboardData || window.clipboardData;
-			if (clipboardData) {
-				const text = clipboardData.getData('text');
-				const html = HtmlUtils.plainToHtml(text);
-				window.document.execCommand('insertHTML', false, html);
-				event.preventDefault();
-			}
-		}.bind(this));
+		if (this.dataDom()) {
+			this.dataDom().on('keyup paste cut', function(event) {
+				if (!event.ctrlKey &&!event.metaKey && !event.altKey && !event.shiftKey) {
+					this.dataHtml(this.dataDom().html());
+				}
+			}.bind(this));
+			this.dataDom().on('paste', function(event) {
+				event = event.originalEvent || event;
+				const clipboardData = event.clipboardData || window.clipboardData;
+				if (clipboardData) {
+					const text = Types.pString(clipboardData.getData('text'));
+					const html = HtmlUtils.plainToHtml(text);
+					window.document.execCommand('insertHTML', false, html);
+					event.preventDefault();
+				}
+			});
+			linkPopupEditableView.initInputField(this.dataDom(), allowEditLinks);
+		}
 	}, this);
 	this.dataFocus = ko.observable(false);
 }
@@ -56,7 +60,7 @@ CSimpleEditableView.prototype.setHtml = function (data)
 
 CSimpleEditableView.prototype.setPlain = function (data)
 {
-	this.dataHtml(HtmlUtils.plainToHtml(data));
+	this.dataHtml(HtmlUtils.plainToHtml(Types.pString(data)));
 	this.dataDom().html(this.dataHtml());};
 
 module.exports = CSimpleEditableView;
