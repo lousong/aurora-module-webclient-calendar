@@ -198,6 +198,17 @@ function CEditEventPopup()
 	}, this);
 
 	this.callbackAttendeeActionDecline = null;
+	
+	this.additionalButtonControllers = ko.observableArray([]);
+	App.broadcastEvent('%ModuleName%::RegisterEditEventController', {
+		register: (controller, place) => {
+			if (place === 'AdditionalButton') {
+				this.additionalButtonControllers.push(controller);
+			}
+		},
+		view: this
+	});
+
 
 	this.bAllowAppointments = Settings.AllowAppointments;
 	this.bAllowTasks = Settings.AllowTasks;
