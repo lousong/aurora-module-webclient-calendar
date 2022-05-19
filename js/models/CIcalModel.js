@@ -9,8 +9,6 @@ var
 
 	Api = require('%PathToCoreWebclientModule%/js/Api.js'),
 	App = require('%PathToCoreWebclientModule%/js/App.js'),
-	ConfirmPopup = require('%PathToCoreWebclientModule%/js/popups/ConfirmPopup.js'),
-	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
 
 	EventsOverlapUtils = require('modules/%ModuleName%/js/utils/EventsOverlap.js'),
 
@@ -29,25 +27,23 @@ var
  */
 function CIcalModel(oRawIcal, sAttendee)
 {
-	this.oRawIcal = oRawIcal;
-
-	this.uid = ko.observable(Types.pString(oRawIcal.Uid));
+	this.uid = ko.observable('');
 	this.lastModification = ko.observable(true);
-	this.sSequence = Types.pInt(oRawIcal.Sequence);
-	this.file = ko.observable(Types.pString(oRawIcal.File));
-	this.attendee = ko.observable(Types.pString(oRawIcal.Attendee) || sAttendee);
-	this.type = ko.observable(Types.pString(oRawIcal.Type));
-	this.location = ko.observable(Types.pString(oRawIcal.Location));
-	// description shouldn't be HTML encoded because it prepared as HTML on server side
-	this.description = ko.observable(Types.pString(oRawIcal.Description).replace(/\r/g, '').replace(/\n/g,"<br />"));
-	this.when = ko.observable(Types.pString(oRawIcal.When));
-	this.calendarId = ko.observable(Types.pString(oRawIcal.CalendarId));
+	this.iSequence = 1;
+	this.file = ko.observable('');
+	this.attendee = ko.observable('');
+	this.type = ko.observable('');
+	this.location = ko.observable('');
+	this.description = ko.observable('');
+	this.when = ko.observable('');
+	this.calendarId = ko.observable('');
+	this.selectedCalendarId = ko.observable('');
+	this.parse(oRawIcal, sAttendee);
+
 	this.calendarId.subscribe(function () {
 		// change oRawIcal so that the calendarId will be correct in a new tab
 		this.oRawIcal.CalendarId = this.calendarId();
 	}, this);
-	this.selectedCalendarId = ko.observable(Types.pString(oRawIcal.CalendarId));
-	CalendarCache.addIcal(this);
 
 	this.icalType = ko.observable('');
 	this.icalConfig = ko.observable('');
@@ -376,37 +372,76 @@ CIcalModel.prototype.onAddEventsFromFileResponse = function (oResponse, oRequest
 	}
 };
 
-/**
- * @param {string} sEmail
- */
-CIcalModel.prototype.updateAttendeeStatus = function (sEmail)
+CIcalModel.prototype.parse = function (oRawIcal, sAttendee)
 {
-	if (this.icalType() === Enums.IcalType.Cancel || this.icalType() === Enums.IcalType.Reply)
-	{
-		Ajax.send('UpdateAttendeeStatus',
-			{
-				'File': this.file(),
-				'FromEmail': sEmail
+	this.oRawIcal = oRawIcal;
+	this.uid(Types.pString(oRawIcal.Uid));
+	this.iSequence = Types.pInt(oRawIcal.Sequence);
+	this.file(Types.pString(oRawIcal.File));
+	this.attendee(Types.pString(oRawIcal.Attendee) || sAttendee);
+	this.type(Types.pString(oRawIcal.Type));
+	this.location(Types.pString(oRawIcal.Location));
+	// description shouldn't be HTML encoded because it prepared as HTML on server side
+	this.description(Types.pString(oRawIcal.Description).replace(/\r/g, '').replace(/\n/g,"<br />"));
+	this.when(Types.pString(oRawIcal.When));
+	this.calendarId(Types.pString(oRawIcal.CalendarId));
+	this.selectedCalendarId(Types.pString(oRawIcal.CalendarId));
+	CalendarCache.addIcal(this);
+};
+
+/**
+ * @param {string} email
+ */
+CIcalModel.prototype.refreshIcsData = function (email)
+{
+	if (this.icalType() === Enums.IcalType.Cancel || this.icalType() === Enums.IcalType.Reply) {
+		const parameters = {
+			'File': this.file(),
+			'FromEmail': email
+		};
+		Ajax.send('GetIcsData',
+			parameters,
+			(response) => {
+				this.parse(response.Result, email);
 			},
-			this.onUpdateAttendeeStatusResponse,
 			this,
 			'CalendarMeetingsPlugin'
 		);
 	}
 };
 
-/**
- * @param {Object} oResponse
- * @param {Object} oRequest
- */
-CIcalModel.prototype.onUpdateAttendeeStatusResponse = function (oResponse, oRequest)
-{
-	if (oResponse.Result)
-	{
-		this.showChanges();
-		this.markChanges();
-	}
-};
+///**
+// * @param {string} sEmail
+// */
+//CIcalModel.prototype.updateAttendeeStatus = function (sEmail)
+//{
+//	if (this.icalType() === Enums.IcalType.Cancel || this.icalType() === Enums.IcalType.Reply)
+//	{
+//		Ajax.send('UpdateAttendeeStatus',
+//			{
+//				'File': this.file(),
+//				'FromEmail': sEmail
+//			},
+//			this.onUpdateAttendeeStatusResponse,
+//			this,
+//			'CalendarMeetingsPlugin'
+//		);
+//	}
+//};
+//
+///**
+// * @param {Object} oResponse
+// * @param {Object} oRequest
+// */
+//CIcalModel.prototype.onUpdateAttendeeStatusResponse = function (oResponse, oRequest)
+//{
+//	if (oResponse.Result)
+//	{
+//		this.showChanges();
+//		this.markChanges();
+//	}
+//	this.refreshIcsData(oRequest.Parameters.FromEmail);
+//};
 
 CIcalModel.prototype.showChanges = function ()
 {

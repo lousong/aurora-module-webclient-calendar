@@ -36,42 +36,42 @@ CIcalAttachmentView.prototype.doAfterPopulatingMessage = function (oMessageProps
 		aExtend = (oMessageProps && Types.isNonEmptyArray(oMessageProps.aExtend)) ? oMessageProps.aExtend : [],
 		oFoundRawIcal = _.find(aExtend, function (oRawIcal) {
 			return oRawIcal['@Object'] === 'Object/Aurora\\Modules\\Calendar\\Classes\\Ics';
-		})
+		}),
+		currentIcalFile = this.ical() && this.ical().file()
 	;
-
-	if (oFoundRawIcal)
-	{
-		var
-			sAttendee = null,
-			oIcal = CalendarCache.getIcal(oFoundRawIcal.File)
-		;
-		if ($.isFunction(App.getAttendee))
-		{
-			sAttendee = App.getAttendee(oMessageProps.aToEmails);
-		}
-
-		if (!oIcal)
-		{
-			oIcal = new CIcalModel(oFoundRawIcal, sAttendee);
-
-			// animation of buttons turns on with delay
-			// so it does not trigger when placing initial values
-			oIcal.animation(false);
-			_.defer(_.bind(function () {
-				if (oIcal !== null)
-				{
-					oIcal.animation(true);
-				}
-			}, this));
-
-			oIcal.updateAttendeeStatus(oMessageProps.sFromEmail);
-		}
-		this.ical(oIcal);
-	}
-	else
+	if (!oFoundRawIcal)
 	{
 		this.ical(null);
+		return;
 	}
+	if (currentIcalFile === oFoundRawIcal.File) {
+		return;
+	}
+	var
+		sAttendee = null,
+		oIcal = CalendarCache.getIcal(oFoundRawIcal.File)
+	;
+	if ($.isFunction(App.getAttendee))
+	{
+		sAttendee = App.getAttendee(oMessageProps.aToEmails);
+	}
+
+	if (!oIcal)
+	{
+		oIcal = new CIcalModel(oFoundRawIcal, sAttendee);
+
+		// animation of buttons turns on with delay
+		// so it does not trigger when placing initial values
+		oIcal.animation(false);
+		_.defer(_.bind(function () {
+			if (oIcal !== null)
+			{
+				oIcal.animation(true);
+			}
+		}, this));
+	}
+	oIcal.refreshIcsData(oMessageProps.sFromEmail);
+	this.ical(oIcal);
 };
 
 module.exports = new CIcalAttachmentView();

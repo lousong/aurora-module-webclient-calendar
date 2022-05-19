@@ -34,7 +34,7 @@ CCalendarCache.prototype.addIcal = function (oIcal)
 	_.each(this.icalAttachments, function (oIcalItem) {
 		if (oIcalItem.uid() === oIcal.uid())
 		{
-			if (oIcal.sSequence >= oIcalItem.sSequence)
+			if (oIcal.iSequence >= oIcalItem.iSequence)
 			{
 				oIcalItem.lastModification(false);
 			}
@@ -44,7 +44,14 @@ CCalendarCache.prototype.addIcal = function (oIcal)
 			}
 		}
 	});
-	this.icalAttachments.push(oIcal);
+	const icalIndex = _.findIndex(this.icalAttachments, function (icalFromList) {
+		return (icalFromList.file() === oIcal.file());
+	});
+	if (icalIndex !== -1) {
+		this.icalAttachments[icalIndex] = oIcal;
+	} else {
+		this.icalAttachments.push(oIcal);
+	}
 	if (this.calendars().length === 0)
 	{
 		this.requestCalendarList();
