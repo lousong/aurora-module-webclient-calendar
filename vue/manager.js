@@ -13,10 +13,10 @@ export default {
     return [
       {
         tabName: 'calendar',
-        title: 'CALENDARWEBCLIENT.LABEL_SETTINGS_TAB',
-        component () {
-          return import('./components/CalendarAdminSettings')
-        },
+        tabTitle: 'CALENDARWEBCLIENT.LABEL_SETTINGS_TAB',
+        tabRouteChildren: [
+          { path: 'calendar', component: () => import('./components/CalendarAdminSettings') },
+        ],
       },
     ]
   },
