@@ -37,6 +37,7 @@ function CIcalModel(oRawIcal, sAttendee)
 	this.type = ko.observable('');
 	this.location = ko.observable('');
 	this.description = ko.observable('');
+	this.summary = ko.observable('');
 	this.when = ko.observable('');
 	this.calendarId = ko.observable('');
 	this.selectedCalendarId = ko.observable('');
@@ -380,13 +381,14 @@ CIcalModel.prototype.parse = function (oRawIcal, sAttendee)
 	this.uid(Types.pString(oRawIcal.Uid));
 	this.iSequence = Types.pInt(oRawIcal.Sequence);
 	this.file(Types.pString(oRawIcal.File));
-	this.organizer = ko.observable(Types.pString(oRawIcal.Organizer));
-	this.attendeeList = ko.observableArray(Types.pArray(oRawIcal.AttendeeList));
-	this.attendee(Types.pString(oRawIcal.Attendee) || sAttendee);
+	this.organizer = ko.observable(TextUtils.encodeHtml(Types.pString(oRawIcal.Organizer)));
+	this.attendeeList = ko.observableArray(Types.pArray(oRawIcal.AttendeeList).map(attendee => TextUtils.encodeHtml(attendee)));
+	this.attendee(TextUtils.encodeHtml(Types.pString(oRawIcal.Attendee) || sAttendee));
 	this.type(Types.pString(oRawIcal.Type));
 	this.location(Types.pString(oRawIcal.Location));
 	// description shouldn't be HTML encoded because it prepared as HTML on server side
 	this.description(Types.pString(oRawIcal.Description).replace(/\r/g, '').replace(/\n/g,"<br />"));
+	this.summary(Types.pString(oRawIcal.Summary));
 	this.when(Types.pString(oRawIcal.When));
 	this.calendarId(Types.pString(oRawIcal.CalendarId));
 	this.selectedCalendarId(Types.pString(oRawIcal.CalendarId));
