@@ -31,6 +31,8 @@ function CIcalModel(oRawIcal, sAttendee)
 	this.lastModification = ko.observable(true);
 	this.iSequence = 1;
 	this.file = ko.observable('');
+	this.organizer = ko.observable('');
+	this.attendeeList = ko.observableArray([]);
 	this.attendee = ko.observable('');
 	this.type = ko.observable('');
 	this.location = ko.observable('');
@@ -170,16 +172,16 @@ CIcalModel.prototype.fillDecisions = function ()
 {
 	this.cancelDecision(TextUtils.i18n('%MODULENAME%/INFO_CANCELED_APPOINTMENT', {'SENDER': App.currentAccountEmail()}));
 
-	switch (this.icalConfig())
-	{
+	const textParams = { 'ATTENDEE': TextUtils.encodeHtml(this.attendee()) };
+	switch (this.icalConfig()) {
 		case Enums.IcalConfig.Accepted:
-			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_ACCEPTED_APPOINTMENT', {'ATTENDEE': this.attendee()}));
+			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_ACCEPTED_APPOINTMENT', textParams));
 			break;
 		case Enums.IcalConfig.Declined:
-			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_DECLINED_APPOINTMENT', {'ATTENDEE': this.attendee()}));
+			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_DECLINED_APPOINTMENT', textParams));
 			break;
 		case Enums.IcalConfig.Tentative:
-			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_TENTATIVELY_ACCEPTED_APPOINTMENT', {'ATTENDEE': this.attendee()}));
+			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_TENTATIVELY_ACCEPTED_APPOINTMENT', textParams));
 			break;
 	}
 };
@@ -378,6 +380,8 @@ CIcalModel.prototype.parse = function (oRawIcal, sAttendee)
 	this.uid(Types.pString(oRawIcal.Uid));
 	this.iSequence = Types.pInt(oRawIcal.Sequence);
 	this.file(Types.pString(oRawIcal.File));
+	this.organizer = ko.observable(Types.pString(oRawIcal.Organizer));
+	this.attendeeList = ko.observableArray(Types.pArray(oRawIcal.AttendeeList));
 	this.attendee(Types.pString(oRawIcal.Attendee) || sAttendee);
 	this.type(Types.pString(oRawIcal.Type));
 	this.location(Types.pString(oRawIcal.Location));
