@@ -209,18 +209,16 @@
 					</div>
 
 					<div class="fieldset main">
-						<div style="display: flex;">
-							<div class="row name" data-bind="css: {'focused': subjectFocus(), 'filled': subject().length > 0}">
-								<label for="event_subject" class="label placeholder" data-bind="i18n: {'key': '%MODULENAME%/LABEL_SUBJECT'}"></label>
-								<div class="value scrollable_field" data-bind="customScrollbar: {x: false}">
-									<div class="scroll-inner">
-										<span class="input" data-bind="text: subject, visible: !isEditable()"></span>
-										<textarea id="event_subject" class="input autosize" data-bind="
-											style: {'text-decoration': status() && isTask() ? 'line-through' : 'none'},
-											autosize: {minHeight: 40, autosizeTrigger: autosizeTrigger, scrollableHeight: 110}, 
-											valueUpdate: 'afterkeydown', onEnter: onSaveClick,
-											value: subject, hasfocus: subjectFocus, visible: isEditable()"></textarea>
-									</div>
+						<div class="row name" data-bind="css: {'focused': subjectFocus(), 'filled': subject().length > 0}">
+							<label for="event_subject" class="label placeholder" data-bind="i18n: {'key': '%MODULENAME%/LABEL_SUBJECT'}"></label>
+							<div class="value scrollable_field" data-bind="customScrollbar: {x: false}">
+								<div class="scroll-inner">
+									<span class="input" data-bind="text: subject, visible: !isEditable()"></span>
+									<textarea id="event_subject" class="input autosize" data-bind="
+										style: {'text-decoration': status() && isTask() ? 'line-through' : 'none'},
+										autosize: {minHeight: 40, autosizeTrigger: autosizeTrigger, scrollableHeight: 110}, 
+										valueUpdate: 'afterkeydown', onEnter: onSaveClick,
+										value: subject, hasfocus: subjectFocus, visible: isEditable()"></textarea>
 								</div>
 							</div>
 						</div>
