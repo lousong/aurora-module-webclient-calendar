@@ -32,6 +32,15 @@ function CIcalModel(oRawIcal, sAttendee)
 	this.sSequence = Types.pInt(oRawIcal.Sequence);
 	this.file = ko.observable(Types.pString(oRawIcal.File));
 	this.attendee = ko.observable(Types.pString(oRawIcal.Attendee) || sAttendee);
+	this.organizer = ko.observable(Types.pString(oRawIcal.Organizer));
+	this.attendeeList = ko.observable(Types.pArray(oRawIcal.AttendeeList));
+	this.attendeeListText = ko.computed(function () {
+		if (this.attendeeList().length === 1 && this.attendeeList()[0] === this.attendee()) {
+			return '';
+		}
+		return this.attendeeList().join(', ');
+	}, this);
+	this.summary = ko.observable(Types.pString(oRawIcal.Summary));
 	this.type = ko.observable(Types.pString(oRawIcal.Type));
 	this.location = ko.observable(Types.pString(oRawIcal.Location));
 	// description shouldn't be HTML encoded because it prepared as HTML on server side
