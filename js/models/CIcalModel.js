@@ -379,6 +379,9 @@ CIcalModel.prototype.onUpdateAttendeeStatusResponse = function (oResponse, oRequ
 {
 	if (oResponse.Result)
 	{
+		if (typeof oResponse.Result === 'string') {
+			this.type(oResponse.Result);
+		}
 		this.showChanges();
 		this.markChanges();
 	}
