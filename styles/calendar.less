@@ -296,42 +296,7 @@
 			background: none;
 			border: none;
 		}
-		
-		.ui-datepicker-prev,
-		.ui-datepicker-next {
-			color: #222222;
-			background: none;
-			text-align: center;
 
-			&.ui-state-hover,
-			&:hover {
-				background: #f2f2f2;
-				border: 1px solid #999999;
-			}
-
-			.init-icon-font();
-			
-			&:before {
-				color: inherit;
-				display: inline-block;
-				font-size: 18px;
-				height: 18px;
-				vertical-align: sub;
-			}
-
-			.ui-icon {
-				display: none;
-			}
-		}
-		
-		.ui-datepicker-prev:before {
-			content: "\e671";
-		}
-
-		.ui-datepicker-next:before {
-			content: "\e670";
-		}
-		
 		td.day_with_events a {
 			font-weight: bold !important;
 		}
@@ -1002,7 +967,7 @@ fc-month-view .fc-content,
 			position: relative;
 			
 			.item {
-				color: #ffffff;
+				color: #ffffff !important;
 				
 				&:hover {
 					box-shadow: inset 0px 0px 0px 30px rgba(255,255,255, 0.1);
@@ -1306,19 +1271,6 @@ fc-month-view .fc-content,
 
 			.ampm_time .time {
 				width: 65px;
-			}
-
-			.ui-datepicker-trigger {
-				cursor: pointer;
-				display: inline-block;
-				margin: 0 5px 0 -21px;
-				position: relative;
-				vertical-align: middle;
-				z-index: 3001;
-
-				html.rtl & {
-					margin: 0 -21px 0 5px;
-				}
 			}
 
 			.allday {

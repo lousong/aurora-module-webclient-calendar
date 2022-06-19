@@ -15,7 +15,7 @@
 						<span class="current">
 							<span data-bind="text: selectedCalendarName, fade: {color: calendarColor}"></span>
 						</span>
-						<span class="dropdown" data-bind="visible: calendarsList().length > 1 && selectedCalendarIsEditable()">
+						<span class="dropdown calendar_dropdown" data-bind="visible: calendarsList().length > 1 && selectedCalendarIsEditable()">
 							<span class="dropdown_helper">
 								<span class="dropdown_arrow"><span></span></span>
 								<span class="dropdown_content" data-bind="foreach: calendarsList()">
