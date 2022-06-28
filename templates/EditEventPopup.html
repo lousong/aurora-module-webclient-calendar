@@ -1,6 +1,6 @@
 <div class="popup calendar_popup calendar_event" style="display: none;">
 	<div class="mask clear" data-bind="visible: dateEdit(), click: onMainPanelClick"></div>
-	<div class="mask" data-bind="click: cancelPopup"></div>
+	<div class="mask"></div>
 	<div class="popup_panel" data-bind="css: {'show_left_side_panel': isTask(), 'show_side_panel': !isTask() && bAllowAppointments && (guestsEdit() || attendees().length > 0), 'editable': isEditable, 'offset': dateEdit()}">
 
 		<div class="panel_wrap clearfix">
