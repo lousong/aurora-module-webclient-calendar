@@ -10,7 +10,8 @@ var
 	
 	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
 	CAbstractPopup = require('%PathToCoreWebclientModule%/js/popups/CAbstractPopup.js'),
-	AlertPopup = require('%PathToCoreWebclientModule%/js/popups/AlertPopup.js')
+	AlertPopup = require('%PathToCoreWebclientModule%/js/popups/AlertPopup.js'),
+	Settings = require('modules/%ModuleName%/js/Settings.js')
 ;
 
 /**
@@ -33,6 +34,11 @@ function CEditCalendarPopup()
 	this.selectedColor = ko.observable(this.colors()[0]);
 	
 	this.popupHeading = ko.observable('');
+
+	this.allowSubscribedCalendars = ko.observable(Settings.AllowSubscribedCalendars);
+	this.calendarSubscribed = ko.observable(false);
+	this.calendarSource = ko.observable('');
+	this.calendarSourceFocus = ko.observable(false);
 }
 
 _.extendOwn(CEditCalendarPopup.prototype, CAbstractPopup.prototype);
@@ -61,6 +67,8 @@ CEditCalendarPopup.prototype.onOpen = function (fCallback, aColors, oCalendar)
 		this.calendarDescription(oCalendar.description ? oCalendar.description() : '');
 		this.selectedColor(oCalendar.color ? oCalendar.color() : '');
 		this.calendarId(oCalendar.id ? oCalendar.id : null);
+		this.calendarSubscribed(oCalendar.subscribed ? oCalendar.subscribed() : false);
+		this.calendarSource(oCalendar.source ? oCalendar.source() : '');
 	}
 	else
 	{
@@ -74,6 +82,8 @@ CEditCalendarPopup.prototype.onClose = function ()
 	this.calendarDescription('');
 	this.selectedColor(this.colors[0]);
 	this.calendarId(null);
+	this.calendarSubscribed(false);
+	this.calendarSource('');
 };
 
 CEditCalendarPopup.prototype.save = function ()
@@ -86,7 +96,7 @@ CEditCalendarPopup.prototype.save = function ()
 	{
 		if ($.isFunction(this.fCallback))
 		{
-			this.fCallback(this.calendarName(), this.calendarDescription(), this.selectedColor(), this.calendarId());
+			this.fCallback(this.calendarName(), this.calendarDescription(), this.selectedColor(), this.calendarId(), this.calendarSubscribed(), this.calendarSource());
 		}
 		this.closePopup();
 	}

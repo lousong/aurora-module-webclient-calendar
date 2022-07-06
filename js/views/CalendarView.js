@@ -1306,16 +1306,26 @@ CCalendarView.prototype.openCreateCalendarForm = function ()
  * @param {string} sDescription
  * @param {string} sColor
  */
-CCalendarView.prototype.createCalendar = function (sName, sDescription, sColor)
+CCalendarView.prototype.createCalendar = function (sName, sDescription, sColor, sId = '', bSubscribed = false, sSource = '')
 {
+	console.log(bSubscribed, sSource);
 	if (!this.isPublic)
 	{
-		Ajax.send('CreateCalendar', {
+		if (bSubscribed) {
+			Ajax.send('CreateSubscribedCalendar', {
+					'Name': sName,
+					'Source': sSource,
+					'Color': sColor
+				}, this.onCreateCalendarResponse, this
+			);
+		} else {
+			Ajax.send('CreateCalendar', {
 				'Name': sName,
 				'Description': sDescription,
 				'Color': sColor
 			}, this.onCreateCalendarResponse, this
 		);
+		}
 	}
 };
 
@@ -1425,17 +1435,27 @@ CCalendarView.prototype.openUpdateCalendarForm = function (oCalendar)
  * @param {string} sColor
  * @param {string} sId
  */
-CCalendarView.prototype.updateCalendar = function (sName, sDescription, sColor, sId)
+CCalendarView.prototype.updateCalendar = function (sName, sDescription, sColor, sId, bSubscribed, sSource)
 {
 	if (!this.isPublic)
 	{
-		Ajax.send('UpdateCalendar', {
+		if (!bSubscribed) {
+			Ajax.send('UpdateCalendar', {
+					'Name': sName,
+					'Description': sDescription,
+					'Color': sColor,
+					'Id': sId
+				}, this.onUpdateCalendarResponse, this
+			);
+		} else {
+			Ajax.send('UpdateSubscribedCalendar', {
 				'Name': sName,
-				'Description': sDescription,
+				'Source': sSource,
 				'Color': sColor,
 				'Id': sId
 			}, this.onUpdateCalendarResponse, this
 		);
+		}
 	}
 };
 

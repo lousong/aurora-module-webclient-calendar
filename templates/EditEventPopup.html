@@ -279,7 +279,7 @@
 								<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_ADD_FIRST_ALARM'}"></span>
 							</span>
 							<span class="item guests" data-bind="
-									visible: bAllowAppointments && !isTask(),
+									visible: bAllowAppointments && !isTask() && !selectedCalendarIsSubscribed(),
 									customTooltip: '%MODULENAME%/ACTION_EDIT_GUESTS',
 									click: isEditable() ? showGuests : '',">
 								<span class="icon"></span>

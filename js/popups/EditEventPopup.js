@@ -45,6 +45,7 @@ function CEditEventPopup()
 	this.isEditableReminders = ko.observable(false);
 	this.selectedCalendarIsShared = ko.observable(false);
 	this.selectedCalendarIsEditable = ko.observable(false);
+	this.selectedCalendarIsSubscribed = ko.observable(false);
 
 	this.callbackSave = null;
 	this.callbackDelete = null;
@@ -183,7 +184,8 @@ function CEditEventPopup()
 			
 			this.selectedCalendarName(oCalendar.name());
 			this.selectedCalendarIsShared(oCalendar.isShared());
-			this.selectedCalendarIsEditable(oCalendar.isEditable());
+			this.selectedCalendarIsEditable(oCalendar.isEditable() && !oCalendar.subscribed());
+			this.selectedCalendarIsSubscribed(oCalendar.subscribed());
 			this.changeCalendarColor(sValue);
 		}
 	}, this);
@@ -430,7 +432,7 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	}
 
 	this.isMyEvent(sAttendee !== owner && (owner === oParameters.Owner || owner === sCalendarOwner));
-	this.editableSwitch(this.selectedCalendarIsShared(), this.selectedCalendarIsEditable(), this.isMyEvent());
+	this.editableSwitch(this.selectedCalendarIsShared(), this.selectedCalendarIsEditable(), this.isMyEvent(), this.selectedCalendarIsSubscribed());
 
 	this.setCurrentAttenderStatus(sAttendee, oParameters.Attendees || []);
 
@@ -1342,9 +1344,9 @@ CEditEventPopup.prototype.setAppointmentAction = function (sDecision)
  * @param {boolean} bEditable
  * @param {boolean} bMyEvent
  */
-CEditEventPopup.prototype.editableSwitch = function (bShared, bEditable, bMyEvent)
+CEditEventPopup.prototype.editableSwitch = function (bShared, bEditable, bMyEvent, bSubscrubed = false)
 {
-	this.isEditable(bShared && bEditable || bMyEvent);
+	this.isEditable((bShared && bEditable || bMyEvent) && !bSubscrubed);
 	this.isEditableReminders(bEditable);
 };
 
