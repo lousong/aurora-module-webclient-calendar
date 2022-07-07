@@ -88,12 +88,20 @@ function CIcalModel(oRawIcal, sAttendee)
 	this.isTentative = ko.computed(function () {
 		return this.icalConfig() === Enums.IcalConfig.Tentative;
 	}, this);
-	this.calendars = ko.observableArray(CalendarCache.calendars());
+
+	self = this;
+	this.calendars = ko.observableArray([]);
+	this.allCalendars = ko.observableArray(CalendarCache.calendars());
+	this.allCalendars.subscribe(function (val) {
+		self.calendars(_.filter(val, function (oCalendar) {
+			return !oCalendar.readonly;
+		}));
+	});
 
 	if (this.calendars().length === 0)
 	{
-		var fCalSubscription = CalendarCache.calendars.subscribe(function () {
-			this.calendars(CalendarCache.calendars());
+		var fCalSubscription = CalendarCache.calendars.subscribe(function (val) {
+			this.allCalendars(CalendarCache.calendars());
 			this.selectedCalendarId(Types.pString(oRawIcal.CalendarId));
 			fCalSubscription.dispose();
 		}, this);

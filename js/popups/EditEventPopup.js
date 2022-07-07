@@ -396,7 +396,7 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 			_.filter(
 				this.calendars.collection(),
 				function(oItem){ 
-					return oItem.isEditable(); 
+					return oItem.isEditable() && !oItem.subscribed(); 
 				}
 			)
 		);

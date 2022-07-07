@@ -11,8 +11,12 @@ var
 	Popups = require('%PathToCoreWebclientModule%/js/Popups.js'),
 	CAbstractPopup = require('%PathToCoreWebclientModule%/js/popups/CAbstractPopup.js'),
 	AlertPopup = require('%PathToCoreWebclientModule%/js/popups/AlertPopup.js'),
-	Settings = require('modules/%ModuleName%/js/Settings.js')
+	Settings = require('modules/%ModuleName%/js/Settings.js'),
+	App = require('%PathToCoreWebclientModule%/js/App.js'),
+	Ajax = require('modules/%ModuleName%/js/Ajax.js'),
+	Api = require('%PathToCoreWebclientModule%/js/Api.js')
 ;
+const { applyCalendarSettings } = require('../views/CalendarView');
 
 /**
  * @constructor
@@ -94,12 +98,78 @@ CEditCalendarPopup.prototype.save = function ()
 	}
 	else
 	{
-		if ($.isFunction(this.fCallback))
-		{
-			this.fCallback(this.calendarName(), this.calendarDescription(), this.selectedColor(), this.calendarId(), this.calendarSubscribed(), this.calendarSource());
+		if (!App.isPublic()) {
+			if (this.calendarId() !== null) { // update calendar
+				if (!this.calendarSubscribed()) {
+					Ajax.send('UpdateCalendar', {
+							'Name': this.calendarName(),
+							'Description': this.calendarDescription(),
+							'Color': this.selectedColor(),
+							'Id': this.calendarId()
+						}, this.onUpdateCalendarResponse, this
+					);
+				} else {
+					Ajax.send('UpdateSubscribedCalendar', {
+							'Name': this.calendarName(),
+							'Source': this.calendarSource(),
+							'Color': this.selectedColor(),
+							'Id': this.calendarId()
+						}, this.onUpdateCalendarResponse, this
+					);
+				}
+			} else { // create calendar
+				if (this.calendarSubscribed()) {
+					Ajax.send('CreateSubscribedCalendar', {
+							'Name': this.calendarName(),
+							'Source': this.calendarSource(),
+							'Color': this.selectedColor()
+						}, this.onCreateCalendarResponse, this
+					);
+				} else {
+					Ajax.send('CreateCalendar', {
+							'Name': this.calendarName(),
+							'Description': this.calendarDescription(),
+							'Color': this.selectedColor()
+						}, this.onCreateCalendarResponse, this
+					);
+				}
+			}
 		}
-		this.closePopup();
 	}
 };
+
+/**
+* @param {Object} oResponse
+* @param {Object} oRequest
+*/
+CEditCalendarPopup.prototype.onCreateCalendarResponse = function (oResponse, oRequest)
+{
+	if (oResponse.Result)
+	{
+		if (_.isFunction(this.fCallback)) {
+			this.fCallback(oResponse.Result);
+			this.closePopup();
+		}
+	} else {
+		Api.showErrorByCode(oResponse);
+	}
+};
+
+/**
+ * @param {Object} oResponse
+ * @param {Object} oRequest
+ */
+ CEditCalendarPopup.prototype.onUpdateCalendarResponse = function (oResponse, oRequest)
+ {
+	 if (oResponse.Result)
+	 {
+		if (_.isFunction(this.fCallback)) {
+			this.fCallback(oRequest.Parameters);
+			this.closePopup();
+		}
+	 } else {
+		 Api.showErrorByCode(oResponse);
+	 }
+ };
 
 module.exports = new CEditCalendarPopup();

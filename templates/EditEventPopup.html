@@ -260,7 +260,7 @@
 							</div>
 						</div>
 
-						<div class="additional_buttons">
+						<div class="additional_buttons" data-bind="visible: !selectedCalendarIsSubscribed()">
 							<!-- ko foreach: additionalButtonControllers -->
 								<!-- ko template: { name: $data.ViewTemplate, data: $data} --><!-- /ko -->
 							<!-- /ko -->
@@ -279,7 +279,7 @@
 								<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_ADD_FIRST_ALARM'}"></span>
 							</span>
 							<span class="item guests" data-bind="
-									visible: bAllowAppointments && !isTask() && !selectedCalendarIsSubscribed(),
+									visible: bAllowAppointments && !isTask(),
 									customTooltip: '%MODULENAME%/ACTION_EDIT_GUESTS',
 									click: isEditable() ? showGuests : '',">
 								<span class="icon"></span>
