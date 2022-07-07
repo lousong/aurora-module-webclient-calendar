@@ -490,7 +490,8 @@
 	opacity: 0.8;
 }
 
-.fc-event-repeat,
+a.fc-event-repeat,
+tr.fc-event-repeat td:last-child a,
 .fc-event-appointment {
 	.fc-event {
 		padding-right: 23px;
@@ -502,10 +503,9 @@
 		display: block;
 		font-size: 18px;
 		height: 12px;
-		margin-top: -2px;
 		position: absolute;
-		right: 4px;
-		top: 6px;
+		right: 8px;
+		top: 5px;
 		width: 16px;
 		
 		.opacity(0.6);
@@ -520,12 +520,20 @@
 	padding-right: 38px;
 }
 
-.fc-event-repeat:after {
+a.fc-event-repeat:after,
+tr.fc-event-repeat td:last-child a:after {
 	content: "\e643";
 }
 
 .fc-event-appointment:after {
 	content: "\e644";
+}
+tr.fc-event-repeat td:last-child {
+	position: relative;
+	a:after {
+		right: 15px;
+		top: 6px;
+	}
 }
 
 .fc-event-repeat.fc-event-appointment:after {
