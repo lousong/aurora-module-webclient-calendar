@@ -21,9 +21,8 @@ var
 /**
  * @constructor
  * @param {Object} oRawIcal
- * @param {string} sAttendee
  */
-function CIcalModel(oRawIcal, sAttendee)
+function CIcalModel(oRawIcal)
 {
 	this.oRawIcal = oRawIcal;
 
@@ -31,7 +30,7 @@ function CIcalModel(oRawIcal, sAttendee)
 	this.lastModification = ko.observable(true);
 	this.sSequence = Types.pInt(oRawIcal.Sequence);
 	this.file = ko.observable(Types.pString(oRawIcal.File));
-	this.attendee = ko.observable(Types.pString(oRawIcal.Attendee) || sAttendee);
+	this.attendee = ko.observable(Types.pString(oRawIcal.Attendee));
 	this.organizer = ko.observable(Types.pString(oRawIcal.Organizer));
 	this.attendeeList = ko.observable(Types.pArray(oRawIcal.AttendeeList));
 	this.attendeeListText = ko.computed(function () {
@@ -190,17 +189,23 @@ CIcalModel.prototype.fillDecisions = function ()
 {
 	this.cancelDecision(TextUtils.i18n('%MODULENAME%/INFO_CANCELED_APPOINTMENT', {'SENDER': App.currentAccountEmail()}));
 
-	switch (this.icalConfig())
-	{
-		case Enums.IcalConfig.Accepted:
-			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_ACCEPTED_APPOINTMENT', {'ATTENDEE': this.attendee()}));
-			break;
-		case Enums.IcalConfig.Declined:
-			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_DECLINED_APPOINTMENT', {'ATTENDEE': this.attendee()}));
-			break;
-		case Enums.IcalConfig.Tentative:
-			this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_TENTATIVELY_ACCEPTED_APPOINTMENT', {'ATTENDEE': this.attendee()}));
-			break;
+	if (this.attendee() === '') {
+		this.replyDecision('');
+	} else {
+		const textReplacer = {
+			'ATTENDEE': this.attendee()
+		};
+		switch (this.icalConfig()) {
+			case Enums.IcalConfig.Accepted:
+				this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_ACCEPTED_APPOINTMENT', textReplacer));
+				break;
+			case Enums.IcalConfig.Declined:
+				this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_DECLINED_APPOINTMENT', textReplacer));
+				break;
+			case Enums.IcalConfig.Tentative:
+				this.replyDecision(TextUtils.i18n('%MODULENAME%/INFO_TENTATIVELY_ACCEPTED_APPOINTMENT', textReplacer));
+				break;
+		}
 	}
 };
 
