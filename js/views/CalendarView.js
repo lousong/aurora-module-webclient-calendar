@@ -1760,6 +1760,7 @@ CCalendarView.prototype.eventClickCallback = function (oEventData)
 					RRule: oEventData.rrule ? oEventData.rrule : null,
 					Excluded: oEventData.excluded ? oEventData.excluded : false,
 					Owner: oEventData.owner,
+					Organizer: oEventData.organizer,
 					Appointment: oEventData.appointment,
 					OwnerName: oEventData.ownerName,
 					TimeFormat: this.sTimeFormat,

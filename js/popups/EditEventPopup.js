@@ -154,6 +154,8 @@ function CEditEventPopup()
 	this.attenderStatus = ko.observable(0);
 	this.owner = ko.observable('');
 	this.ownerName = ko.observable('');
+	this.organizer = ko.observable('');
+	this.organizerName = ko.observable('');
 
 	this.recivedAnim = ko.observable(false).extend({'autoResetToFalse': 500});
 	this.whomAnimate = ko.observable('');
@@ -421,6 +423,9 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	this.isTaskApp(oParameters.IsTaskApp || false);
 
 	this.populateAlarms(oParameters.Alarms);
+
+	this.organizer(oParameters.Organizer);
+	this.organizerName(oParameters.Organizer);
 
 	this.appointment(oParameters.Appointment);
 

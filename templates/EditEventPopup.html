@@ -19,8 +19,8 @@
 				<div class="fieldset">
 					<div class="row owner">
 						<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_HOST'}"></span>:
-						<span class="value" data-bind="customTooltip: owner, text: ownerName, visible: ownerName !== '', css: {'recivedAnim': recivedAnim() && owner() === whomAnimate()}"></span>
-						<span class="value" data-bind="text: owner, visible: ownerName() === '', css: {'recivedAnim': recivedAnim() && owner() === whomAnimate()}"></span>
+						<span class="value" data-bind="customTooltip: organizer, text: organizerName, visible: organizerName !== '', css: {'recivedAnim': recivedAnim() && organizer() === whomAnimate()}"></span>
+						<span class="value" data-bind="text: organizer, visible: organizerName() === '', css: {'recivedAnim': recivedAnim() && organizer() === whomAnimate()}"></span>
 					</div>
 					<div class="row attendees" data-bind="foreach: attendees">
 						<div class="attender" data-bind="css: {
