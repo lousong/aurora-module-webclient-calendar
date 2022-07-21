@@ -115,6 +115,9 @@ function CEditEventPopup()
 
 	this.isRepeat = ko.observable(false);
 
+	this.allowSetPrivateEvent = ko.observable(false);
+	this.isPrivateEvent = ko.observable(false);
+
 	this.repeatPeriodOptions = ko.observableArray(this.getDisplayedPeriods());
 	this.repeatWeekIntervalOptions = ko.observableArray([1, 2, 3, 4]);
 	this.defaultAlarms = ko.observableArray([5, 10, 15, 30, 60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720, 1080, 1440, 2880, 4320, 5760, 10080, 20160]);
@@ -189,6 +192,12 @@ function CEditEventPopup()
 			this.selectedCalendarIsEditable(oCalendar.isEditable() && !oCalendar.subscribed());
 			this.selectedCalendarIsSubscribed(oCalendar.subscribed());
 			this.changeCalendarColor(sValue);
+
+			// isShared - only if shared to me
+			// isSharedToAll - shared to me and shared by me
+			// shares - shared to me and shared by me
+			this.allowSetPrivateEvent(!oCalendar.isShared() && (oCalendar.isSharedToAll() || oCalendar.shares().length > 0));
+
 		}
 	}, this);
 	
@@ -256,6 +265,7 @@ function CEditEventPopup()
 		this.status();
 		this.isTask();
 		this.withDate();
+		this.isPrivateEvent();
 		
 		this.modified = true;
 	}, this);
@@ -464,6 +474,8 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	this.modified = false;
 
 	this.isAppointmentButtonsVisible(this.appointment() && this.selectedCalendarIsEditable() && _.find(this.attendees(), function(oAttendee){ return oAttendee.email === owner; }));
+
+	this.isPrivateEvent(!!oParameters.IsPrivate);
 };
 
 /**
@@ -525,7 +537,8 @@ CEditEventPopup.prototype.onSaveClick = function ()
 					modified: this.modified,
 					type: this.eventType(),
 					status: this.status(),
-					withDate: this.withDate()
+					withDate: this.withDate(),
+					isPrivate: this.allowSetPrivateEvent() && this.isPrivateEvent()
 				},
 				iAlways = Types.pInt(this.always())
 			;
@@ -691,6 +704,7 @@ CEditEventPopup.prototype.cleanAll = function ()
 	this.attendees([]);
 	this.always(1);
 	this.selectedCalendarId('');
+	this.isPrivateEvent(false);
 
 	this.attendees([]);
 };
