@@ -41,11 +41,18 @@ CIcalAttachmentView.prototype.doAfterPopulatingMessage = function (oMessageProps
 
 	if (oFoundRawIcal)
 	{
-		var oIcal = CalendarCache.getIcal(oFoundRawIcal.File);
+		var
+			sAttendee = null,
+			oIcal = CalendarCache.getIcal(oFoundRawIcal.File)
+		;
+		if ($.isFunction(App.getAttendee))
+		{
+			sAttendee = App.getAttendee(oMessageProps.aToEmails);
+		}
 
 		if (!oIcal)
 		{
-			oIcal = new CIcalModel(oFoundRawIcal);
+			oIcal = new CIcalModel(oFoundRawIcal, sAttendee);
 
 			// animation of buttons turns on with delay
 			// so it does not trigger when placing initial values

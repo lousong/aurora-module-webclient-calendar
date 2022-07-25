@@ -21,8 +21,9 @@ var
 /**
  * @constructor
  * @param {Object} oRawIcal
+ * @param {string} sAttendee
  */
-function CIcalModel(oRawIcal)
+function CIcalModel(oRawIcal, sAttendee)
 {
 	this.oRawIcal = oRawIcal;
 
@@ -59,6 +60,11 @@ function CIcalModel(oRawIcal)
 		// change oRawIcal so that the type will be correct in a new tab
 		this.oRawIcal.Type = this.type();
 		this.parseType();
+	}, this);
+	this.icalType.subscribe(function () {
+		if (this.attendee() === '' && this.icalType() !== Enums.IcalType.Reply) {
+			this.attendee(sAttendee);
+		}
 	}, this);
 	this.isAppointmentActionInProgress = ko.observable(false);
 
