@@ -308,6 +308,9 @@ CCalendarModel.prototype.parseEvent = function (oEvent)
 			return sItem !== 'fc-event-appointment'; 
 		});		
 	}
+	if (oEvent.isPrivate && App.getUserPublicId() !== oEvent.owner) {
+		oEvent.editable = false;
+	}
 	return oEvent;
 };
 

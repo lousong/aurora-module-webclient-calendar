@@ -204,8 +204,8 @@ function CCalendarView()
 
 			if (oEv.isCalendarShared && oEv.isPrivate) {
 				oEl.css('cursor', 'default');
-				var oTitle = oEl.find('.fc-title');
-				oTitle.html('<span class="subject-title" style="opacity: 0.5">[' + TextUtils.i18n('%MODULENAME%/LABEL_NO_EVENT_INFORMATION') + ']</span> ');
+				// var oTitle = oEl.find('.fc-title');
+				// oTitle.html('<span class="subject-title" style="opacity: 0.5">[' + TextUtils.i18n('%MODULENAME%/LABEL_NO_EVENT_INFORMATION') + ']</span> ');
 			}
 
 			if (oEv.type === 'VTODO')
