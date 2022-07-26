@@ -19,8 +19,17 @@
 				<div class="fieldset">
 					<div class="row owner">
 						<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_HOST'}"></span>:
-						<span class="value" data-bind="customTooltip: organizer, text: organizerName, visible: organizerName !== '', css: {'recivedAnim': recivedAnim() && organizer() === whomAnimate()}"></span>
-						<span class="value" data-bind="text: organizer, visible: organizerName() === '', css: {'recivedAnim': recivedAnim() && organizer() === whomAnimate()}"></span>
+						<span class="value" data-bind="
+							  customTooltip: organizer,
+							  text: organizer,
+							  visible: organizer() !== '',
+							  css: {'recivedAnim': recivedAnim() && organizer() === whomAnimate()}"
+						></span>
+						<span class="value" data-bind="
+							  text: owner,
+							  visible: organizer() === '',
+							  css: {'recivedAnim': recivedAnim() && owner() === whomAnimate()}"
+						></span>
 					</div>
 					<div class="row attendees" data-bind="foreach: attendees">
 						<div class="attender" data-bind="css: {
@@ -272,7 +281,7 @@
 								<!-- ko template: { name: $data.ViewTemplate, data: $data} --><!-- /ko -->
 							<!-- /ko -->
 							<span class="item task"  data-bind="
-									visible: !isTaskApp() && bAllowTasks && attendees().length === 0,
+									visible: isEditable() && !isTaskApp() && bAllowTasks && attendees().length === 0,
 									css: {'selected' : isTask()}, 
 									customTooltip: '%MODULENAME%/LABEL_THIS_IS_A_TASK',
 									click: switchTask(!isTask())">
@@ -281,12 +290,13 @@
 							</span>
 							<span class="item alarm" data-bind="click: isEditableReminders() ? addFirstAlarm : '', 
 									css: {'selected': displayedAlarms().length > 0, 'readonly': !isEditableReminders()},
-									customTooltip: '%MODULENAME%/ACTION_ADD_FIRST_ALARM', visible: isEditableReminders() && (withDate() || !isTask())">
+									customTooltip: '%MODULENAME%/ACTION_ADD_FIRST_ALARM',
+									visible: isEditableReminders() && (withDate() || !isTask())">
 								<span class="icon"></span>
 								<span class="text" data-bind="i18n: {'key': '%MODULENAME%/ACTION_ADD_FIRST_ALARM'}"></span>
 							</span>
 							<span class="item guests" data-bind="
-									visible: bAllowAppointments && !isTask(),
+									visible: isEditable() && bAllowAppointments && !isTask(),
 									customTooltip: '%MODULENAME%/ACTION_EDIT_GUESTS',
 									click: isEditable() ? showGuests : '',">
 								<span class="icon"></span>

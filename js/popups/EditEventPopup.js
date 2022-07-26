@@ -156,9 +156,7 @@ function CEditEventPopup()
 	this.attendees = ko.observableArray([]);
 	this.attenderStatus = ko.observable(0);
 	this.owner = ko.observable('');
-	this.ownerName = ko.observable('');
 	this.organizer = ko.observable('');
-	this.organizerName = ko.observable('');
 
 	this.recivedAnim = ko.observable(false).extend({'autoResetToFalse': 500});
 	this.whomAnimate = ko.observable('');
@@ -187,6 +185,7 @@ function CEditEventPopup()
 		{
 			var oCalendar = this.calendars.getCalendarById(sValue);
 			
+			this.owner(oCalendar.owner());
 			this.selectedCalendarName(oCalendar.name());
 			this.selectedCalendarIsShared(oCalendar.isShared());
 			this.selectedCalendarIsEditable(oCalendar.isEditable() && !oCalendar.subscribed());
@@ -434,8 +433,7 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 
 	this.populateAlarms(oParameters.Alarms);
 
-	this.organizer(oParameters.Organizer);
-	this.organizerName(oParameters.Organizer);
+	this.organizer(Types.pString(oParameters.Organizer));
 
 	this.appointment(oParameters.Appointment);
 
@@ -452,12 +450,6 @@ CEditEventPopup.prototype.onOpen = function (oParameters)
 	this.setCurrentAttenderStatus(sAttendee, oParameters.Attendees || []);
 
 	this.owner(oParameters.Owner || owner);
-	this.ownerName(oParameters.OwnerName || (this.isMyEvent() && this.owner() === owner ? owner : ''));
-	
-	if (sAttendee === '') {
-		this.owner(owner);
-		this.ownerName(owner);
-	}
 
 	this.guestAutocomplete('');
 
@@ -1362,6 +1354,7 @@ CEditEventPopup.prototype.setAppointmentAction = function (sDecision)
  * @param {boolean} bShared
  * @param {boolean} bEditable
  * @param {boolean} bMyEvent
+ * @param {boolean} bSubscrubed
  */
 CEditEventPopup.prototype.editableSwitch = function (bShared, bEditable, bMyEvent, bSubscrubed = false)
 {

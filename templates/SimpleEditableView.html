@@ -1,4 +1,5 @@
 <div class="row" data-bind="
+	 visible: isEditable() || dataHtml() !== '',
 	 css: {'focused': dataFocus(), 'filled': dataHtml().length > 0}"
 >
 	<div class="value scrollable_field" data-bind="customScrollbar: {x: false}">
