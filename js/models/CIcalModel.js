@@ -94,19 +94,17 @@ function CIcalModel(oRawIcal, sAttendee)
 		return this.icalConfig() === Enums.IcalConfig.Tentative;
 	}, this);
 
-	self = this;
-	this.calendars = ko.observableArray([]);
-	this.allCalendars = ko.observableArray(CalendarCache.calendars());
-	this.allCalendars.subscribe(function (val) {
-		self.calendars(_.filter(val, function (oCalendar) {
+	this.getCalendars = function () {
+		return _.filter(CalendarCache.calendars(), function (oCalendar) {
 			return !oCalendar.readonly;
-		}));
-	});
+		})
+	};
 
-	if (this.calendars().length === 0)
-	{
+	this.calendars = ko.observableArray(this.getCalendars());
+
+	if (this.calendars().length === 0) {
 		var fCalSubscription = CalendarCache.calendars.subscribe(function (val) {
-			this.allCalendars(CalendarCache.calendars());
+			this.calendars(this.getCalendars());
 			this.selectedCalendarId(Types.pString(oRawIcal.CalendarId));
 			fCalSubscription.dispose();
 		}, this);
