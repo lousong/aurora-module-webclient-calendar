@@ -217,44 +217,47 @@ function CCalendarView()
 					fcTime = content.find('.fc-time')
 				;
 				
-				if (oEv.status)
-				{
+				if (oEv.status) {
 					completed.addClass('checked');
 					title.css("text-decoration-line", "line-through");
-				}
-				else
-				{
+				} else 	{
 					completed.removeClass('checked');
 					title.css("text-decoration-line", "unset");
 				}
 
 				fcTime.css("margin-left", "18px");
 				title.prepend(completed);
-				completed.click(function(event){
-					if (oEv.status)
-					{
-						oEv.status = false;
-						completed.removeClass('checked');
-						title.css("text-decoration-line", "unset");
-					}
-					else
-					{
-						oEv.status = true;
-						completed.addClass('checked');
-						title.css("text-decoration-line", "line-through");
-					}
-					oEv.modified = true;
-					
-					if (oEv.rrule)
-					{
-						oEv.allEvents = Enums.CalendarEditRecurrenceEvent.OnlyThisInstance;
-					}
 
-					self.updateEvent(oEv);
-					
-					event.preventDefault();
-					event.stopPropagation();
-				});
+				if (oEv.isCalendarShared && oEv.isPrivate) {
+					completed.attr('readonly', true);
+					completed.css('cursor', 'default');
+				} else {
+					completed.on(function(event){
+						if (oEv.status)
+						{
+							oEv.status = false;
+							completed.removeClass('checked');
+							title.css("text-decoration-line", "unset");
+						}
+						else
+						{
+							oEv.status = true;
+							completed.addClass('checked');
+							title.css("text-decoration-line", "line-through");
+						}
+						oEv.modified = true;
+						
+						if (oEv.rrule)
+						{
+							oEv.allEvents = Enums.CalendarEditRecurrenceEvent.OnlyThisInstance;
+						}
+
+						self.updateEvent(oEv);
+						
+						event.preventDefault();
+						event.stopPropagation();
+					});
+				}
 			}
 		},
 		eventAfterRender: _.bind(function(oEv, oEl) {}, this),
@@ -1253,6 +1256,8 @@ CCalendarView.prototype.onGetTasksResponse = function (oResponse, oRequest)
 			oCalendar = this.calendars.getCalendarById(oTaskData.calendarId);
 			if (oCalendar)
 			{
+				oTaskData.isCalendarShared = oCalendar.isShared();
+
 				aTasks.push(oTaskData.id);
 				var oEvent = oCalendar.getEvent(oTaskData.id);
 				if (!oEvent)
