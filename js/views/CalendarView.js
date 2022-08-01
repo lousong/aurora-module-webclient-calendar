@@ -206,8 +206,8 @@ function CCalendarView()
 
 			if (oEv.isCalendarShared && oEv.isPrivate) {
 				oEl.css('cursor', 'default');
-				var oTitle = oEl.find('.fc-title');
-				oTitle.html('<span class="subject-title" style="opacity: 0.5">[' + TextUtils.i18n('%MODULENAME%/LABEL_NO_EVENT_INFORMATION') + ']</span> ');
+				// var oTitle = oEl.find('.fc-title');
+				// oTitle.html('<span class="subject-title" style="opacity: 0.5">[' + TextUtils.i18n('%MODULENAME%/LABEL_NO_EVENT_INFORMATION') + ']</span> ');
 			}
 
 			if (oEv.type === 'VTODO')
@@ -232,31 +232,38 @@ function CCalendarView()
 
 				fcTime.css("margin-left", "18px");
 				title.prepend(completed);
-				completed.click(function(event){
-					if (oEv.status)
-					{
-						oEv.status = false;
-						completed.removeClass('checked');
-						title.css("text-decoration-line", "unset");
-					}
-					else
-					{
-						oEv.status = true;
-						completed.addClass('checked');
-						title.css("text-decoration-line", "line-through");
-					}
-					oEv.modified = true;
-					
-					if (oEv.rrule)
-					{
-						oEv.allEvents = Enums.CalendarEditRecurrenceEvent.OnlyThisInstance;
-					}
 
-					self.updateEvent(oEv);
-					
-					event.preventDefault();
-					event.stopPropagation();
-				});
+				if (oEv.isCalendarShared && oEv.isPrivate) {
+					completed.attr('readonly', true);
+					completed.css('cursor', 'default');
+				} else {
+
+					completed.click(function(event){
+						if (oEv.status)
+						{
+							oEv.status = false;
+							completed.removeClass('checked');
+							title.css("text-decoration-line", "unset");
+						}
+						else
+						{
+							oEv.status = true;
+							completed.addClass('checked');
+							title.css("text-decoration-line", "line-through");
+						}
+						oEv.modified = true;
+						
+						if (oEv.rrule)
+						{
+							oEv.allEvents = Enums.CalendarEditRecurrenceEvent.OnlyThisInstance;
+						}
+
+						self.updateEvent(oEv);
+						
+						event.preventDefault();
+						event.stopPropagation();
+					});
+				}
 			}
 		},
 		eventAfterRender: _.bind(function(oEv, oEl) {}, this),
