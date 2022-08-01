@@ -202,7 +202,7 @@ function CCalendarView()
 						+ '<span class="loc-title">' + $.trim(oEv.location.replace(/[\n\r]/g, ' ')) + '</span>');
 			}
 
-			if (oEv.isCalendarShared && oEv.isPrivate) {
+			if (oEv.isCalendarShared && oEv.isPrivate && Settings.AllowPrivateEvents) {
 				oEl.css('cursor', 'default');
 				// var oTitle = oEl.find('.fc-title');
 				// oTitle.html('<span class="subject-title" style="opacity: 0.5">[' + TextUtils.i18n('%MODULENAME%/LABEL_NO_EVENT_INFORMATION') + ']</span> ');
@@ -228,7 +228,7 @@ function CCalendarView()
 				fcTime.css("margin-left", "18px");
 				title.prepend(completed);
 
-				if (oEv.isCalendarShared && oEv.isPrivate) {
+				if (oEv.isCalendarShared && oEv.isPrivate && Settings.AllowPrivateEvents) {
 					completed.attr('readonly', true);
 					completed.css('cursor', 'default');
 				} else {
@@ -1753,7 +1753,7 @@ CCalendarView.prototype.createEvent = function (oEventData)
  */
 CCalendarView.prototype.eventClickCallback = function (oEventData)
 {
-	if (oEventData.isCalendarShared && oEventData.isPrivate) {
+	if (oEventData.isCalendarShared && oEventData.isPrivate && Settings.AllowPrivateEvents) {
 		return; // reject editing
 	}
 

@@ -25,6 +25,7 @@ module.exports = {
 	WorkdayEnds: '18',
 	WorkdayStarts: '9',
 	AllowSubscribedCalendars: false,
+	AllowPrivateEvents: true,
 	
 	/**
 	 * Initializes settings from AppData object sections.
@@ -59,7 +60,7 @@ module.exports = {
 			this.WorkdayEnds = Types.pString(oAppDataSection.WorkdayEnds, this.WorkdayEnds);
 			this.WorkdayStarts = Types.pString(oAppDataSection.WorkdayStarts, this.WorkdayStarts);
 			this.AllowSubscribedCalendars = Types.pBool(oAppDataSection.AllowSubscribedCalendars, this.AllowSubscribedCalendars);
-
+			this.AllowPrivateEvents = Types.pBool(oAppDataSection.AllowPrivateEvents, this.AllowPrivateEvents);
 		}
 		if (!_.isEmpty(oAppMeetingsDataSection))
 		{
