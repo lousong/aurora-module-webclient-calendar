@@ -196,7 +196,7 @@ function CEditEventPopup()
 			// isSharedToAll - shared to me and shared by me
 			// shares - shared to me and shared by me
 			this.allowSetPrivateEvent(Settings.AllowPrivateEvents && !oCalendar.isShared() && !oCalendar.isSharedToAll());
-
+			console.log(Settings.AllowPrivateEvents, oCalendar.isShared(), oCalendar.isSharedToAll());
 		}
 	}, this);
 	
