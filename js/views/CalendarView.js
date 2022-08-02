@@ -315,6 +315,8 @@ function CCalendarView()
 
 	this.viewEventRoute = null;
 
+	this.uploadIsPrivateEvent = ko.observable(false);
+
 	App.broadcastEvent('%ModuleName%::ConstructView::after', {'Name': this.ViewConstructorName, 'View': this});
 }
 
@@ -2174,7 +2176,8 @@ CCalendarView.prototype.initUploader = function ()
 				'Method': 'UploadCalendar',
 				'Parameters':  function () {
 					return JSON.stringify({
-						'CalendarID': self.uploadCalendarId()
+						'CalendarID': self.uploadCalendarId(),
+						'IsPrivateEvent': self.uploadIsPrivateEvent()
 					});
 				}
 			}, App.getCommonRequestParameters())
@@ -2198,7 +2201,7 @@ CCalendarView.prototype.onFileDrop = function (oFile, oEvent, fProceedUploading)
 		}
 	);
 
-	if (aEditableCalendars.length > 1) {
+	// if (aEditableCalendars.length > 1) {
 		Popups.showPopup(SelectCalendarPopup, [{
 			CallbackSave: _.bind(this.uploadToSelectedCalendar, this),
 			ProceedUploading: fProceedUploading,
@@ -2206,11 +2209,11 @@ CCalendarView.prototype.onFileDrop = function (oFile, oEvent, fProceedUploading)
 			EditableCalendars: aEditableCalendars,
 			DefaultCalendarId: this.defaultCalendarId()
 		}]);
-	}
-	else
-	{
-		this.uploadToSelectedCalendar(this.defaultCalendarId(), fProceedUploading);
-	}
+	// }
+	// else
+	// {
+	// 	this.uploadToSelectedCalendar(this.defaultCalendarId(),  fProceedUploading);
+	// }
 };
 
 CCalendarView.prototype.onFileUploadComplete = function (sFileUid, bResponseReceived, oResponse)
@@ -2234,9 +2237,10 @@ CCalendarView.prototype.onFileUploadComplete = function (sFileUid, bResponseRece
 	}
 };
 
-CCalendarView.prototype.uploadToSelectedCalendar = function (selectedCalendarId, fProceedUploading)
+CCalendarView.prototype.uploadToSelectedCalendar = function (selectedCalendarId, isPrivateEvent, fProceedUploading)
 {
 	this.uploadCalendarId(selectedCalendarId);
+	this.uploadIsPrivateEvent(isPrivateEvent);
 	this.checkStarted(true);
 	fProceedUploading();
 };

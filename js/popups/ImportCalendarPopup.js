@@ -34,7 +34,10 @@ function CImportCalendarPopup()
 	this.color	= ko.observable('');
 	this.calendarId	= ko.observable('');
 	
-	this.importButtonDom	= ko.observable(null);
+	this.importButtonDom = ko.observable(null);
+
+	this.isPrivateEvent = ko.observable(false);
+	this.allowSetPrivateEvent = ko.observable(true);
 }
 
 _.extendOwn(CImportCalendarPopup.prototype, CAbstractPopup.prototype);
@@ -55,6 +58,7 @@ CImportCalendarPopup.prototype.onOpen = function (fCallback, oCalendar)
 	{
 		this.color(oCalendar.color ? oCalendar.color() : '');
 		this.calendarId(oCalendar.id ? oCalendar.id : '');
+		this.isPrivateEvent(false);
 	}
 };
 
@@ -78,7 +82,8 @@ CImportCalendarPopup.prototype.onBind = function ($oViewModel)
 			'Method': 'UploadCalendar',
 			'Parameters':  function () {
 				return JSON.stringify({
-					'CalendarID': self.calendarId()
+					'CalendarID': self.calendarId(),
+					'IsPrivateEvent': self.isPrivateEvent()
 				});
 			}
 		}, App.getCommonRequestParameters())

@@ -34,6 +34,9 @@ function CSelectCalendarPopup()
 		}
 	}, this);
 	this.selectedCalendarIsEditable = ko.observable(false);
+
+	this.isPrivateEvent = ko.observable(false);
+	this.allowSetPrivateEvent = ko.observable(true);
 }
 
 _.extendOwn(CSelectCalendarPopup.prototype, CAbstractPopup.prototype);
@@ -51,13 +54,14 @@ CSelectCalendarPopup.prototype.onOpen = function (oParameters)
 	this.calendarsList(oParameters.EditableCalendars);
 	this.selectedCalendarId(oParameters.DefaultCalendarId);
 	this.changeCalendarColor(this.selectedCalendarId());
+	this.isPrivateEvent(false);
 };
 
 CSelectCalendarPopup.prototype.onSaveClick = function ()
 {
 	if (this.fCallback)
 	{
-		this.fCallback(this.selectedCalendarId(), this.fProceedUploading);
+		this.fCallback(this.selectedCalendarId(), this.isPrivateEvent(), this.fProceedUploading);
 	}
 	this.closePopup();
 };
